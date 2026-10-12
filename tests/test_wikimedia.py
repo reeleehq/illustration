@@ -1,5 +1,7 @@
 """Tests for the Wikimedia Commons source adapter (offline, injected session)."""
 
+import pytest
+
 from illustration.providers.wikimedia import WikimediaSource
 
 
@@ -83,6 +85,22 @@ def test_nonempty_attribution_used_verbatim(make_session):
     }}}}
     r = WikimediaSource(session=make_session({1: payload})).search("x", n=1)[0]
     assert r.attribution == "Use freely, credit ACME"  # verbatim, not the built fallback
+
+
+@pytest.mark.parametrize("raw", ["EliziR", "  elizir. ", "<span>EliziR</span>"])
+def test_an_attribution_that_is_only_the_author_gets_the_licence(make_session, raw):
+    """illustration#22: rendering a bare-name Attribution as the credit names
+    no licence, which CC BY-SA requires."""
+    payload = {"query": {"pages": {"1": {
+        "pageid": 1, "index": 1, "title": "File:X.jpg",
+        "imageinfo": [{"mime": "image/jpeg", "url": "u", "width": 1, "height": 1,
+                       "descriptionurl": "d",
+                       "extmetadata": {"Attribution": {"value": raw},
+                                       "Artist": {"value": "EliziR"},
+                                       "LicenseShortName": {"value": "CC BY-SA 3.0"}}}],
+    }}}}
+    r = WikimediaSource(session=make_session({1: payload})).search("x", n=1)[0]
+    assert r.attribution == "EliziR / CC BY-SA 3.0, via Wikimedia Commons"
 
 
 def test_image_with_empty_extmetadata_normalizes(make_session):

@@ -221,8 +221,11 @@ class WikimediaSource(RetrievalSource):
             tags=[],  # Commons categories are noisy/HTML; omitted at this layer
             license=_em("License") or license_short,
             license_url=_em("LicenseUrl"),
-            attribution=_strip_html(_em("Attribution"))
-            or _build_attribution(_strip_html(artist_html), license_short),
+            attribution=_attribution(
+                _strip_html(_em("Attribution")),
+                _strip_html(artist_html),
+                license_short,
+            ),
             source_page_url=info.get("descriptionurl"),
             author=_strip_html(artist_html),
             author_url=_first_href(artist_html),
@@ -231,6 +234,31 @@ class WikimediaSource(RetrievalSource):
             query=query,
             raw=dict(item),
         )
+
+
+def _attribution(
+    raw: "str | None", author: "str | None", license_short: "str | None"
+) -> "str | None":
+    """The credit sentence: the uploader's own ``Attribution`` wording when it
+    says more than the author's name, else one composed from author + licence.
+
+    An ``Attribution`` that is just the ``Artist`` name again (illustration#22:
+    16 of ~400 hits in one session) names no licence, so rendering it as the
+    documented credit breaches CC BY / BY-SA. Any other wording is kept
+    verbatim: whether to append the licence to a custom wording that also
+    omits it is an open decision on that issue.
+    """
+    if raw and not (author and _same_text(raw, author)):
+        return raw
+    return _build_attribution(author, license_short)
+
+
+def _same_text(a: str, b: str) -> bool:
+    """Equal once case and surrounding whitespace/punctuation are ignored."""
+    def norm(x: str) -> str:
+        return " ".join(x.split()).strip(" .,;").casefold()
+
+    return norm(a) == norm(b)
 
 
 def _build_attribution(
