@@ -227,6 +227,8 @@ class WikimediaSource(RetrievalSource):
                 _strip_html(_em("Attribution")),
                 _strip_html(artist_html),
                 license_short or _em("License") or _em("LicenseUrl"),
+                license=_em("License") or license_short,
+                license_url=_em("LicenseUrl"),
             ),
             source_page_url=info.get("descriptionurl"),
             author=_strip_html(artist_html),
@@ -239,14 +241,21 @@ class WikimediaSource(RetrievalSource):
 
 
 def _attribution(
-    raw: "str | None", author: "str | None", license_short: "str | None"
+    raw: "str | None",
+    author: "str | None",
+    license_short: "str | None",
+    *,
+    license: "str | None" = None,
+    license_url: "str | None" = None,
 ) -> "str | None":
     """The credit sentence, always naming the licence when one is known.
 
     - The uploader's own ``Attribution`` wording is kept **verbatim as a
       prefix**: it is the rights-holder's stated credit.
-    - When that wording names no licence (:func:`mentions_license`), the
-      licence is appended: ``"Use freely, credit ACME / CC BY 4.0, via
+    - When that wording does not identify the licence (by the same rule
+      :func:`illustration.check_attributions` audits with,
+      :func:`illustration.licensing.attribution_names_license`: "© Alice" or a
+      different CC code does not count), the licence is appended: ``"Use freely, credit ACME / CC BY 4.0, via
       Wikimedia Commons"``. CC BY / BY-SA require the licence to be
       identified, so rendering the bare wording, as the documented contract
       says to, would breach it (illustration#48, decided 2026-10-12).
@@ -255,17 +264,21 @@ def _attribution(
     - With no licence known, the wording is returned as it is: there is
       nothing to append.
     """
-    from illustration.licensing import mentions_license
+    from illustration.licensing import attribution_names_license
 
     if not raw or (author and _same_text(raw, author)):
         return _build_attribution(author, license_short)
-    if mentions_license(raw) or not license_short:
+    if not license_short or attribution_names_license(
+        raw, license or license_short, license_url=license_url
+    ):
         return raw
-    stem = _VIA_COMMONS_RE.sub("", raw).rstrip(" ,;")
+    stem = _VIA_COMMONS_RE.sub("", raw).rstrip(" ,;/\u2014\u2013-")
     return f"{stem} / {license_short}, via Wikimedia Commons"
 
 
-_VIA_COMMONS_RE = re.compile(r"[\s,;]*via\s+wikimedia\s+commons\.?\s*$", re.I)
+_VIA_COMMONS_RE = re.compile(
+    r"[\s,;/\u2014\u2013-]*\bvia\s+wikimedia(?:\s+commons)?[\s.,;]*$", re.I
+)
 
 
 def _same_text(a: str, b: str) -> bool:

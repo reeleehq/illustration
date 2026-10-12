@@ -37,6 +37,7 @@ from __future__ import annotations
 import re
 
 __all__ = [
+    "attribution_names_license",
     "normalize_license",
     "display_license",
     "mentions_license",
@@ -279,3 +280,44 @@ def licenses_named(text: "str | None") -> "set[str]":
     if _PUBLIC_DOMAIN_RE.search(text):
         codes.add("pdm")
     return {c for c in codes if c}
+
+
+def _by_family(code: "str | None") -> str:
+    """``"by-sa-3.0-de"`` -> ``"by-sa"``: the permission elements a credit
+    line has to identify; ``""`` outside the CC BY family."""
+    elements = []
+    for token in (code or "").split("-"):
+        if token not in ("by", "nc", "nd", "sa"):
+            break
+        elements.append(token)
+    return "-".join(elements) if elements[:1] == ["by"] else ""
+
+
+def attribution_names_license(
+    attribution: "str | None",
+    license: "str | None",
+    *,
+    license_url: "str | None" = None,
+) -> bool:
+    """Whether ``attribution`` identifies ``license`` well enough to render.
+
+    The one rule, shared by :func:`illustration.schema.check_attributions`
+    (the audit) and the providers that compose credits (illustration#48), so
+    the two cannot disagree. For the CC BY family the credit must name *that*
+    licence (:func:`licenses_named`) or contain ``license_url``: "© Jane Doe",
+    "Public domain", or a different CC code do not count. For any other
+    licence the looser :func:`mentions_license` signal is used.
+
+    >>> attribution_names_license("Jane Doe / CC BY-SA 4.0", "cc-by-sa-4.0")
+    True
+    >>> attribution_names_license("© Jane Doe", "cc-by-sa-4.0")
+    False
+    >>> attribution_names_license("CC BY Jane", "cc-by-nc-4.0")  # drops NC
+    False
+    """
+    family = _by_family(normalize_license(license))
+    if family:
+        if license_url and attribution and license_url in attribution:
+            return True
+        return family in {_by_family(c) for c in licenses_named(attribution)}
+    return mentions_license(attribution)

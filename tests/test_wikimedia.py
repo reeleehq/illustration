@@ -167,23 +167,38 @@ def _hit(make_session, attribution, *, licence="CC BY-SA 3.0", artist="EliziR"):
     return WikimediaSource(session=make_session({1: payload})).search("x", n=1)[0]
 
 
+_SA3 = " / CC BY-SA 3.0, via Wikimedia Commons"
+
+
 @pytest.mark.parametrize(
     "raw, expected",
     [
-        ("Photo: EliziR", "Photo: EliziR / CC BY-SA 3.0, via Wikimedia Commons"),
-        ("By EliziR, via Wikimedia Commons", "By EliziR / CC BY-SA 3.0, via Wikimedia Commons"),
-        ("EliziR / CC BY-SA 3.0", "EliziR / CC BY-SA 3.0"),  # names it: untouched
-        ("Public domain, via Wikimedia Commons", "Public domain, via Wikimedia Commons"),
+        ("Photo: EliziR", "Photo: EliziR" + _SA3),
+        ("By EliziR, via Wikimedia Commons", "By EliziR" + _SA3),
+        ("EliziR, via Wikimedia Commons;", "EliziR" + _SA3),
+        ("EliziR; via WIKIMEDIA commons .", "EliziR" + _SA3),
+        ("by EliziR \u2014 via Wikimedia Commons", "by EliziR" + _SA3),
+        ("Photo: EliziR /", "Photo: EliziR" + _SA3),
+        # review of #50: these "mention a licence" loosely but do not name
+        # THIS one, so the audit flagged them; they now gain it
+        ("\u00a9 EliziR", "\u00a9 EliziR" + _SA3),
+        ("Copyright EliziR", "Copyright EliziR" + _SA3),
+        ("CC BY EliziR", "CC BY EliziR" + _SA3),  # a different CC code
+        ("Public domain, via Wikimedia Commons", "Public domain" + _SA3),
+        # names this licence already: untouched, never doubled
+        ("EliziR / CC BY-SA 3.0", "EliziR / CC BY-SA 3.0"),
+        ("CC-BY-SA-3.0 by EliziR", "CC-BY-SA-3.0 by EliziR"),
+        ("EliziR (cc-by-sa-3.0)", "EliziR (cc-by-sa-3.0)"),
     ],
 )
 def test_custom_wording_keeps_its_words_and_gains_the_licence(make_session, raw, expected):
     """#48: the rights-holder's wording is a verbatim prefix; the licence is
-    appended only when the wording names none."""
-    from illustration.licensing import mentions_license
+    appended exactly when the package's own audit would flag the credit."""
+    from illustration import check_attributions
 
     r = _hit(make_session, raw)
     assert r.attribution == expected
-    assert mentions_license(r.attribution)
+    assert check_attributions([r]) == []
 
 
 def test_no_known_licence_leaves_the_wording_alone(make_session):

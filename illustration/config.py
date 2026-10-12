@@ -85,7 +85,7 @@ MAX_PAGES = 25
 
 #: Version token folded into every cache key, so a result-schema change
 #: invalidates the cache *structurally* (a new key) rather than by deletion.
-SEARCH_CACHE_SCHEMA = "illustration.search/v1"
+SEARCH_CACHE_SCHEMA = "illustration.search/v2"  # v2: Wikimedia credits name the licence (#48)
 
 
 # --- Directories ------------------------------------------------------------
