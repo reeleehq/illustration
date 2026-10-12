@@ -129,9 +129,13 @@ ready-to-render sentence), `source_page_url`, `author`, `author_url`, and
 > licence named at all** ("EliziR", "Norman Bruderhofer"), while `license` and
 > `license_url` on the same hit are correct. Rendering `attribution` as
 > documented then ships "EliziR" as the *entire* credit for a CC BY-SA 3.0
-> image, which fails the one condition the licence imposes. Build the line from
-> `author` + `license` + `license_url`, and assert that every finished line
-> names a licence before it reaches a credits roll. Tracked as issue #22. That set is `illustration.RIGHTS_FIELDS` — use it when you need to
+> image, which fails the one condition the licence imposes. Since #22 the
+> Wikimedia adapter composes the credit itself when `Attribution` is just the
+> author's name. Custom wording that also omits the licence ("Photo: EliziR")
+> still passes through verbatim, so build the line from `author` + `license` +
+> `license_url` when `illustration.check_attributions(hits)` flags a hit, and
+> assert that every finished line names a licence before it reaches a credits
+> roll. That set is `illustration.RIGHTS_FIELDS` — use it when you need to
 copy the rights record onto your own model, and keep the field names, so nobody
 downstream needs a rename table. `persist_sequence` stores all seven on the
 lacing annotation, so a selection read back later can still be attributed.
