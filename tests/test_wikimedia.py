@@ -126,3 +126,29 @@ def test_attribution_and_href_helpers():
     assert _first_href('<a href="//x/u">n</a>') == "https://x/u"
     assert _first_href("no link here") is None
     assert _strip_html(None) is None and _strip_html("<b>x</b>") == "x"
+
+
+def test_the_composed_credit_names_a_licence_without_a_short_name(make_session):
+    """Review of #49: with no LicenseShortName the composed credit named no
+    licence at all; it falls back to License, then LicenseUrl."""
+    from illustration.licensing import mentions_license
+
+    payload = {"query": {"pages": {"1": {
+        "pageid": 1, "index": 1, "title": "File:X.jpg",
+        "imageinfo": [{"mime": "image/jpeg", "url": "u", "width": 1, "height": 1,
+                       "descriptionurl": "d",
+                       "extmetadata": {"Attribution": {"value": "EliziR"},
+                                       "Artist": {"value": "EliziR"},
+                                       "License": {"value": "cc-by-sa-4.0"}}}],
+    }}}}
+    r = WikimediaSource(session=make_session({1: payload})).search("x", n=1)[0]
+    assert r.attribution == "EliziR / cc-by-sa-4.0, via Wikimedia Commons"
+    assert mentions_license(r.attribution)
+
+
+def test_names_in_different_unicode_forms_still_match():
+    import unicodedata
+
+    from illustration.providers.wikimedia import _same_text
+
+    assert _same_text(unicodedata.normalize("NFD", "José"), "José")

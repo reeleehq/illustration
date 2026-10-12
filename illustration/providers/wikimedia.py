@@ -25,6 +25,8 @@ safe/license_type/color/content_type) — they degrade gracefully.
 
 from __future__ import annotations
 
+import unicodedata
+
 import html
 import re
 from typing import Any, Iterable, Mapping
@@ -224,7 +226,7 @@ class WikimediaSource(RetrievalSource):
             attribution=_attribution(
                 _strip_html(_em("Attribution")),
                 _strip_html(artist_html),
-                license_short,
+                license_short or _em("License") or _em("LicenseUrl"),
             ),
             source_page_url=info.get("descriptionurl"),
             author=_strip_html(artist_html),
@@ -256,6 +258,7 @@ def _attribution(
 def _same_text(a: str, b: str) -> bool:
     """Equal once case and surrounding whitespace/punctuation are ignored."""
     def norm(x: str) -> str:
+        x = unicodedata.normalize("NFC", x)
         return " ".join(x.split()).strip(" .,;").casefold()
 
     return norm(a) == norm(b)
