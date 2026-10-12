@@ -257,6 +257,7 @@ def _attribution(
 
 def _same_text(a: str, b: str) -> bool:
     """Equal once case and surrounding whitespace/punctuation are ignored."""
+
     def norm(x: str) -> str:
         x = unicodedata.normalize("NFC", x)
         return " ".join(x.split()).strip(" .,;").casefold()
