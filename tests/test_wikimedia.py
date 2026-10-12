@@ -84,7 +84,8 @@ def test_nonempty_attribution_used_verbatim(make_session):
                                        "LicenseShortName": {"value": "CC BY 4.0"}}}],
     }}}}
     r = WikimediaSource(session=make_session({1: payload})).search("x", n=1)[0]
-    assert r.attribution == "Use freely, credit ACME"  # verbatim, not the built fallback
+    # the uploader's wording, verbatim, with the licence appended (#48)
+    assert r.attribution == "Use freely, credit ACME / CC BY 4.0, via Wikimedia Commons"
 
 
 @pytest.mark.parametrize("raw", ["EliziR", "  elizir. ", "<span>EliziR</span>"])
@@ -152,3 +153,38 @@ def test_names_in_different_unicode_forms_still_match():
     from illustration.providers.wikimedia import _same_text
 
     assert _same_text(unicodedata.normalize("NFD", "José"), "José")
+
+
+def _hit(make_session, attribution, *, licence="CC BY-SA 3.0", artist="EliziR"):
+    em = {"Attribution": {"value": attribution}, "Artist": {"value": artist}}
+    if licence:
+        em["LicenseShortName"] = {"value": licence}
+    payload = {"query": {"pages": {"1": {
+        "pageid": 1, "index": 1, "title": "File:X.jpg",
+        "imageinfo": [{"mime": "image/jpeg", "url": "u", "width": 1, "height": 1,
+                       "descriptionurl": "d", "extmetadata": em}],
+    }}}}
+    return WikimediaSource(session=make_session({1: payload})).search("x", n=1)[0]
+
+
+@pytest.mark.parametrize(
+    "raw, expected",
+    [
+        ("Photo: EliziR", "Photo: EliziR / CC BY-SA 3.0, via Wikimedia Commons"),
+        ("By EliziR, via Wikimedia Commons", "By EliziR / CC BY-SA 3.0, via Wikimedia Commons"),
+        ("EliziR / CC BY-SA 3.0", "EliziR / CC BY-SA 3.0"),  # names it: untouched
+        ("Public domain, via Wikimedia Commons", "Public domain, via Wikimedia Commons"),
+    ],
+)
+def test_custom_wording_keeps_its_words_and_gains_the_licence(make_session, raw, expected):
+    """#48: the rights-holder's wording is a verbatim prefix; the licence is
+    appended only when the wording names none."""
+    from illustration.licensing import mentions_license
+
+    r = _hit(make_session, raw)
+    assert r.attribution == expected
+    assert mentions_license(r.attribution)
+
+
+def test_no_known_licence_leaves_the_wording_alone(make_session):
+    assert _hit(make_session, "Photo: EliziR", licence=None).attribution == "Photo: EliziR"

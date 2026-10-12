@@ -241,18 +241,31 @@ class WikimediaSource(RetrievalSource):
 def _attribution(
     raw: "str | None", author: "str | None", license_short: "str | None"
 ) -> "str | None":
-    """The credit sentence: the uploader's own ``Attribution`` wording when it
-    says more than the author's name, else one composed from author + licence.
+    """The credit sentence, always naming the licence when one is known.
 
-    An ``Attribution`` that is just the ``Artist`` name again (illustration#22:
-    16 of ~400 hits in one session) names no licence, so rendering it as the
-    documented credit breaches CC BY / BY-SA. Any other wording is kept
-    verbatim: whether to append the licence to a custom wording that also
-    omits it is an open decision on that issue.
+    - The uploader's own ``Attribution`` wording is kept **verbatim as a
+      prefix**: it is the rights-holder's stated credit.
+    - When that wording names no licence (:func:`mentions_license`), the
+      licence is appended: ``"Use freely, credit ACME / CC BY 4.0, via
+      Wikimedia Commons"``. CC BY / BY-SA require the licence to be
+      identified, so rendering the bare wording, as the documented contract
+      says to, would breach it (illustration#48, decided 2026-10-12).
+    - An ``Attribution`` that is just the ``Artist`` name again
+      (illustration#22) is replaced by the composed author + licence credit.
+    - With no licence known, the wording is returned as it is: there is
+      nothing to append.
     """
-    if raw and not (author and _same_text(raw, author)):
+    from illustration.licensing import mentions_license
+
+    if not raw or (author and _same_text(raw, author)):
+        return _build_attribution(author, license_short)
+    if mentions_license(raw) or not license_short:
         return raw
-    return _build_attribution(author, license_short)
+    stem = _VIA_COMMONS_RE.sub("", raw).rstrip(" ,;")
+    return f"{stem} / {license_short}, via Wikimedia Commons"
+
+
+_VIA_COMMONS_RE = re.compile(r"[\s,;]*via\s+wikimedia\s+commons\.?\s*$", re.I)
 
 
 def _same_text(a: str, b: str) -> bool:
