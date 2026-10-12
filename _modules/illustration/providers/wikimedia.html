@@ -370,54 +370,81 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="227">                <span class="n">_strip_html</span><span class="p">(</span><span class="n">_em</span><span class="p">(</span><span class="s2">"Attribution"</span><span class="p">)),</span>
 </span><span data-line="228">                <span class="n">_strip_html</span><span class="p">(</span><span class="n">artist_html</span><span class="p">),</span>
 </span><span data-line="229">                <span class="n">license_short</span> <span class="ow">or</span> <span class="n">_em</span><span class="p">(</span><span class="s2">"License"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">_em</span><span class="p">(</span><span class="s2">"LicenseUrl"</span><span class="p">),</span>
-</span><span data-line="230">            <span class="p">),</span>
-</span><span data-line="231">            <span class="n">source_page_url</span><span class="o">=</span><span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"descriptionurl"</span><span class="p">),</span>
-</span><span data-line="232">            <span class="n">author</span><span class="o">=</span><span class="n">_strip_html</span><span class="p">(</span><span class="n">artist_html</span><span class="p">),</span>
-</span><span data-line="233">            <span class="n">author_url</span><span class="o">=</span><span class="n">_first_href</span><span class="p">(</span><span class="n">artist_html</span><span class="p">),</span>
-</span><span data-line="234">            <span class="n">cacheable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># free content; preserve attribution (gate per-file license)</span>
-</span><span data-line="235">            <span class="n">avg_color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-</span><span data-line="236">            <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">,</span>
-</span><span data-line="237">            <span class="n">raw</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">item</span><span class="p">),</span>
-</span><span data-line="238">        <span class="p">)</span></div>
+</span><span data-line="230">                <span class="n">license</span><span class="o">=</span><span class="n">_em</span><span class="p">(</span><span class="s2">"License"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">license_short</span><span class="p">,</span>
+</span><span data-line="231">                <span class="n">license_url</span><span class="o">=</span><span class="n">_em</span><span class="p">(</span><span class="s2">"LicenseUrl"</span><span class="p">),</span>
+</span><span data-line="232">            <span class="p">),</span>
+</span><span data-line="233">            <span class="n">source_page_url</span><span class="o">=</span><span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"descriptionurl"</span><span class="p">),</span>
+</span><span data-line="234">            <span class="n">author</span><span class="o">=</span><span class="n">_strip_html</span><span class="p">(</span><span class="n">artist_html</span><span class="p">),</span>
+</span><span data-line="235">            <span class="n">author_url</span><span class="o">=</span><span class="n">_first_href</span><span class="p">(</span><span class="n">artist_html</span><span class="p">),</span>
+</span><span data-line="236">            <span class="n">cacheable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># free content; preserve attribution (gate per-file license)</span>
+</span><span data-line="237">            <span class="n">avg_color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span data-line="238">            <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">,</span>
+</span><span data-line="239">            <span class="n">raw</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">item</span><span class="p">),</span>
+</span><span data-line="240">        <span class="p">)</span></div>
 
-</span><span data-line="239">
-</span><span data-line="240">
-</span><span data-line="241"><span class="k">def</span><span class="w"> </span><span class="nf">_attribution</span><span class="p">(</span>
-</span><span data-line="242">    <span class="n">raw</span><span class="p">:</span> <span class="s2">"str | None"</span><span class="p">,</span> <span class="n">author</span><span class="p">:</span> <span class="s2">"str | None"</span><span class="p">,</span> <span class="n">license_short</span><span class="p">:</span> <span class="s2">"str | None"</span>
-</span><span data-line="243"><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"str | None"</span><span class="p">:</span>
-</span><span data-line="244"><span class="w">    </span><span class="sd">"""The credit sentence: the uploader's own ``Attribution`` wording when it</span>
-</span><span data-line="245"><span class="sd">    says more than the author's name, else one composed from author + licence.</span>
-</span><span data-line="246">
-</span><span data-line="247"><span class="sd">    An ``Attribution`` that is just the ``Artist`` name again (illustration#22:</span>
-</span><span data-line="248"><span class="sd">    16 of ~400 hits in one session) names no licence, so rendering it as the</span>
-</span><span data-line="249"><span class="sd">    documented credit breaches CC BY / BY-SA. Any other wording is kept</span>
-</span><span data-line="250"><span class="sd">    verbatim: whether to append the licence to a custom wording that also</span>
-</span><span data-line="251"><span class="sd">    omits it is an open decision on that issue.</span>
-</span><span data-line="252"><span class="sd">    """</span>
-</span><span data-line="253">    <span class="k">if</span> <span class="n">raw</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="n">author</span> <span class="ow">and</span> <span class="n">_same_text</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="n">author</span><span class="p">)):</span>
-</span><span data-line="254">        <span class="k">return</span> <span class="n">raw</span>
-</span><span data-line="255">    <span class="k">return</span> <span class="n">_build_attribution</span><span class="p">(</span><span class="n">author</span><span class="p">,</span> <span class="n">license_short</span><span class="p">)</span>
-</span><span data-line="256">
-</span><span data-line="257">
-</span><span data-line="258"><span class="k">def</span><span class="w"> </span><span class="nf">_same_text</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span data-line="259"><span class="w">    </span><span class="sd">"""Equal once case and surrounding whitespace/punctuation are ignored."""</span>
-</span><span data-line="260">    <span class="k">def</span><span class="w"> </span><span class="nf">norm</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span data-line="261">        <span class="n">x</span> <span class="o">=</span> <span class="n">unicodedata</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="s2">"NFC"</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-</span><span data-line="262">        <span class="k">return</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">())</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">" .,;"</span><span class="p">)</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span>
-</span><span data-line="263">
-</span><span data-line="264">    <span class="k">return</span> <span class="n">norm</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">==</span> <span class="n">norm</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
-</span><span data-line="265">
-</span><span data-line="266">
-</span><span data-line="267"><span class="k">def</span><span class="w"> </span><span class="nf">_build_attribution</span><span class="p">(</span>
-</span><span data-line="268">    <span class="n">author</span><span class="p">:</span> <span class="s2">"str | None"</span><span class="p">,</span> <span class="n">license_short</span><span class="p">:</span> <span class="s2">"str | None"</span>
-</span><span data-line="269"><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"str | None"</span><span class="p">:</span>
-</span><span data-line="270">    <span class="k">if</span> <span class="n">author</span> <span class="ow">and</span> <span class="n">license_short</span><span class="p">:</span>
-</span><span data-line="271">        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">author</span><span class="si">}</span><span class="s2"> / </span><span class="si">{</span><span class="n">license_short</span><span class="si">}</span><span class="s2">, via Wikimedia Commons"</span>
-</span><span data-line="272">    <span class="k">if</span> <span class="n">author</span><span class="p">:</span>
-</span><span data-line="273">        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">author</span><span class="si">}</span><span class="s2">, via Wikimedia Commons"</span>
-</span><span data-line="274">    <span class="k">if</span> <span class="n">license_short</span><span class="p">:</span>
-</span><span data-line="275">        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">license_short</span><span class="si">}</span><span class="s2">, via Wikimedia Commons"</span>
-</span><span data-line="276">    <span class="k">return</span> <span class="kc">None</span>
+</span><span data-line="241">
+</span><span data-line="242">
+</span><span data-line="243"><span class="k">def</span><span class="w"> </span><span class="nf">_attribution</span><span class="p">(</span>
+</span><span data-line="244">    <span class="n">raw</span><span class="p">:</span> <span class="s2">"str | None"</span><span class="p">,</span>
+</span><span data-line="245">    <span class="n">author</span><span class="p">:</span> <span class="s2">"str | None"</span><span class="p">,</span>
+</span><span data-line="246">    <span class="n">license_short</span><span class="p">:</span> <span class="s2">"str | None"</span><span class="p">,</span>
+</span><span data-line="247">    <span class="o">*</span><span class="p">,</span>
+</span><span data-line="248">    <span class="n">license</span><span class="p">:</span> <span class="s2">"str | None"</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="249">    <span class="n">license_url</span><span class="p">:</span> <span class="s2">"str | None"</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="250"><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"str | None"</span><span class="p">:</span>
+</span><span data-line="251"><span class="w">    </span><span class="sd">"""The credit sentence, always naming the licence when one is known.</span>
+</span><span data-line="252">
+</span><span data-line="253"><span class="sd">    - The uploader's own ``Attribution`` wording is kept **verbatim as a</span>
+</span><span data-line="254"><span class="sd">      prefix**: it is the rights-holder's stated credit.</span>
+</span><span data-line="255"><span class="sd">    - When that wording does not identify the licence (by the same rule</span>
+</span><span data-line="256"><span class="sd">      :func:`illustration.check_attributions` audits with,</span>
+</span><span data-line="257"><span class="sd">      :func:`illustration.licensing.attribution_names_license`: "© Alice" or a</span>
+</span><span data-line="258"><span class="sd">      different CC code does not count), the licence is appended: ``"Use freely, credit ACME / CC BY 4.0, via</span>
+</span><span data-line="259"><span class="sd">      Wikimedia Commons"``. CC BY / BY-SA require the licence to be</span>
+</span><span data-line="260"><span class="sd">      identified, so rendering the bare wording, as the documented contract</span>
+</span><span data-line="261"><span class="sd">      says to, would breach it (illustration#48, decided 2026-10-12).</span>
+</span><span data-line="262"><span class="sd">    - An ``Attribution`` that is just the ``Artist`` name again</span>
+</span><span data-line="263"><span class="sd">      (illustration#22) is replaced by the composed author + licence credit.</span>
+</span><span data-line="264"><span class="sd">    - With no licence known, the wording is returned as it is: there is</span>
+</span><span data-line="265"><span class="sd">      nothing to append.</span>
+</span><span data-line="266"><span class="sd">    """</span>
+</span><span data-line="267">    <span class="kn">from</span><span class="w"> </span><span class="nn">illustration.licensing</span><span class="w"> </span><span class="kn">import</span> <span class="n">attribution_names_license</span>
+</span><span data-line="268">
+</span><span data-line="269">    <span class="k">if</span> <span class="ow">not</span> <span class="n">raw</span> <span class="ow">or</span> <span class="p">(</span><span class="n">author</span> <span class="ow">and</span> <span class="n">_same_text</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="n">author</span><span class="p">)):</span>
+</span><span data-line="270">        <span class="k">return</span> <span class="n">_build_attribution</span><span class="p">(</span><span class="n">author</span><span class="p">,</span> <span class="n">license_short</span><span class="p">)</span>
+</span><span data-line="271">    <span class="k">if</span> <span class="ow">not</span> <span class="n">license_short</span> <span class="ow">or</span> <span class="n">attribution_names_license</span><span class="p">(</span>
+</span><span data-line="272">        <span class="n">raw</span><span class="p">,</span> <span class="n">license</span> <span class="ow">or</span> <span class="n">license_short</span><span class="p">,</span> <span class="n">license_url</span><span class="o">=</span><span class="n">license_url</span>
+</span><span data-line="273">    <span class="p">):</span>
+</span><span data-line="274">        <span class="k">return</span> <span class="n">raw</span>
+</span><span data-line="275">    <span class="n">stem</span> <span class="o">=</span> <span class="n">_VIA_COMMONS_RE</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">""</span><span class="p">,</span> <span class="n">raw</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">" ,;/</span><span class="se">\u2014\u2013</span><span class="s2">-"</span><span class="p">)</span>
+</span><span data-line="276">    <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">stem</span><span class="si">}</span><span class="s2"> / </span><span class="si">{</span><span class="n">license_short</span><span class="si">}</span><span class="s2">, via Wikimedia Commons"</span>
+</span><span data-line="277">
+</span><span data-line="278">
+</span><span data-line="279"><span class="n">_VIA_COMMONS_RE</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+</span><span data-line="280">    <span class="sa">r</span><span class="s2">"[\s,;/\u2014\u2013-]*\bvia\s+wikimedia(?:\s+commons)?[\s.,;]*$"</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">I</span>
+</span><span data-line="281"><span class="p">)</span>
+</span><span data-line="282">
+</span><span data-line="283">
+</span><span data-line="284"><span class="k">def</span><span class="w"> </span><span class="nf">_same_text</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span data-line="285"><span class="w">    </span><span class="sd">"""Equal once case and surrounding whitespace/punctuation are ignored."""</span>
+</span><span data-line="286">
+</span><span data-line="287">    <span class="k">def</span><span class="w"> </span><span class="nf">norm</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="288">        <span class="n">x</span> <span class="o">=</span> <span class="n">unicodedata</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="s2">"NFC"</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+</span><span data-line="289">        <span class="k">return</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">())</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">" .,;"</span><span class="p">)</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span>
+</span><span data-line="290">
+</span><span data-line="291">    <span class="k">return</span> <span class="n">norm</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">==</span> <span class="n">norm</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+</span><span data-line="292">
+</span><span data-line="293">
+</span><span data-line="294"><span class="k">def</span><span class="w"> </span><span class="nf">_build_attribution</span><span class="p">(</span>
+</span><span data-line="295">    <span class="n">author</span><span class="p">:</span> <span class="s2">"str | None"</span><span class="p">,</span> <span class="n">license_short</span><span class="p">:</span> <span class="s2">"str | None"</span>
+</span><span data-line="296"><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"str | None"</span><span class="p">:</span>
+</span><span data-line="297">    <span class="k">if</span> <span class="n">author</span> <span class="ow">and</span> <span class="n">license_short</span><span class="p">:</span>
+</span><span data-line="298">        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">author</span><span class="si">}</span><span class="s2"> / </span><span class="si">{</span><span class="n">license_short</span><span class="si">}</span><span class="s2">, via Wikimedia Commons"</span>
+</span><span data-line="299">    <span class="k">if</span> <span class="n">author</span><span class="p">:</span>
+</span><span data-line="300">        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">author</span><span class="si">}</span><span class="s2">, via Wikimedia Commons"</span>
+</span><span data-line="301">    <span class="k">if</span> <span class="n">license_short</span><span class="p">:</span>
+</span><span data-line="302">        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">license_short</span><span class="si">}</span><span class="s2">, via Wikimedia Commons"</span>
+</span><span data-line="303">    <span class="k">return</span> <span class="kc">None</span>
 </span></pre></div>
         </article><button class="back-to-top" type="button">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -445,7 +472,7 @@ data-aria-dark="Switch to auto color mode">
     </div>
   </div>
 </footer>
-      <script src="../../../_static/documentation_options.js?v=8bafd125"></script>
+      <script src="../../../_static/documentation_options.js?v=2fd7553c"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>

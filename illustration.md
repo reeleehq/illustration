@@ -1,4 +1,4 @@
-> built 2026-10-12 05:16 UTC from 50fa914 (main) · illustration 0.0.18. Details: build_info.json
+> built 2026-10-12 06:48 UTC from e2cdfd7 (main) · illustration 0.0.19. Details: build_info.json
 
 # index.html.md
 
@@ -822,7 +822,7 @@ HTTP request timeout, seconds.
 Hard safety cap on how many pages a single `search` will fetch, so an
 unbounded `n` (or a misbehaving provider) can never loop forever.
 
-### illustration.config.SEARCH_CACHE_SCHEMA *= 'illustration.search/v1'*
+### illustration.config.SEARCH_CACHE_SCHEMA *= 'illustration.search/v2'*
 
 Version token folded into every cache key, so a result-schema change
 invalidates the cache *structurally* (a new key) rather than by deletion.
@@ -3549,11 +3549,12 @@ the recorded spelling rather than the normalised code.
 
 ### Functions
 
-| [`normalize_license`](_autosummary/illustration.licensing.html.md#illustration.licensing.normalize_license)(value)      | Fold a provider's licence spelling onto one canonical, comparable code.                                                                                                        |
-|--------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [`display_license`](_autosummary/illustration.licensing.html.md#illustration.licensing.display_license)(value)        | The conventional human spelling of a licence, for on-screen credit.                                                                                                            |
-| [`mentions_license`](_autosummary/illustration.licensing.html.md#illustration.licensing.mentions_license)(attribution) | Whether `attribution` appears to name a licence or rights status.                                                                                                              |
-| [`licenses_named`](_autosummary/illustration.licensing.html.md#illustration.licensing.licenses_named)(text)          | The canonical codes (as [`normalize_license()`](_autosummary/illustration.licensing.html.md#illustration.licensing.normalize_license) spells them) of every Creative Commons / public-domain licence that `text` names. |
+| [`attribution_names_license`](_autosummary/illustration.licensing.html.md#illustration.licensing.attribution_names_license)(attribution, ...)   | Whether `attribution` identifies `license` well enough to render.                                                                                                              |
+|------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [`normalize_license`](_autosummary/illustration.licensing.html.md#illustration.licensing.normalize_license)(value)                      | Fold a provider's licence spelling onto one canonical, comparable code.                                                                                                        |
+| [`display_license`](_autosummary/illustration.licensing.html.md#illustration.licensing.display_license)(value)                        | The conventional human spelling of a licence, for on-screen credit.                                                                                                            |
+| [`mentions_license`](_autosummary/illustration.licensing.html.md#illustration.licensing.mentions_license)(attribution)                 | Whether `attribution` appears to name a licence or rights status.                                                                                                              |
+| [`licenses_named`](_autosummary/illustration.licensing.html.md#illustration.licensing.licenses_named)(text)                          | The canonical codes (as [`normalize_license()`](_autosummary/illustration.licensing.html.md#illustration.licensing.normalize_license) spells them) of every Creative Commons / public-domain licence that `text` names. |
 
 ### illustration.licensing.LICENSE_ALIASES *= {'cc-0': 'cc0', 'cc-pdm': 'pdm', 'cc-publicdomain': 'pdm', 'cc-zero': 'cc0', 'pd': 'pdm', 'pdm-owner': 'pdm', 'public-domain': 'pdm', 'public-domain-mark': 'pdm', 'publicdomain': 'pdm', 'zero': 'cc0'}*
 
@@ -3568,6 +3569,29 @@ by the default gate; `test_every_alias_key_is_reachable` now pins that.
 
 Tokens that *restrict* use. Present only so the guard test can assert that
 normalisation never removes one; nothing in the transform consults it.
+
+### illustration.licensing.attribution_names_license(attribution, license, , license_url=None)
+
+Whether `attribution` identifies `license` well enough to render.
+
+The one rule, shared by [`illustration.schema.check_attributions()`](_autosummary/illustration.schema.html.md#illustration.schema.check_attributions)
+(the audit) and the providers that compose credits (illustration#48), so
+the two cannot disagree. For the CC BY family the credit must name *that*
+licence ([`licenses_named()`](_autosummary/illustration.licensing.html.md#illustration.licensing.licenses_named)) or contain `license_url`: “© Jane Doe”,
+“Public domain”, or a different CC code do not count. For any other
+licence the looser [`mentions_license()`](_autosummary/illustration.licensing.html.md#illustration.licensing.mentions_license) signal is used.
+
+* **Return type:**
+  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
+
+```pycon
+>>> attribution_names_license("Jane Doe / CC BY-SA 4.0", "cc-by-sa-4.0")
+True
+>>> attribution_names_license("© Jane Doe", "cc-by-sa-4.0")
+False
+>>> attribution_names_license("CC BY Jane", "cc-by-nc-4.0")  # drops NC
+False
+```
 
 ### illustration.licensing.display_license(value)
 
@@ -5125,18 +5149,16 @@ Beats with no chosen image are skipped. Needs the `[video]` extra.
 
 # About this build
 
-This documentation was built on **2026-10-12 05:16 UTC** from commit <a href="https://github.com/reeleehq/illustration/commit/50fa914a32aacf891ee025dfdcac1225f75cc7ac"><code>50fa914</code></a> on branch <code>main</code>, for **illustration 0.0.18** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-10-12 06:48 UTC** from commit <a href="https://github.com/reeleehq/illustration/commit/e2cdfd74c83482614eb3cada97d95f6587df2250"><code>e2cdfd7</code></a> on branch <code>main</code>, for **illustration 0.0.19** (from <code>pyproject.toml</code>).
 
-#### WARNING
-The documentation and the package may be misaligned:
-
-- The documented version (0.0.18) is behind the latest release on PyPI (0.0.19): `pip install illustration` gives newer code than these docs describe.
+#### NOTE
+Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
 
 ## Source
 
 |                     |                                                                                                                                                              |
 |---------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/reeleehq/illustration/commit/50fa914a32aacf891ee025dfdcac1225f75cc7ac"><code>50fa914a32aacf891ee025dfdcac1225f75cc7ac</code></a> |
+| Commit              | <a href="https://github.com/reeleehq/illustration/commit/e2cdfd74c83482614eb3cada97d95f6587df2250"><code>e2cdfd74c83482614eb3cada97d95f6587df2250</code></a> |
 | Branch              | <code>main</code>                                                                                                                                            |
 | Tags at this commit | none                                                                                                                                                         |
 | Working tree        | clean                                                                                                                                                        |
@@ -5147,9 +5169,9 @@ The documentation and the package may be misaligned:
 |              |                                                                                             |
 |--------------|---------------------------------------------------------------------------------------------|
 | Repository   | <code>reeleehq/illustration</code>                                                          |
-| Run          | <a href="https://github.com/reeleehq/illustration/actions/runs/38207148770">38207148770</a> |
+| Run          | <a href="https://github.com/reeleehq/illustration/actions/runs/38214239405">38214239405</a> |
 | Ref          | <code>refs/heads/main</code>                                                                |
-| Event commit | <code>50fa914a32aacf891ee025dfdcac1225f75cc7ac</code> (in the history of the built commit)  |
+| Event commit | <code>e2cdfd74c83482614eb3cada97d95f6587df2250</code> (in the history of the built commit)  |
 
 ## Tools
 
@@ -5174,13 +5196,13 @@ The documentation and the package may be misaligned:
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/illustration/0.0.19/">0.0.19</a>, newer than the documented version (0.0.18).
+Latest release: <a href="https://pypi.org/project/illustration/0.0.19/">0.0.19</a>, the same as the documented version.
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/reeleehq/illustration && cd illustration
-git checkout 50fa914a32aacf891ee025dfdcac1225f75cc7ac
+git checkout e2cdfd74c83482614eb3cada97d95f6587df2250
 pip install "epythet==0.2.12"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```

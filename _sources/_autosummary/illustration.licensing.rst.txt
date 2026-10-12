@@ -15,6 +15,7 @@ illustration.licensing
 
    .. autosummary::
    
+      attribution_names_license
       normalize_license
       display_license
       mentions_license

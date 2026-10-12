@@ -5,19 +5,17 @@ orphan: true
 
 # About this build
 
-This documentation was built on **2026-10-12 05:16 UTC** from commit <a href="https://github.com/reeleehq/illustration/commit/50fa914a32aacf891ee025dfdcac1225f75cc7ac"><code>50fa914</code></a> on branch <code>main</code>, for **illustration 0.0.18** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-10-12 06:48 UTC** from commit <a href="https://github.com/reeleehq/illustration/commit/e2cdfd74c83482614eb3cada97d95f6587df2250"><code>e2cdfd7</code></a> on branch <code>main</code>, for **illustration 0.0.19** (from <code>pyproject.toml</code>).
 
-:::{warning}
-The documentation and the package may be misaligned:
-
-- The documented version (0.0.18) is behind the latest release on PyPI (0.0.19): `pip install illustration` gives newer code than these docs describe.
+:::{note}
+Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
 :::
 
 ## Source
 
 | | |
 |---|---|
-| Commit | <a href="https://github.com/reeleehq/illustration/commit/50fa914a32aacf891ee025dfdcac1225f75cc7ac"><code>50fa914a32aacf891ee025dfdcac1225f75cc7ac</code></a> |
+| Commit | <a href="https://github.com/reeleehq/illustration/commit/e2cdfd74c83482614eb3cada97d95f6587df2250"><code>e2cdfd74c83482614eb3cada97d95f6587df2250</code></a> |
 | Branch | <code>main</code> |
 | Tags at this commit | none |
 | Working tree | clean |
@@ -28,9 +26,9 @@ The documentation and the package may be misaligned:
 | | |
 |---|---|
 | Repository | <code>reeleehq/illustration</code> |
-| Run | <a href="https://github.com/reeleehq/illustration/actions/runs/38207148770">38207148770</a> |
+| Run | <a href="https://github.com/reeleehq/illustration/actions/runs/38214239405">38214239405</a> |
 | Ref | <code>refs/heads/main</code> |
-| Event commit | <code>50fa914a32aacf891ee025dfdcac1225f75cc7ac</code> (in the history of the built commit) |
+| Event commit | <code>e2cdfd74c83482614eb3cada97d95f6587df2250</code> (in the history of the built commit) |
 
 ## Tools
 
@@ -55,13 +53,13 @@ The documentation and the package may be misaligned:
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/illustration/0.0.19/">0.0.19</a>, newer than the documented version (0.0.18).
+Latest release: <a href="https://pypi.org/project/illustration/0.0.19/">0.0.19</a>, the same as the documented version.
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/reeleehq/illustration && cd illustration
-git checkout 50fa914a32aacf891ee025dfdcac1225f75cc7ac
+git checkout e2cdfd74c83482614eb3cada97d95f6587df2250
 pip install "epythet==0.2.12"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```

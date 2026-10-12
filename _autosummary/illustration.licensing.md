@@ -43,11 +43,12 @@ the recorded spelling rather than the normalised code.
 
 ### Functions
 
-| [`normalize_license`](#illustration.licensing.normalize_license)(value)      | Fold a provider's licence spelling onto one canonical, comparable code.                                                                                                        |
-|--------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [`display_license`](#illustration.licensing.display_license)(value)        | The conventional human spelling of a licence, for on-screen credit.                                                                                                            |
-| [`mentions_license`](#illustration.licensing.mentions_license)(attribution) | Whether `attribution` appears to name a licence or rights status.                                                                                                              |
-| [`licenses_named`](#illustration.licensing.licenses_named)(text)          | The canonical codes (as [`normalize_license()`](#illustration.licensing.normalize_license) spells them) of every Creative Commons / public-domain licence that `text` names. |
+| [`attribution_names_license`](#illustration.licensing.attribution_names_license)(attribution, ...)   | Whether `attribution` identifies `license` well enough to render.                                                                                                              |
+|------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [`normalize_license`](#illustration.licensing.normalize_license)(value)                      | Fold a provider's licence spelling onto one canonical, comparable code.                                                                                                        |
+| [`display_license`](#illustration.licensing.display_license)(value)                        | The conventional human spelling of a licence, for on-screen credit.                                                                                                            |
+| [`mentions_license`](#illustration.licensing.mentions_license)(attribution)                 | Whether `attribution` appears to name a licence or rights status.                                                                                                              |
+| [`licenses_named`](#illustration.licensing.licenses_named)(text)                          | The canonical codes (as [`normalize_license()`](#illustration.licensing.normalize_license) spells them) of every Creative Commons / public-domain licence that `text` names. |
 
 ### illustration.licensing.LICENSE_ALIASES *= {'cc-0': 'cc0', 'cc-pdm': 'pdm', 'cc-publicdomain': 'pdm', 'cc-zero': 'cc0', 'pd': 'pdm', 'pdm-owner': 'pdm', 'public-domain': 'pdm', 'public-domain-mark': 'pdm', 'publicdomain': 'pdm', 'zero': 'cc0'}*
 
@@ -62,6 +63,29 @@ by the default gate; `test_every_alias_key_is_reachable` now pins that.
 
 Tokens that *restrict* use. Present only so the guard test can assert that
 normalisation never removes one; nothing in the transform consults it.
+
+### illustration.licensing.attribution_names_license(attribution, license, , license_url=None)
+
+Whether `attribution` identifies `license` well enough to render.
+
+The one rule, shared by [`illustration.schema.check_attributions()`](illustration.schema.md#illustration.schema.check_attributions)
+(the audit) and the providers that compose credits (illustration#48), so
+the two cannot disagree. For the CC BY family the credit must name *that*
+licence ([`licenses_named()`](#illustration.licensing.licenses_named)) or contain `license_url`: “© Jane Doe”,
+“Public domain”, or a different CC code do not count. For any other
+licence the looser [`mentions_license()`](#illustration.licensing.mentions_license) signal is used.
+
+* **Return type:**
+  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
+
+```pycon
+>>> attribution_names_license("Jane Doe / CC BY-SA 4.0", "cc-by-sa-4.0")
+True
+>>> attribution_names_license("© Jane Doe", "cc-by-sa-4.0")
+False
+>>> attribution_names_license("CC BY Jane", "cc-by-nc-4.0")  # drops NC
+False
+```
 
 ### illustration.licensing.display_license(value)
 

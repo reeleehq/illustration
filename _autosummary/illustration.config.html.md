@@ -88,7 +88,7 @@ HTTP request timeout, seconds.
 Hard safety cap on how many pages a single `search` will fetch, so an
 unbounded `n` (or a misbehaving provider) can never loop forever.
 
-### illustration.config.SEARCH_CACHE_SCHEMA *= 'illustration.search/v1'*
+### illustration.config.SEARCH_CACHE_SCHEMA *= 'illustration.search/v2'*
 
 Version token folded into every cache key, so a result-schema change
 invalidates the cache *structurally* (a new key) rather than by deletion.
