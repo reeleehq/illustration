@@ -26,6 +26,7 @@ from pydantic import BaseModel, Field
 
 from illustration.config import DFLT_LICENSE_ALLOWLIST
 from illustration.licensing import (
+    attribution_names_license,
     licenses_named,
     mentions_license,
     normalize_license,
@@ -218,25 +219,14 @@ def check_attributions(results: Iterable["ImageResult"]) -> list["ImageResult"]:
     ['1']
     """
 
-    def by_family(code: "str | None") -> str:
-        # "by-sa-3.0-de" (a jurisdiction port) -> "by-sa": the permission
-        # elements only, which is what a credit line has to identify.
-        elements = []
-        for token in (code or "").split("-"):
-            if token not in ("by", "nc", "nd", "sa"):
-                break
-            elements.append(token)
-        return "-".join(elements) if elements[:1] == ["by"] else ""
-
-    def names_its_license(r: "ImageResult") -> bool:
-        family = by_family(normalize_license(r.license))
-        if family:
-            if r.license_url and r.attribution and r.license_url in r.attribution:
-                return True
-            return family in {by_family(c) for c in licenses_named(r.attribution)}
-        return mentions_license(r.attribution)
-
-    return [r for r in results if r.license and not names_its_license(r)]
+    return [
+        r
+        for r in results
+        if r.license
+        and not attribution_names_license(
+            r.attribution, r.license, license_url=r.license_url
+        )
+    ]
 
 
 def _coerce_results(items: Iterable[Mapping[str, Any]]) -> list[ImageResult]:

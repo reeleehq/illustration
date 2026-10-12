@@ -84,7 +84,8 @@ def test_nonempty_attribution_used_verbatim(make_session):
                                        "LicenseShortName": {"value": "CC BY 4.0"}}}],
     }}}}
     r = WikimediaSource(session=make_session({1: payload})).search("x", n=1)[0]
-    assert r.attribution == "Use freely, credit ACME"  # verbatim, not the built fallback
+    # the uploader's wording, verbatim, with the licence appended (#48)
+    assert r.attribution == "Use freely, credit ACME / CC BY 4.0, via Wikimedia Commons"
 
 
 @pytest.mark.parametrize("raw", ["EliziR", "  elizir. ", "<span>EliziR</span>"])
@@ -152,3 +153,53 @@ def test_names_in_different_unicode_forms_still_match():
     from illustration.providers.wikimedia import _same_text
 
     assert _same_text(unicodedata.normalize("NFD", "José"), "José")
+
+
+def _hit(make_session, attribution, *, licence="CC BY-SA 3.0", artist="EliziR"):
+    em = {"Attribution": {"value": attribution}, "Artist": {"value": artist}}
+    if licence:
+        em["LicenseShortName"] = {"value": licence}
+    payload = {"query": {"pages": {"1": {
+        "pageid": 1, "index": 1, "title": "File:X.jpg",
+        "imageinfo": [{"mime": "image/jpeg", "url": "u", "width": 1, "height": 1,
+                       "descriptionurl": "d", "extmetadata": em}],
+    }}}}
+    return WikimediaSource(session=make_session({1: payload})).search("x", n=1)[0]
+
+
+_SA3 = " / CC BY-SA 3.0, via Wikimedia Commons"
+
+
+@pytest.mark.parametrize(
+    "raw, expected",
+    [
+        ("Photo: EliziR", "Photo: EliziR" + _SA3),
+        ("By EliziR, via Wikimedia Commons", "By EliziR" + _SA3),
+        ("EliziR, via Wikimedia Commons;", "EliziR" + _SA3),
+        ("EliziR; via WIKIMEDIA commons .", "EliziR" + _SA3),
+        ("by EliziR \u2014 via Wikimedia Commons", "by EliziR" + _SA3),
+        ("Photo: EliziR /", "Photo: EliziR" + _SA3),
+        # review of #50: these "mention a licence" loosely but do not name
+        # THIS one, so the audit flagged them; they now gain it
+        ("\u00a9 EliziR", "\u00a9 EliziR" + _SA3),
+        ("Copyright EliziR", "Copyright EliziR" + _SA3),
+        ("CC BY EliziR", "CC BY EliziR" + _SA3),  # a different CC code
+        ("Public domain, via Wikimedia Commons", "Public domain" + _SA3),
+        # names this licence already: untouched, never doubled
+        ("EliziR / CC BY-SA 3.0", "EliziR / CC BY-SA 3.0"),
+        ("CC-BY-SA-3.0 by EliziR", "CC-BY-SA-3.0 by EliziR"),
+        ("EliziR (cc-by-sa-3.0)", "EliziR (cc-by-sa-3.0)"),
+    ],
+)
+def test_custom_wording_keeps_its_words_and_gains_the_licence(make_session, raw, expected):
+    """#48: the rights-holder's wording is a verbatim prefix; the licence is
+    appended exactly when the package's own audit would flag the credit."""
+    from illustration import check_attributions
+
+    r = _hit(make_session, raw)
+    assert r.attribution == expected
+    assert check_attributions([r]) == []
+
+
+def test_no_known_licence_leaves_the_wording_alone(make_session):
+    assert _hit(make_session, "Photo: EliziR", licence=None).attribution == "Photo: EliziR"
