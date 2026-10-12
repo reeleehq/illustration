@@ -194,7 +194,7 @@ and implements three hooks: <code class="xref py py-meth docutils literal notran
 <dl class="py class">
 <dt class="sig sig-object py" id="illustration.base.RetrievalSource">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">illustration.base.</span></span><span class="sig-name descname"><span class="pre">RetrievalSource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/base.html#RetrievalSource"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.base.RetrievalSource" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
 <p>Abstract base for a pure image-search provider.</p>
 <p>Subclasses set the class attributes below and implement <code class="xref py py-meth docutils literal notranslate"><span class="pre">_items()</span></code> and
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">_normalize()</span></code> (and <code class="xref py py-meth docutils literal notranslate"><span class="pre">_auth_headers()</span></code> if the provider needs a key).
@@ -207,13 +207,13 @@ template, so a provider can never silently lose those guarantees.</p>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="illustration.base.RetrievalSource.endpoint">
-<span class="sig-name descname"><span class="pre">endpoint</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></span><a class="headerlink" href="#illustration.base.RetrievalSource.endpoint" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">endpoint</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></span><a class="headerlink" href="#illustration.base.RetrievalSource.endpoint" title="Link to this definition">#</a></dt>
 <dd><p>Search endpoint URL. Required.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="illustration.base.RetrievalSource.fixed_params">
-<span class="sig-name descname"><span class="pre">fixed_params</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Mapping" title="(in Python v3.14)"><span class="pre">Mapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">mappingproxy({})</span></span><a class="headerlink" href="#illustration.base.RetrievalSource.fixed_params" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">fixed_params</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Mapping" title="(in Python v3.15)"><span class="pre">Mapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">mappingproxy({})</span></span><a class="headerlink" href="#illustration.base.RetrievalSource.fixed_params" title="Link to this definition">#</a></dt>
 <dd><p>Constant native params sent on every request (e.g. an API mode/format).</p>
 </dd></dl>
 
@@ -225,13 +225,13 @@ template, so a provider can never silently lose those guarantees.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="illustration.base.RetrievalSource.max_per_page">
-<span class="sig-name descname"><span class="pre">max_per_page</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">20</span></span><a class="headerlink" href="#illustration.base.RetrievalSource.max_per_page" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">max_per_page</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">20</span></span><a class="headerlink" href="#illustration.base.RetrievalSource.max_per_page" title="Link to this definition">#</a></dt>
 <dd><p>Hard cap on results per page this provider allows.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="illustration.base.RetrievalSource.min_per_page">
-<span class="sig-name descname"><span class="pre">min_per_page</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></span><a class="headerlink" href="#illustration.base.RetrievalSource.min_per_page" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">min_per_page</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></span><a class="headerlink" href="#illustration.base.RetrievalSource.min_per_page" title="Link to this definition">#</a></dt>
 <dd><p>Floor on results per page this provider allows. Default 1 (no floor);
 raise it for a provider that <em>rejects</em> a small page (Pixabay’s documented
 minimum is 3), so <code class="docutils literal notranslate"><span class="pre">search(q,</span> <span class="pre">n=1)</span></code> asks for a page the API accepts and
@@ -240,32 +240,32 @@ the extra rows are trimmed by the <code class="docutils literal notranslate"><sp
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="illustration.base.RetrievalSource.name">
-<span class="sig-name descname"><span class="pre">name</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></span><a class="headerlink" href="#illustration.base.RetrievalSource.name" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">name</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></span><a class="headerlink" href="#illustration.base.RetrievalSource.name" title="Link to this definition">#</a></dt>
 <dd><p>Registry key, e.g. <code class="docutils literal notranslate"><span class="pre">&quot;openverse&quot;</span></code>. Required.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="illustration.base.RetrievalSource.page_param">
-<span class="sig-name descname"><span class="pre">page_param</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'page'</span></span><a class="headerlink" href="#illustration.base.RetrievalSource.page_param" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">page_param</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'page'</span></span><a class="headerlink" href="#illustration.base.RetrievalSource.page_param" title="Link to this definition">#</a></dt>
 <dd><p>Native name of the page-number parameter.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="illustration.base.RetrievalSource.param_map">
-<span class="sig-name descname"><span class="pre">param_map</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Mapping" title="(in Python v3.14)"><span class="pre">Mapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">mappingproxy({})</span></span><a class="headerlink" href="#illustration.base.RetrievalSource.param_map" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">param_map</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Mapping" title="(in Python v3.15)"><span class="pre">Mapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">mappingproxy({})</span></span><a class="headerlink" href="#illustration.base.RetrievalSource.param_map" title="Link to this definition">#</a></dt>
 <dd><p>Canonical→native parameter spec (see <a class="reference internal" href="illustration.translation.html#module-illustration.translation" title="illustration.translation"><code class="xref py py-mod docutils literal notranslate"><span class="pre">illustration.translation</span></code></a>).
 Immutable empty default so subclasses never share one mutable dict.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="illustration.base.RetrievalSource.per_page_param">
-<span class="sig-name descname"><span class="pre">per_page_param</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'page_size'</span></span><a class="headerlink" href="#illustration.base.RetrievalSource.per_page_param" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">per_page_param</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'page_size'</span></span><a class="headerlink" href="#illustration.base.RetrievalSource.per_page_param" title="Link to this definition">#</a></dt>
 <dd><p>Native name of the results-per-page parameter.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="illustration.base.RetrievalSource.query_param">
-<span class="sig-name descname"><span class="pre">query_param</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'q'</span></span><a class="headerlink" href="#illustration.base.RetrievalSource.query_param" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">query_param</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'q'</span></span><a class="headerlink" href="#illustration.base.RetrievalSource.query_param" title="Link to this definition">#</a></dt>
 <dd><p>Native name of the free-text query parameter.</p>
 </dd></dl>
 
@@ -277,7 +277,7 @@ Immutable empty default so subclasses never share one mutable dict.</p>
 query parameters; the raw decoded JSON response is returned.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -293,7 +293,7 @@ are raw provider-native params (the escape hatch) merged last, overriding
 translated ones.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference internal" href="illustration.schema.html#illustration.schema.ImageResult" title="illustration.schema.ImageResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImageResult</span></code></a>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference internal" href="illustration.schema.html#illustration.schema.ImageResult" title="illustration.schema.ImageResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImageResult</span></code></a>]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -303,7 +303,7 @@ translated ones.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="illustration.base.SourceInfo">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">illustration.base.</span></span><span class="sig-name descname"><span class="pre">SourceInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">requires_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">homepage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_cacheable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">license_note</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rate_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/base.html#SourceInfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.base.SourceInfo" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Static, human-facing metadata about a source (for discovery + the gate).</p>
 <dl class="field-list simple">
 </dl>
@@ -351,7 +351,7 @@ translated ones.</p>
     </div>
   </div>
 </footer>
-      <script src="../_static/documentation_options.js?v=bbaf98b3"></script>
+      <script src="../_static/documentation_options.js?v=8bafd125"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>

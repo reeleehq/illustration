@@ -2,31 +2,31 @@
 
 # About this build
 
-This documentation was built on **2026-10-03 14:26 UTC** from commit <a href="https://github.com/thorwhalen/illustration/commit/8facbfd175eb43549e8a91c0a659c34d3f3fe9d8"><code>8facbfd</code></a> on branch <code>main</code>, for **illustration 0.0.7** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-10-12 05:16 UTC** from commit <a href="https://github.com/reeleehq/illustration/commit/50fa914a32aacf891ee025dfdcac1225f75cc7ac"><code>50fa914</code></a> on branch <code>main</code>, for **illustration 0.0.18** (from <code>pyproject.toml</code>).
 
 #### WARNING
 The documentation and the package may be misaligned:
 
-- The documented version (0.0.7) is behind the latest release on PyPI (0.0.18): `pip install illustration` gives newer code than these docs describe.
+- The documented version (0.0.18) is behind the latest release on PyPI (0.0.19): `pip install illustration` gives newer code than these docs describe.
 
 ## Source
 
-|                     |                                                                                                                                                                |
-|---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/thorwhalen/illustration/commit/8facbfd175eb43549e8a91c0a659c34d3f3fe9d8"><code>8facbfd175eb43549e8a91c0a659c34d3f3fe9d8</code></a> |
-| Branch              | <code>main</code>                                                                                                                                              |
-| Tags at this commit | none                                                                                                                                                           |
-| Working tree        | clean                                                                                                                                                          |
-| Remote              | <code>https://github.com/thorwhalen/illustration</code>                                                                                                        |
+|                     |                                                                                                                                                              |
+|---------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Commit              | <a href="https://github.com/reeleehq/illustration/commit/50fa914a32aacf891ee025dfdcac1225f75cc7ac"><code>50fa914a32aacf891ee025dfdcac1225f75cc7ac</code></a> |
+| Branch              | <code>main</code>                                                                                                                                            |
+| Tags at this commit | none                                                                                                                                                         |
+| Working tree        | clean                                                                                                                                                        |
+| Remote              | <code>https://github.com/reeleehq/illustration</code>                                                                                                        |
 
 ## Continuous integration
 
-|              |                                                                                               |
-|--------------|-----------------------------------------------------------------------------------------------|
-| Repository   | <code>thorwhalen/illustration</code>                                                          |
-| Run          | <a href="https://github.com/thorwhalen/illustration/actions/runs/37129523959">37129523959</a> |
-| Ref          | <code>refs/heads/main</code>                                                                  |
-| Event commit | <code>8facbfd175eb43549e8a91c0a659c34d3f3fe9d8</code> (in the history of the built commit)    |
+|              |                                                                                             |
+|--------------|---------------------------------------------------------------------------------------------|
+| Repository   | <code>reeleehq/illustration</code>                                                          |
+| Run          | <a href="https://github.com/reeleehq/illustration/actions/runs/38207148770">38207148770</a> |
+| Ref          | <code>refs/heads/main</code>                                                                |
+| Event commit | <code>50fa914a32aacf891ee025dfdcac1225f75cc7ac</code> (in the history of the built commit)  |
 
 ## Tools
 
@@ -35,7 +35,7 @@ The documentation and the package may be misaligned:
 | epythet  | 0.2.12  |
 | Sphinx   | 9.1.0   |
 | docutils | 0.22.4  |
-| Python   | 3.12.14 |
+| Python   | 3.12.15 |
 
 ## Configuration as resolved
 
@@ -51,13 +51,13 @@ The documentation and the package may be misaligned:
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/illustration/0.0.18/">0.0.18</a>, newer than the documented version (0.0.7).
+Latest release: <a href="https://pypi.org/project/illustration/0.0.19/">0.0.19</a>, newer than the documented version (0.0.18).
 
 ## Reproduce
 
 ```bash
-git clone https://github.com/thorwhalen/illustration && cd illustration
-git checkout 8facbfd175eb43549e8a91c0a659c34d3f3fe9d8
+git clone https://github.com/reeleehq/illustration && cd illustration
+git checkout 50fa914a32aacf891ee025dfdcac1225f75cc7ac
 pip install "epythet==0.2.12"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```
