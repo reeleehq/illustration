@@ -44,7 +44,7 @@ Behind the optional ``[persist]`` extra (``lacing``); imported lazily so base
 
 from __future__ import annotations
 
-from typing import Any, Sequence
+from typing import Any, Literal, Sequence
 
 from pydantic import BaseModel, Field
 
@@ -91,7 +91,7 @@ class _CandidateRef(BaseModel):
     score: "float | None" = None
     #: Which kind of media this is. Absent in a body written before video
     #: existed, which is therefore an image.
-    media_type: str = "image"
+    media_type: Literal["image", "video"] = "image"
     # --- the rights record (names pinned to ImageResult) ---
     license: "str | None" = None
     license_url: "str | None" = None

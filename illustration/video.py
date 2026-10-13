@@ -182,7 +182,7 @@ def _checked(x: Any) -> "ImageResult | None":
     stills images with Ken-Burns motion — handing it a movie must fail, not be
     fetched as a picture.
     """
-    return x if x is None else require_image(x, where="the render hook")
+    return x if x is None else require_image(x, where="the render hook", strict=False)
 
 
 def _beats_text(selections: Any) -> list[str]:

@@ -79,7 +79,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Callable, Iterable, Mapping, Sequence
 
-from illustration.schema import ImageResult
+from illustration.schema import ImageResult, require_image
 
 __all__ = [
     "DFLT_STRATEGY",
@@ -419,7 +419,7 @@ def group_duplicates(
     signature could not be computed is never grouped, so a fetch failure loses a
     duplicate rather than silently merging two different pictures.
     """
-    results = list(results)
+    results = [require_image(r, where="group_duplicates", strict=False) for r in results]
     if len(results) < 2:
         return [DuplicateGroup(members=(r,)) for r in results]
 

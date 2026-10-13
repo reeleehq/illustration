@@ -246,3 +246,43 @@ def test_union_json_schema_has_oneof_and_a_discriminator_mapping():
     }
     assert schema["$defs"]["VideoResult"]["properties"]["media_type"]["const"] == "video"
     assert schema["$defs"]["ImageResult"]["properties"]["media_type"]["default"] == "image"
+
+
+def test_timespan_must_be_ordered():
+    with pytest.raises(ValueError):
+        TimeSpan(start=5, end=1)
+    assert TimeSpan(start=2, end=2).end == 2
+
+
+def test_the_search_cache_hands_a_video_back_as_a_video_with_its_rights():
+    from illustration.caching import SearchCache
+
+    cache = SearchCache({})
+    cache.put("s", "q", {}, [_video()])
+    (back,) = cache.get("s", "q", {})
+    assert type(back) is VideoResult and back == _video()
+    assert back.editorial_only is False and back.audio_policy == "no-music"
+
+
+def test_an_untagged_payload_validates_against_exactly_one_branch_of_the_exported_schema():
+    jsonschema = pytest.importorskip("jsonschema")
+    import json
+    from pathlib import Path
+
+    schema = json.loads(
+        (Path(__file__).parent.parent / "schema" / "media-result.schema.json").read_text()
+    )
+    jsonschema.validate({"provider": "p", "id": "1", "url": "u"}, schema)
+    jsonschema.validate(_video().model_dump(mode="json"), schema)
+
+
+def test_sequence_and_dedupe_refuse_a_video_before_doing_any_work():
+    from illustration.duplicates import dedupe
+    from illustration.sequence import select_sequence
+
+    hashed = []
+    with pytest.raises(TypeError, match="select_sequence expects an ImageResult"):
+        select_sequence([[_video()]], hasher=lambda img: hashed.append(img) or 0)
+    assert hashed == []
+    with pytest.raises(TypeError, match="group_duplicates"):
+        dedupe([_video(), _video()])

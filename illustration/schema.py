@@ -22,7 +22,7 @@ from __future__ import annotations
 
 from typing import Annotated, Any, Iterable, Literal, Mapping, Union
 
-from pydantic import BaseModel, Discriminator, Field, Tag, TypeAdapter
+from pydantic import BaseModel, Discriminator, Field, Tag, TypeAdapter, model_validator
 
 from illustration.config import DFLT_LICENSE_ALLOWLIST
 from illustration.licensing import (
@@ -197,6 +197,12 @@ class TimeSpan(BaseModel):
     start: float
     end: float
 
+    @model_validator(mode="after")
+    def _ordered(self) -> "TimeSpan":
+        if self.end < self.start:
+            raise ValueError(f"TimeSpan end ({self.end}) is before start ({self.start})")
+        return self
+
 
 class VideoResult(MediaResult):
     """One normalized video hit from any provider.
@@ -265,8 +271,13 @@ def parse_media_result(obj: Any) -> "ImageResult | VideoResult":
     return _MEDIA_ADAPTER.validate_python(obj)
 
 
-def require_image(obj: Any, *, where: str = "this function") -> "ImageResult":
+def require_image(
+    obj: Any, *, where: str = "this function", strict: bool = True
+) -> "ImageResult":
     """Return ``obj`` if it is an :class:`ImageResult`, else raise ``TypeError``.
+
+    ``strict=False`` refuses only other :class:`MediaResult` kinds (a video) and
+    lets a duck-typed stand-in through, for call sites that always took those.
 
     The guard for image-only code paths. A :class:`VideoResult` is not an
     :class:`ImageResult` by design, but duck-typed code that reads ``.url`` would
@@ -278,7 +289,7 @@ def require_image(obj: Any, *, where: str = "this function") -> "ImageResult":
     ...
     TypeError: render expects an ImageResult, got VideoResult
     """
-    if not isinstance(obj, ImageResult):
+    if not isinstance(obj, ImageResult) and (strict or isinstance(obj, MediaResult)):
         raise TypeError(f"{where} expects an ImageResult, got {type(obj).__name__}")
     return obj
 
@@ -398,6 +409,11 @@ def check_attributions(results: Iterable["MediaResult"]) -> list["MediaResult"]:
     ]
 
 
-def _coerce_results(items: Iterable[Mapping[str, Any]]) -> list[ImageResult]:
-    """Validate a sequence of dicts back into :class:`ImageResult` (cache reads)."""
-    return [ImageResult.model_validate(d) for d in items]
+def _coerce_results(items: Iterable[Mapping[str, Any]]) -> list[ImageResult | VideoResult]:
+    """Validate a sequence of dicts back into results (cache reads).
+
+    Through the media union, so a cached video comes back a video — with its
+    rights flags — rather than an image that quietly lost them. An untagged
+    (older) payload is an image.
+    """
+    return [parse_media_result(d) for d in items]

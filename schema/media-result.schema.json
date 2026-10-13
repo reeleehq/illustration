@@ -707,7 +707,8 @@
       "required": [
         "provider",
         "id",
-        "url"
+        "url",
+        "media_type"
       ],
       "title": "VideoResult",
       "type": "object"

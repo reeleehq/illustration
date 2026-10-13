@@ -197,6 +197,9 @@ def _media_result_schema() -> dict:
         "default": "image",
         "type": "string",
     }
+    # The tag must be present on the video branch, or an untagged payload
+    # matches both branches (and a Zod discriminated union needs the key).
+    defs["VideoResult"]["required"] = [*defs["VideoResult"]["required"], "media_type"]
     return {
         "title": "MediaResult",
         **schema,
