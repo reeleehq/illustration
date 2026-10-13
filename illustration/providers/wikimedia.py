@@ -72,7 +72,12 @@ def thumbnail_at_width(
     >>> thumbnail_at_width("https://example.org/a.jpg", 1280)
     'https://example.org/a.jpg'
     """
-    if not url or width < 1 or urlsplit(url).netloc != _UPLOAD_HOST or "/thumb/" not in url:
+    if (
+        not url
+        or width < 1
+        or urlsplit(url).netloc != _UPLOAD_HOST
+        or "/thumb/" not in url
+    ):
         return url
     if original_width is not None and width > original_width:
         return url
