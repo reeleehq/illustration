@@ -199,6 +199,7 @@ def _source_record(src: RetrievalSource) -> dict:
         "max_per_page": src.max_per_page,
         "min_per_page": src.min_per_page,
         "fixed_params": dict(src.fixed_params),
+        "api_user_agent": src.api_user_agent,
         "auth": _auth_record(src),
         "params": {
             name: _param_record(src.param_map.get(name)) for name in _CANONICAL_PARAMS

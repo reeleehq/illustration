@@ -98,6 +98,11 @@ class RetrievalSource(ABC):
     min_per_page: int = 1
     #: Constant native params sent on every request (e.g. an API mode/format).
     fixed_params: Mapping[str, Any] = MappingProxyType({})
+    #: Whether this API asks for (and its CORS preflight accepts) an
+    #: ``Api-User-Agent`` header. A browser cannot set ``User-Agent``, and an
+    #: extra non-simple header makes it preflight, which a source that does not
+    #: list the header refuses; so the TS twin sends it to flagged sources only.
+    api_user_agent: bool = False
     #: Canonical→native parameter spec (see :mod:`illustration.translation`).
     #: Immutable empty default so subclasses never share one mutable dict.
     param_map: Mapping[str, Any] = MappingProxyType({})

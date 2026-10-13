@@ -101,6 +101,16 @@ describe('request building', () => {
     expect(headers.get('api-user-agent')).toBe('my-app/1.0 (me@example.org)');
     expect(headers.has('user-agent')).toBe(false);
   });
+
+  it('sends Api-User-Agent only to sources whose record asks for it (the others refuse the preflight)', () => {
+    const sent = (name: string) => requestHeaders(getSource(name), 'k', 'my-app/1.0').has('api-user-agent');
+    expect(sent('wikimedia')).toBe(true);
+    for (const name of ['openverse', 'pixabay', 'pexels']) expect(sent(name)).toBe(false);
+  });
+
+  it('asks Commons for CORS headers with origin=*, from the generated record', () => {
+    expect(getSource('wikimedia').record.fixed_params.origin).toBe('*');
+  });
 });
 
 describe('licenseAllowlist', () => {

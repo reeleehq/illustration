@@ -102,15 +102,29 @@ def image_for_result(
     result: ImageResult,
     *,
     field: str = DFLT_IMAGE_FIELD,
+    width: "int | None" = None,
     timeout: "int | float" = HTTP_TIMEOUT,
     session: Any = None,
 ):
     """Fetch the best image for ``result``: the chosen ``field``, then ``url``.
 
-    Returns a PIL image, or ``None`` if neither URL is fetchable/decodable.
+    ``width`` asks for a right-sized render of a Wikimedia Commons thumbnail
+    (e.g. ``WIKIMEDIA_FETCH_WIDTH``) instead of the 320 px one; other URLs are
+    unaffected, and if the resized URL cannot be fetched the original one is
+    tried. Returns a PIL image, or ``None`` if nothing is fetchable/decodable.
     """
     url = getattr(result, field, None) or result.url
-    return fetch_image(url, timeout=timeout, session=session) if url else None
+    if not url:
+        return None
+    if width is not None:
+        from illustration.providers.wikimedia import thumbnail_at_width
+
+        sized = thumbnail_at_width(url, width, original_width=result.width)
+        if sized != url:
+            image = fetch_image(sized, timeout=timeout, session=session)
+            if image is not None:
+                return image
+    return fetch_image(url, timeout=timeout, session=session)
 
 
 def memoized_image_loader(

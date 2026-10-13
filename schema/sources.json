@@ -1,5 +1,6 @@
 [
   {
+    "api_user_agent": false,
     "auth": {
       "format": null,
       "kind": "none",
@@ -67,6 +68,7 @@
     "query_param": "q"
   },
   {
+    "api_user_agent": false,
     "auth": {
       "format": "{key}",
       "kind": "header",
@@ -126,6 +128,7 @@
     "query_param": "query"
   },
   {
+    "api_user_agent": false,
     "auth": {
       "format": "{key}",
       "kind": "query",
@@ -198,6 +201,7 @@
     "query_param": "q"
   },
   {
+    "api_user_agent": true,
     "auth": {
       "format": null,
       "kind": "none",
@@ -214,6 +218,7 @@
       "gsrnamespace": "6",
       "iiprop": "url|extmetadata|size|mime|user",
       "iiurlwidth": "320",
+      "origin": "*",
       "prop": "imageinfo"
     },
     "info": {

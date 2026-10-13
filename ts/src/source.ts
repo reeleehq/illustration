@@ -113,7 +113,11 @@ export interface SearchSourceOptions {
   /** The transport seam. A relay is a `fetch` that rewrites the URL. */
   readonly fetch?: typeof globalThis.fetch;
   readonly signal?: AbortSignal;
-  /** Sent as `Api-User-Agent` (a browser cannot set `User-Agent`; Wikimedia honours this one). */
+  /**
+   * Sent as `Api-User-Agent` (a browser cannot set `User-Agent`; Wikimedia honours this one),
+   * and only to sources whose record sets `api_user_agent`: the header is non-simple, so a
+   * browser preflights it, and Openverse and Pixabay refuse that preflight.
+   */
   readonly userAgent?: string;
 }
 
@@ -197,8 +201,8 @@ export function requestUrl(
 
 export function requestHeaders(source: RetrievalSource, apiKey: string | null, userAgent?: string): Headers {
   const headers = new Headers({ Accept: 'application/json' });
-  if (userAgent) headers.set('Api-User-Agent', userAgent);
-  const { auth } = source.record;
+  const { auth, api_user_agent } = source.record;
+  if (userAgent && api_user_agent) headers.set('Api-User-Agent', userAgent);
   if (auth.kind === 'header' && apiKey && auth.name) {
     headers.set(auth.name, (auth.format ?? '{key}').replace('{key}', apiKey));
   }

@@ -6,6 +6,7 @@ import type { SourceRecord } from '../source-record';
 /** One record per source registered on the Python side, in registration order. */
 export const SOURCE_RECORDS: readonly SourceRecord[] = [
   {
+    "api_user_agent": false,
     "auth": {
       "format": null,
       "kind": "none",
@@ -73,6 +74,7 @@ export const SOURCE_RECORDS: readonly SourceRecord[] = [
     "query_param": "q"
   },
   {
+    "api_user_agent": false,
     "auth": {
       "format": "{key}",
       "kind": "header",
@@ -132,6 +134,7 @@ export const SOURCE_RECORDS: readonly SourceRecord[] = [
     "query_param": "query"
   },
   {
+    "api_user_agent": false,
     "auth": {
       "format": "{key}",
       "kind": "query",
@@ -204,6 +207,7 @@ export const SOURCE_RECORDS: readonly SourceRecord[] = [
     "query_param": "q"
   },
   {
+    "api_user_agent": true,
     "auth": {
       "format": null,
       "kind": "none",
@@ -220,6 +224,7 @@ export const SOURCE_RECORDS: readonly SourceRecord[] = [
       "gsrnamespace": "6",
       "iiprop": "url|extmetadata|size|mime|user",
       "iiurlwidth": "320",
+      "origin": "*",
       "prop": "imageinfo"
     },
     "info": {

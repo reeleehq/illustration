@@ -189,3 +189,23 @@ def test_default_min_per_page_leaves_small_n_alone(make_session):
     assert src.min_per_page == 1
     src.search("x", n=1)
     assert sess.calls[0]["params"]["page_size"] == 1
+
+
+def test_user_agent_follows_the_wikimedia_policy_shape(monkeypatch):
+    import re
+
+    from illustration.config import CONTACT_ENV_VAR, PROJECT_URL, user_agent
+
+    monkeypatch.delenv(CONTACT_ENV_VAR, raising=False)
+    # name/version (contact) library/version
+    assert re.fullmatch(r"illustration/\S+ \(.+\) python-requests/\S+", user_agent())
+    assert PROJECT_URL in user_agent()
+
+
+def test_user_agent_contact_argument_beats_env_var(monkeypatch):
+    from illustration.config import CONTACT_ENV_VAR, user_agent
+
+    monkeypatch.setenv(CONTACT_ENV_VAR, "env@example.org")
+    assert "env@example.org" in user_agent()
+    assert "arg@example.org" in user_agent(contact="arg@example.org")
+    assert "env@example.org" not in user_agent(contact="arg@example.org")
