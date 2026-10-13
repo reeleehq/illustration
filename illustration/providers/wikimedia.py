@@ -26,6 +26,7 @@ safe/license_type/color/content_type) — they degrade gracefully.
 from __future__ import annotations
 
 import unicodedata
+from urllib.parse import urlsplit
 
 import html
 import re
@@ -34,7 +35,7 @@ from typing import Any, Iterable, Mapping
 from illustration.base import RetrievalSource, SourceInfo
 from illustration.schema import ImageResult
 
-__all__ = ["WikimediaSource"]
+__all__ = ["WikimediaSource", "thumbnail_at_width"]
 
 _TAG_RE = re.compile(r"<[^>]+>")
 _HREF_RE = re.compile(r'href=["\']([^"\']+)["\']', re.IGNORECASE)
@@ -45,6 +46,39 @@ _THUMB_WIDTH = "320"  # px width requested for the generated thumbnail URL
 # distinction — so raising this cap means dropping `iiurlwidth` (and the
 # thumbnail URLs it produces), not asking the search API for more.
 _SCALED_IMAGE_LIMIT = 50
+
+
+_UPLOAD_HOST = "upload.wikimedia.org"
+# The last path segment of a thumbnail URL: `[lossy-][page1-]320px-Name.jpg`.
+_THUMB_SEGMENT_RE = re.compile(r"^((?:(?:lossy|lossless)-)?(?:page\d+-)?)\d+(px-.+)$")
+
+
+def thumbnail_at_width(
+    url: "str | None", width: int, *, original_width: "int | None" = None
+) -> "str | None":
+    """Rewrite a Commons thumbnail URL to render at ``width`` px.
+
+    Fetching the 15 MB original just to downscale it is the slow path, and
+    ``upload.wikimedia.org`` serves arbitrary widths of any thumbnail URL. Only
+    URLs already in ``/thumb/`` form on the upload host are touched (anything
+    else comes back unchanged), and a ``width`` above ``original_width`` is left
+    alone because the service answers 400 to an upscale.
+
+    >>> u = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/X.jpg/320px-X.jpg"
+    >>> thumbnail_at_width(u, 1280)
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/X.jpg/1280px-X.jpg'
+    >>> thumbnail_at_width(u, 1280, original_width=900) == u
+    True
+    >>> thumbnail_at_width("https://example.org/a.jpg", 1280)
+    'https://example.org/a.jpg'
+    """
+    if not url or width < 1 or urlsplit(url).netloc != _UPLOAD_HOST or "/thumb/" not in url:
+        return url
+    if original_width is not None and width > original_width:
+        return url
+    head, _, last = url.rpartition("/")
+    m = _THUMB_SEGMENT_RE.match(last)
+    return f"{head}/{m.group(1)}{width}{m.group(2)}" if m else url
 
 
 _CATEGORY_PREFIX = "category:"
@@ -118,6 +152,7 @@ class WikimediaSource(RetrievalSource):
     endpoint = "https://commons.wikimedia.org/w/api.php"
     query_param = "gsrsearch"
     max_per_page = _SCALED_IMAGE_LIMIT
+    api_user_agent = True  # Wikimedia asks for it, and allows it in preflights
     fixed_params = {
         "action": "query",
         "format": "json",
@@ -132,6 +167,10 @@ class WikimediaSource(RetrievalSource):
         "prop": "imageinfo",
         "iiprop": "url|extmetadata|size|mime|user",
         "iiurlwidth": _THUMB_WIDTH,  # produces a thumbnail URL
+        # MediaWiki sends CORS headers only when the request is marked as
+        # anonymous cross-origin by `origin=*`. Harmless server-side, and the
+        # TS twin (a browser) reads this same record, so it needs it (#44).
+        "origin": "*",
     }
     # param_map left empty: Commons exposes no canonical search-time filters here.
     info = SourceInfo(

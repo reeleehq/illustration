@@ -23,7 +23,7 @@ const stock = await search('harbour', {
 for (const h of hits) console.log(h.url, h.license, h.attribution, h.cacheable);
 ```
 
-All four providers answer browser requests directly (CORS `*`, verified 2026-09-25). The transport is one option, `fetch`, so a server relay is a `fetch` that rewrites the URL.
+All four providers answer browser requests directly, with two things to know. **Commons sends CORS headers only when the request carries `origin=*`**, which the generated source record adds for you; a curl without it reads green and a browser is blocked. And the table of `*` origins is for *simple* requests: the `userAgent` option sends a non-simple `Api-User-Agent` header, which makes a browser preflight, and the preflight allow-lists are tighter (Openverse's does not list `api-user-agent`; Pixabay answers `OPTIONS` with 405). So `userAgent` is sent only to sources whose record sets `api_user_agent` (today, Wikimedia). The transport is one option, `fetch`, so a server relay is a `fetch` that rewrites the URL.
 
 ## What a hit carries
 

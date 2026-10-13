@@ -203,3 +203,41 @@ def test_custom_wording_keeps_its_words_and_gains_the_licence(make_session, raw,
 
 def test_no_known_licence_leaves_the_wording_alone(make_session):
     assert _hit(make_session, "Photo: EliziR", licence=None).attribution == "Photo: EliziR"
+
+
+def test_origin_star_is_sent_so_a_browser_gets_cors_headers(make_session, wikimedia_payload):
+    sess = make_session({1: wikimedia_payload})
+    WikimediaSource(session=sess).search("harbour", n=5)
+    assert sess.calls[0]["params"]["origin"] == "*"
+
+
+@pytest.mark.parametrize(
+    "segment, expected",
+    [
+        ("320px-X.jpg", "1280px-X.jpg"),
+        ("320px-X.svg.png", "1280px-X.svg.png"),
+        ("page1-320px-X.pdf.jpg", "page1-1280px-X.pdf.jpg"),
+    ],
+)
+def test_thumbnail_at_width_handles_each_thumbnail_spelling(segment, expected):
+    from illustration.providers.wikimedia import thumbnail_at_width
+
+    base = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/X"
+    assert thumbnail_at_width(f"{base}/{segment}", 1280) == f"{base}/{expected}"
+
+
+def test_thumbnail_at_width_leaves_an_original_url_alone():
+    from illustration.providers.wikimedia import thumbnail_at_width
+
+    url = "https://upload.wikimedia.org/wikipedia/commons/a/ab/X.jpg"
+    assert thumbnail_at_width(url, 1280) == url
+
+
+def test_thumbnail_at_width_handles_tiff_and_ignores_a_nonpositive_width():
+    from illustration.providers.wikimedia import thumbnail_at_width
+
+    base = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/X.tif"
+    assert thumbnail_at_width(f"{base}/lossy-page1-320px-X.tif.jpg", 1280) == (
+        f"{base}/lossy-page1-1280px-X.tif.jpg"
+    )
+    assert thumbnail_at_width(f"{base}/320px-X.tif.jpg", 0) == f"{base}/320px-X.tif.jpg"

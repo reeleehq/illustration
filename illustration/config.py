@@ -30,6 +30,9 @@ __all__ = [
     "cache_dir",
     "package_version",
     "user_agent",
+    "CONTACT_ENV_VAR",
+    "PROJECT_URL",
+    "WIKIMEDIA_FETCH_WIDTH",
     "DFLT_DEDUPE",
     "DFLT_DEDUPE_STRATEGY",
     "DFLT_N",
@@ -41,6 +44,19 @@ __all__ = [
 ]
 
 # --- Defaults (no magic numbers anywhere else) ------------------------------
+
+#: Where this project lives; the contact URL in the default User-Agent.
+PROJECT_URL = "https://github.com/reeleehq/illustration"
+
+#: Environment variable holding an operator's own contact (an email or URL) for
+#: the User-Agent. Wikimedia's policy asks every client for a way to reach its
+#: operator, and throttles clients that give none; set this in deployments.
+#: Note the User-Agent is shared, so every provider sees this contact too.
+CONTACT_ENV_VAR = "ILLUSTRATION_CONTACT"
+
+#: Width (px) of the Wikimedia thumbnail bucket used when fetching bytes for
+#: real work. 1280 and 1024 are reliable buckets; 1600 answers 400 for many files.
+WIKIMEDIA_FETCH_WIDTH = 1280
 
 #: Default number of results requested *per source*.
 DFLT_N = 10
@@ -146,10 +162,33 @@ def package_version() -> str:
         return "0+unknown"
 
 
-def user_agent() -> str:
-    """A descriptive User-Agent string (some providers throttle default UAs).
+def user_agent(*, contact: "str | None" = None) -> str:
+    """A policy-compliant User-Agent: ``name/version (contact) library/version``.
+
+    That is the shape Wikimedia's User-Agent policy documents, and
+    ``upload.wikimedia.org`` throttles anything vaguer, in a way that looks
+    exactly like a rate limit. The contact is ``contact``, else the
+    :data:`CONTACT_ENV_VAR` environment variable (an operator's own email or
+    URL), else the project URL.
 
     >>> user_agent().startswith('illustration/')
     True
+    >>> user_agent(contact='ops@example.org')       # doctest: +ELLIPSIS
+    'illustration/... (https://github.com/reeleehq/illustration; ops@example.org) ...'
     """
-    return f"illustration/{package_version()} (+https://github.com/thorwhalen/illustration)"
+    operator = contact or os.environ.get(CONTACT_ENV_VAR)
+    # A control character (a stray newline in an env var) makes `requests`
+    # refuse the header, which would fail every provider and every image fetch.
+    operator = " ".join(operator.split()) if operator else operator
+    contacts = "; ".join(filter(None, (PROJECT_URL, operator)))
+    return f"illustration/{package_version()} ({contacts}) {_http_library_token()}"
+
+
+def _http_library_token() -> str:
+    """``python-requests/<version>``, the library token the policy asks for."""
+    try:
+        import requests
+
+        return f"python-requests/{requests.__version__}"
+    except ImportError:  # requests is lazy and optional at import time
+        return "python-urllib"

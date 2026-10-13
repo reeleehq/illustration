@@ -44,6 +44,8 @@ export interface SourceRecord {
   readonly max_per_page: number;
   readonly min_per_page: number;
   readonly fixed_params: Readonly<Record<string, unknown>>;
+  /** Whether the API asks for, and its CORS preflight accepts, an `Api-User-Agent` header. */
+  readonly api_user_agent?: boolean;
   readonly auth: AuthRecord;
   /** Keyed by canonical parameter name; `null` = explicitly unsupported (degrades). */
   readonly params: Readonly<Record<string, ParamRecord | null>>;
