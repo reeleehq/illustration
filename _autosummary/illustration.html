@@ -141,8 +141,8 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#illustration.Grade"><code class="docutils literal notranslate"><span class="pre">Grade</span></code></a></li>
 <li><a class="reference internal" href="#illustration.IllustrationError"><code class="docutils literal notranslate"><span class="pre">IllustrationError</span></code></a></li>
 <li><a class="reference internal" href="#illustration.ImageResult"><code class="docutils literal notranslate"><span class="pre">ImageResult</span></code></a><ul>
+<li><a class="reference internal" href="#illustration.ImageResult.media_type"><code class="docutils literal notranslate"><span class="pre">ImageResult.media_type</span></code></a></li>
 <li><a class="reference internal" href="#illustration.ImageResult.model_config"><code class="docutils literal notranslate"><span class="pre">ImageResult.model_config</span></code></a></li>
-<li><a class="reference internal" href="#illustration.ImageResult.to_search_hit"><code class="docutils literal notranslate"><span class="pre">ImageResult.to_search_hit()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#illustration.InspectReport"><code class="docutils literal notranslate"><span class="pre">InspectReport</span></code></a><ul>
@@ -151,6 +151,11 @@ data-aria-dark="Switch to auto color mode">
 </li>
 <li><a class="reference internal" href="#illustration.IterationRecord"><code class="docutils literal notranslate"><span class="pre">IterationRecord</span></code></a><ul>
 <li><a class="reference internal" href="#illustration.IterationRecord.model_config"><code class="docutils literal notranslate"><span class="pre">IterationRecord.model_config</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#illustration.MediaResult"><code class="docutils literal notranslate"><span class="pre">MediaResult</span></code></a><ul>
+<li><a class="reference internal" href="#illustration.MediaResult.model_config"><code class="docutils literal notranslate"><span class="pre">MediaResult.model_config</span></code></a></li>
+<li><a class="reference internal" href="#illustration.MediaResult.to_search_hit"><code class="docutils literal notranslate"><span class="pre">MediaResult.to_search_hit()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#illustration.MissingCredentialError"><code class="docutils literal notranslate"><span class="pre">MissingCredentialError</span></code></a></li>
@@ -164,6 +169,10 @@ data-aria-dark="Switch to auto color mode">
 </li>
 <li><a class="reference internal" href="#illustration.ProviderError"><code class="docutils literal notranslate"><span class="pre">ProviderError</span></code></a></li>
 <li><a class="reference internal" href="#illustration.RateLimitError"><code class="docutils literal notranslate"><span class="pre">RateLimitError</span></code></a></li>
+<li><a class="reference internal" href="#illustration.Rendition"><code class="docutils literal notranslate"><span class="pre">Rendition</span></code></a><ul>
+<li><a class="reference internal" href="#illustration.Rendition.model_config"><code class="docutils literal notranslate"><span class="pre">Rendition.model_config</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#illustration.RerankDependencyError"><code class="docutils literal notranslate"><span class="pre">RerankDependencyError</span></code></a></li>
 <li><a class="reference internal" href="#illustration.RetrievalSource"><code class="docutils literal notranslate"><span class="pre">RetrievalSource</span></code></a><ul>
 <li><a class="reference internal" href="#illustration.RetrievalSource.api_user_agent"><code class="docutils literal notranslate"><span class="pre">RetrievalSource.api_user_agent</span></code></a></li>
@@ -206,7 +215,15 @@ data-aria-dark="Switch to auto color mode">
 </li>
 <li><a class="reference internal" href="#illustration.SourceInfo"><code class="docutils literal notranslate"><span class="pre">SourceInfo</span></code></a></li>
 <li><a class="reference internal" href="#illustration.SourcesView"><code class="docutils literal notranslate"><span class="pre">SourcesView</span></code></a></li>
+<li><a class="reference internal" href="#illustration.TimeSpan"><code class="docutils literal notranslate"><span class="pre">TimeSpan</span></code></a><ul>
+<li><a class="reference internal" href="#illustration.TimeSpan.model_config"><code class="docutils literal notranslate"><span class="pre">TimeSpan.model_config</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#illustration.UnknownSourceError"><code class="docutils literal notranslate"><span class="pre">UnknownSourceError</span></code></a></li>
+<li><a class="reference internal" href="#illustration.VideoResult"><code class="docutils literal notranslate"><span class="pre">VideoResult</span></code></a><ul>
+<li><a class="reference internal" href="#illustration.VideoResult.model_config"><code class="docutils literal notranslate"><span class="pre">VideoResult.model_config</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#illustration.blur_check"><code class="docutils literal notranslate"><span class="pre">blur_check()</span></code></a></li>
 <li><a class="reference internal" href="#illustration.brightness_check"><code class="docutils literal notranslate"><span class="pre">brightness_check()</span></code></a></li>
 <li><a class="reference internal" href="#illustration.cache_dir"><code class="docutils literal notranslate"><span class="pre">cache_dir()</span></code></a></li>
@@ -239,6 +256,7 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#illustration.normalize_license"><code class="docutils literal notranslate"><span class="pre">normalize_license()</span></code></a></li>
 <li><a class="reference internal" href="#illustration.nsfw_check"><code class="docutils literal notranslate"><span class="pre">nsfw_check()</span></code></a></li>
 <li><a class="reference internal" href="#illustration.package_version"><code class="docutils literal notranslate"><span class="pre">package_version()</span></code></a></li>
+<li><a class="reference internal" href="#illustration.parse_media_result"><code class="docutils literal notranslate"><span class="pre">parse_media_result()</span></code></a></li>
 <li><a class="reference internal" href="#illustration.persist_sequence"><code class="docutils literal notranslate"><span class="pre">persist_sequence()</span></code></a></li>
 <li><a class="reference internal" href="#illustration.phash"><code class="docutils literal notranslate"><span class="pre">phash()</span></code></a></li>
 <li><a class="reference internal" href="#illustration.phash_signature"><code class="docutils literal notranslate"><span class="pre">phash_signature()</span></code></a></li>
@@ -247,6 +265,7 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#illustration.refine_query"><code class="docutils literal notranslate"><span class="pre">refine_query()</span></code></a></li>
 <li><a class="reference internal" href="#illustration.register_source"><code class="docutils literal notranslate"><span class="pre">register_source()</span></code></a></li>
 <li><a class="reference internal" href="#illustration.render_sequence_video"><code class="docutils literal notranslate"><span class="pre">render_sequence_video()</span></code></a></li>
+<li><a class="reference internal" href="#illustration.require_image"><code class="docutils literal notranslate"><span class="pre">require_image()</span></code></a></li>
 <li><a class="reference internal" href="#illustration.requires_credentials"><code class="docutils literal notranslate"><span class="pre">requires_credentials()</span></code></a></li>
 <li><a class="reference internal" href="#illustration.rerank"><code class="docutils literal notranslate"><span class="pre">rerank()</span></code></a></li>
 <li><a class="reference internal" href="#illustration.resolve_api_key"><code class="docutils literal notranslate"><span class="pre">resolve_api_key()</span></code></a></li>
@@ -314,6 +333,12 @@ so an identical second call is free.</p>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#illustration.search" title="illustration.search"><code class="xref py py-obj docutils literal notranslate"><span class="pre">search</span></code></a>(query, *[, n, source, orientation, ...])</p></td>
 <td><p>Search for up to <code class="docutils literal notranslate"><span class="pre">n</span></code> images matching <code class="docutils literal notranslate"><span class="pre">query</span></code> from one or more sources.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#illustration.parse_media_result" title="illustration.parse_media_result"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_media_result</span></code></a>(obj)</p></td>
+<td><p>Validate a dict (or pass through a model) into the right result type.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#illustration.require_image" title="illustration.require_image"><code class="xref py py-obj docutils literal notranslate"><span class="pre">require_image</span></code></a>(obj, *[, where, strict])</p></td>
+<td><p>Return <code class="docutils literal notranslate"><span class="pre">obj</span></code> if it is an <a class="reference internal" href="#illustration.ImageResult" title="illustration.ImageResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImageResult</span></code></a>, else raise <code class="docutils literal notranslate"><span class="pre">TypeError</span></code>.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#illustration.license_allowlist" title="illustration.license_allowlist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">license_allowlist</span></code></a>(results, *[, allow])</p></td>
 <td><p>Keep only results whose license is on the allowlist (R3's license gate).</p></td>
@@ -483,6 +508,18 @@ so an identical second call is free.</p>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#illustration.ImageResult" title="illustration.ImageResult"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ImageResult</span></code></a>(**data)</p></td>
 <td><p>One normalized image hit from any provider.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#illustration.VideoResult" title="illustration.VideoResult"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VideoResult</span></code></a>(**data)</p></td>
+<td><p>One normalized video hit from any provider.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#illustration.MediaResult" title="illustration.MediaResult"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MediaResult</span></code></a>(**data)</p></td>
+<td><p>What every normalized hit from any provider carries, whatever the media.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#illustration.Rendition" title="illustration.Rendition"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Rendition</span></code></a>(**data)</p></td>
+<td><p>One playable encoding of a video, as a provider offers it.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#illustration.TimeSpan" title="illustration.TimeSpan"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TimeSpan</span></code></a>(**data)</p></td>
+<td><p>A span of a media file, in seconds.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#illustration.RetrievalSource" title="illustration.RetrievalSource"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RetrievalSource</span></code></a>(*[, session])</p></td>
 <td><p>Abstract base for a pure image-search provider.</p></td>
@@ -740,23 +777,22 @@ so the failure is actionable (e.g. <code class="docutils literal notranslate"><s
 <dl class="py class">
 <dt class="sig sig-object py" id="illustration.ImageResult">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">illustration.</span></span><span class="sig-name descname"><span class="pre">ImageResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/schema.html#ImageResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.ImageResult" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<dd><p>Bases: <a class="reference internal" href="illustration.schema.html#illustration.schema.MediaResult" title="illustration.schema.MediaResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">MediaResult</span></code></a></p>
 <p>One normalized image hit from any provider.</p>
 <p>The first eight fields plus <code class="docutils literal notranslate"><span class="pre">cacheable</span></code> are the cross-provider minimum the
 design guarantees; the rest are populated when a provider supplies them.</p>
 <dl class="field-list simple">
 </dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="illustration.ImageResult.media_type">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">media_type</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.15)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'image'</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#illustration.ImageResult.media_type" title="Link to this definition">#</a></dt>
+<dd><p>Always <code class="docutils literal notranslate"><span class="pre">&quot;image&quot;</span></code>; deliberately not a serialized field (see <a class="reference internal" href="#illustration.MediaResult" title="illustration.MediaResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">MediaResult</span></code></a>).</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="illustration.ImageResult.model_config">
 <span class="sig-name descname"><span class="pre">model_config</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.15)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></span><a class="headerlink" href="#illustration.ImageResult.model_config" title="Link to this definition">#</a></dt>
 <dd><p>Configuration for the model, should be a dictionary conforming to [<code class="code docutils literal notranslate"><span class="pre">ConfigDict</span></code>][pydantic.config.ConfigDict].</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="illustration.ImageResult.to_search_hit">
-<span class="sig-name descname"><span class="pre">to_search_hit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/schema.html#ImageResult.to_search_hit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.ImageResult.to_search_hit" title="Link to this definition">#</a></dt>
-<dd><p>Adapt to an <code class="docutils literal notranslate"><span class="pre">ir.SearchHit</span></code> for Layer-2 cross-provider fusion.</p>
-<p>Imported lazily so <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">illustration</span></code> never requires <code class="docutils literal notranslate"><span class="pre">ir</span></code>.</p>
 </dd></dl>
 
 </dd></dl>
@@ -787,6 +823,38 @@ design guarantees; the rest are populated when a provider supplies them.</p>
 <dt class="sig sig-object py" id="illustration.IterationRecord.model_config">
 <span class="sig-name descname"><span class="pre">model_config</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.15)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></span><a class="headerlink" href="#illustration.IterationRecord.model_config" title="Link to this definition">#</a></dt>
 <dd><p>Configuration for the model, should be a dictionary conforming to [<code class="code docutils literal notranslate"><span class="pre">ConfigDict</span></code>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="illustration.MediaResult">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">illustration.</span></span><span class="sig-name descname"><span class="pre">MediaResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/schema.html#MediaResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.MediaResult" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>What every normalized hit from any provider carries, whatever the media.</p>
+<p>A base, not a result: instantiate <a class="reference internal" href="#illustration.ImageResult" title="illustration.ImageResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImageResult</span></code></a> or
+<a class="reference internal" href="#illustration.VideoResult" title="illustration.VideoResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">VideoResult</span></code></a>. Neither subclasses the other, on purpose — code typed
+on images (the <code class="docutils literal notranslate"><span class="pre">burns</span></code> render hook, <code class="docutils literal notranslate"><span class="pre">sequence</span></code>’s pHash dedupe) must not
+silently accept a video; see <a class="reference internal" href="#illustration.require_image" title="illustration.require_image"><code class="xref py py-func docutils literal notranslate"><span class="pre">require_image()</span></code></a>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">media_type</span></code> tells them apart: <code class="docutils literal notranslate"><span class="pre">&quot;image&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;video&quot;</span></code>. It is a real
+serialized field on <a class="reference internal" href="#illustration.VideoResult" title="illustration.VideoResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">VideoResult</span></code></a> only. <a class="reference internal" href="#illustration.ImageResult" title="illustration.ImageResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImageResult</span></code></a> reports
+<code class="docutils literal notranslate"><span class="pre">&quot;image&quot;</span></code> through a read-only property and does not serialize it, so the
+image contract (dumps, JSON Schema, stored selections, parity fixtures) is
+byte-for-byte what it was; a payload with no tag <em>is</em> an image
+(<a class="reference internal" href="#illustration.parse_media_result" title="illustration.parse_media_result"><code class="xref py py-func docutils literal notranslate"><span class="pre">parse_media_result()</span></code></a>).</p>
+<dl class="field-list simple">
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illustration.MediaResult.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.15)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></span><a class="headerlink" href="#illustration.MediaResult.model_config" title="Link to this definition">#</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<code class="code docutils literal notranslate"><span class="pre">ConfigDict</span></code>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="illustration.MediaResult.to_search_hit">
+<span class="sig-name descname"><span class="pre">to_search_hit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/schema.html#MediaResult.to_search_hit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.MediaResult.to_search_hit" title="Link to this definition">#</a></dt>
+<dd><p>Adapt to an <code class="docutils literal notranslate"><span class="pre">ir.SearchHit</span></code> for Layer-2 cross-provider fusion.</p>
+<p>Imported lazily so <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">illustration</span></code> never requires <code class="docutils literal notranslate"><span class="pre">ir</span></code>.</p>
 </dd></dl>
 
 </dd></dl>
@@ -847,6 +915,21 @@ design guarantees; the rest are populated when a provider supplies them.</p>
 <p>A provider returned HTTP 429 (rate limit exceeded).</p>
 <dl class="field-list simple">
 </dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="illustration.Rendition">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">illustration.</span></span><span class="sig-name descname"><span class="pre">Rendition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/schema.html#Rendition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.Rendition" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>One playable encoding of a video, as a provider offers it.</p>
+<dl class="field-list simple">
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illustration.Rendition.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.15)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></span><a class="headerlink" href="#illustration.Rendition.model_config" title="Link to this definition">#</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<code class="code docutils literal notranslate"><span class="pre">ConfigDict</span></code>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py exception">
@@ -1107,6 +1190,23 @@ for a source whose name collides with a <code class="docutils literal notranslat
 <code class="docutils literal notranslate"><span class="pre">keys</span></code>, <code class="docutils literal notranslate"><span class="pre">values</span></code>, …).</p>
 </dd></dl>
 
+<dl class="py class">
+<dt class="sig sig-object py" id="illustration.TimeSpan">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">illustration.</span></span><span class="sig-name descname"><span class="pre">TimeSpan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/schema.html#TimeSpan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.TimeSpan" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>A span of a media file, in seconds.</p>
+<p>Maps onto an OTIO <code class="docutils literal notranslate"><span class="pre">TimeRange</span></code>, a schema.org <code class="docutils literal notranslate"><span class="pre">Clip</span></code> and a media-fragment
+<code class="docutils literal notranslate"><span class="pre">#t=start,end</span></code>.</p>
+<dl class="field-list simple">
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illustration.TimeSpan.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.15)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></span><a class="headerlink" href="#illustration.TimeSpan.model_config" title="Link to this definition">#</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<code class="code docutils literal notranslate"><span class="pre">ConfigDict</span></code>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="py exception">
 <dt class="sig sig-object py" id="illustration.UnknownSourceError">
 <span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">illustration.</span></span><span class="sig-name descname"><span class="pre">UnknownSourceError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">known</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/errors.html#UnknownSourceError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.UnknownSourceError" title="Link to this definition">#</a></dt>
@@ -1114,6 +1214,26 @@ for a source whose name collides with a <code class="docutils literal notranslat
 <p>A source name was requested that is not in the registry.</p>
 <dl class="field-list simple">
 </dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="illustration.VideoResult">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">illustration.</span></span><span class="sig-name descname"><span class="pre">VideoResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/schema.html#VideoResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.VideoResult" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="illustration.schema.html#illustration.schema.MediaResult" title="illustration.schema.MediaResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">MediaResult</span></code></a></p>
+<p>One normalized video hit from any provider.</p>
+<p>Carries the <a class="reference internal" href="#illustration.MediaResult" title="illustration.MediaResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">MediaResult</span></code></a> fields plus what is specific to footage.
+<code class="docutils literal notranslate"><span class="pre">url</span></code> stays the best <em>progressive</em> rendition at search time, so a reader
+of <code class="docutils literal notranslate"><span class="pre">.url</span></code> keeps working; <code class="docutils literal notranslate"><span class="pre">renditions</span></code> lists every encoding on offer.</p>
+<p>The four <code class="xref py py-data docutils literal notranslate"><span class="pre">VIDEO_RIGHTS_FIELDS</span></code> are optional; <code class="docutils literal notranslate"><span class="pre">None</span></code> means *not
+recorded*.</p>
+<dl class="field-list simple">
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illustration.VideoResult.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.15)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></span><a class="headerlink" href="#illustration.VideoResult.model_config" title="Link to this definition">#</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<code class="code docutils literal notranslate"><span class="pre">ConfigDict</span></code>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py function">
@@ -1178,7 +1298,7 @@ name, and it should already have been dropped by <code class="docutils literal n
 that matters to the caller.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference internal" href="illustration.schema.html#illustration.schema.ImageResult" title="illustration.schema.ImageResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImageResult</span></code></a>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference internal" href="illustration.schema.html#illustration.schema.MediaResult" title="illustration.schema.MediaResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">MediaResult</span></code></a>]</span></p>
 </dd>
 </dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">ImageResult</span><span class="p">(</span><span class="n">provider</span><span class="o">=</span><span class="s2">"p"</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s2">"1"</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="s2">"u"</span><span class="p">,</span> <span class="n">license</span><span class="o">=</span><span class="s2">"by-sa"</span><span class="p">,</span> <span class="n">attribution</span><span class="o">=</span><span class="s2">"Jane Doe"</span><span class="p">)</span>
@@ -1589,7 +1709,7 @@ and without ever dropping an <code class="docutils literal notranslate"><span cl
 <code class="docutils literal notranslate"><span class="pre">license</span></code> are dropped (unknown == not allowed).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference internal" href="illustration.schema.html#illustration.schema.ImageResult" title="illustration.schema.ImageResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImageResult</span></code></a>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference internal" href="illustration.schema.html#illustration.schema.MediaResult" title="illustration.schema.MediaResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">MediaResult</span></code></a>]</span></p>
 </dd>
 </dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">ImageResult</span><span class="p">(</span><span class="n">provider</span><span class="o">=</span><span class="s2">"p"</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s2">"1"</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="s2">"u"</span><span class="p">,</span> <span class="n">license</span><span class="o">=</span><span class="s2">"cc0"</span><span class="p">)</span>
@@ -1739,6 +1859,23 @@ fetched or classified is dropped, never passed.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="illustration.parse_media_result">
+<span class="sig-prename descclassname"><span class="pre">illustration.</span></span><span class="sig-name descname"><span class="pre">parse_media_result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/schema.html#parse_media_result"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.parse_media_result" title="Link to this definition">#</a></dt>
+<dd><p>Validate a dict (or pass through a model) into the right result type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="illustration.schema.html#illustration.schema.ImageResult" title="illustration.schema.ImageResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImageResult</span></code></a> | <a class="reference internal" href="illustration.schema.html#illustration.schema.VideoResult" title="illustration.schema.VideoResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">VideoResult</span></code></a></span></p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">parse_media_result</span><span class="p">({</span><span class="s2">"provider"</span><span class="p">:</span> <span class="s2">"p"</span><span class="p">,</span> <span class="s2">"id"</span><span class="p">:</span> <span class="s2">"1"</span><span class="p">,</span> <span class="s2">"url"</span><span class="p">:</span> <span class="s2">"u"</span><span class="p">})</span><span class="o">.</span><span class="n">media_type</span>
+</span><span data-line="2"><span class="go">'image'</span>
+</span><span data-line="3"><span class="gp">&gt;&gt;&gt; </span><span class="n">parse_media_result</span><span class="p">({</span><span class="s2">"provider"</span><span class="p">:</span> <span class="s2">"p"</span><span class="p">,</span> <span class="s2">"id"</span><span class="p">:</span> <span class="s2">"1"</span><span class="p">,</span> <span class="s2">"url"</span><span class="p">:</span> <span class="s2">"u"</span><span class="p">,</span> <span class="s2">"media_type"</span><span class="p">:</span> <span class="s2">"video"</span><span class="p">})</span><span class="o">.</span><span class="n">media_type</span>
+</span><span data-line="4"><span class="go">'video'</span>
+</span></pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="illustration.persist_sequence">
 <span class="sig-prename descclassname"><span class="pre">illustration.</span></span><span class="sig-name descname"><span class="pre">persist_sequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">store</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'agent:illustration-curate'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'infer'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">at_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/persistence.html#persist_sequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.persist_sequence" title="Link to this definition">#</a></dt>
 <dd><p>Persist a <a class="reference internal" href="illustration.sequence.html#illustration.sequence.SequenceResult" title="illustration.sequence.SequenceResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">SequenceResult</span></code></a> as lacing annotations.</p>
@@ -1860,6 +1997,29 @@ Returns whatever <code class="docutils literal notranslate"><span class="pre">re
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="illustration.require_image">
+<span class="sig-prename descclassname"><span class="pre">illustration.</span></span><span class="sig-name descname"><span class="pre">require_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">where</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'this</span> <span class="pre">function'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/schema.html#require_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.require_image" title="Link to this definition">#</a></dt>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">obj</span></code> if it is an <a class="reference internal" href="#illustration.ImageResult" title="illustration.ImageResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImageResult</span></code></a>, else raise <code class="docutils literal notranslate"><span class="pre">TypeError</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">strict=False</span></code> refuses only other <a class="reference internal" href="#illustration.MediaResult" title="illustration.MediaResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">MediaResult</span></code></a> kinds (a video) and
+lets a duck-typed stand-in through, for call sites that always took those.</p>
+<p>The guard for image-only code paths. A <a class="reference internal" href="#illustration.VideoResult" title="illustration.VideoResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">VideoResult</span></code></a> is not an
+<a class="reference internal" href="#illustration.ImageResult" title="illustration.ImageResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImageResult</span></code></a> by design, but duck-typed code that reads <code class="docutils literal notranslate"><span class="pre">.url</span></code> would
+take one without complaint and fetch a movie as a picture; this makes that
+loud.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="illustration.schema.html#illustration.schema.ImageResult" title="illustration.schema.ImageResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImageResult</span></code></a></span></p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">require_image</span><span class="p">(</span><span class="n">VideoResult</span><span class="p">(</span><span class="n">provider</span><span class="o">=</span><span class="s2">"p"</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s2">"1"</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="s2">"u"</span><span class="p">),</span> <span class="n">where</span><span class="o">=</span><span class="s2">"render"</span><span class="p">)</span>
+</span><span data-line="2"><span class="gt">Traceback (most recent call last):</span>
+</span><span data-line="3"><span class="c">...</span>
+</span><span data-line="4"><span class="gr">TypeError</span>: <span class="n">render expects an ImageResult, got VideoResult</span>
+</span></pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -2253,7 +2413,7 @@ through). Bindings nest: an inner block overlays the outer.</p>
     </div>
   </div>
 </footer>
-      <script src="../_static/documentation_options.js?v=056c92e6"></script>
+      <script src="../_static/documentation_options.js?v=a11416ff"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>

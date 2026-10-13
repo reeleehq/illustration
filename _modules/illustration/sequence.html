@@ -186,7 +186,7 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="45">
 </span><span data-line="46"><span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
 </span><span data-line="47">
-</span><span data-line="48"><span class="kn">from</span><span class="w"> </span><span class="nn">illustration.schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageResult</span>
+</span><span data-line="48"><span class="kn">from</span><span class="w"> </span><span class="nn">illustration.schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageResult</span><span class="p">,</span> <span class="n">require_image</span>
 </span><span data-line="49">
 </span><span data-line="50"><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
 </span><span data-line="51">    <span class="s2">"select_sequence"</span><span class="p">,</span>
@@ -296,255 +296,258 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="144"><span class="sd">    sequence that spends four beats on them is the failure this guards. When</span>
 </span><span data-line="145"><span class="sd">    given, it replaces the pHash test entirely — it strictly subsumes it.</span>
 </span><span data-line="146"><span class="sd">    """</span>
-</span><span data-line="147">    <span class="n">rel_fn</span> <span class="o">=</span> <span class="n">relevance</span> <span class="k">if</span> <span class="n">relevance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">_default_relevance</span>
-</span><span data-line="148">    <span class="n">embed_fn</span> <span class="o">=</span> <span class="n">embed</span> <span class="k">if</span> <span class="n">embed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">_default_embed</span>
-</span><span data-line="149">    <span class="n">hash_fn</span> <span class="o">=</span> <span class="n">hasher</span> <span class="k">if</span> <span class="n">hasher</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">make_phash_hasher</span><span class="p">()</span>
-</span><span data-line="150">
-</span><span data-line="151">    <span class="n">selections</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BeatSelection</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span data-line="152">    <span class="n">notes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span data-line="153">    <span class="n">chosen_embs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span data-line="154">    <span class="n">chosen_hashes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span data-line="155">    <span class="n">chosen_signatures</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span data-line="156">    <span class="n">total</span> <span class="o">=</span> <span class="mf">0.0</span>
-</span><span data-line="157">
-</span><span data-line="158">    <span class="k">def</span><span class="w"> </span><span class="nf">is_repeat</span><span class="p">(</span><span class="n">sig_vec</span><span class="p">,</span> <span class="n">hash_value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span data-line="159"><span class="w">        </span><span class="sd">"""Has this picture already been used earlier in the sequence?</span>
+</span><span data-line="147">    <span class="k">for</span> <span class="n">candidates</span> <span class="ow">in</span> <span class="n">per_beat_candidates</span><span class="p">:</span>  <span class="c1"># before any fetch, hash or embed</span>
+</span><span data-line="148">        <span class="k">for</span> <span class="n">candidate</span> <span class="ow">in</span> <span class="n">candidates</span><span class="p">:</span>
+</span><span data-line="149">            <span class="n">require_image</span><span class="p">(</span><span class="n">candidate</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="s2">"select_sequence"</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span data-line="150">    <span class="n">rel_fn</span> <span class="o">=</span> <span class="n">relevance</span> <span class="k">if</span> <span class="n">relevance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">_default_relevance</span>
+</span><span data-line="151">    <span class="n">embed_fn</span> <span class="o">=</span> <span class="n">embed</span> <span class="k">if</span> <span class="n">embed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">_default_embed</span>
+</span><span data-line="152">    <span class="n">hash_fn</span> <span class="o">=</span> <span class="n">hasher</span> <span class="k">if</span> <span class="n">hasher</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">make_phash_hasher</span><span class="p">()</span>
+</span><span data-line="153">
+</span><span data-line="154">    <span class="n">selections</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BeatSelection</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="155">    <span class="n">notes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="156">    <span class="n">chosen_embs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="157">    <span class="n">chosen_hashes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="158">    <span class="n">chosen_signatures</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="159">    <span class="n">total</span> <span class="o">=</span> <span class="mf">0.0</span>
 </span><span data-line="160">
-</span><span data-line="161"><span class="sd">        With a ``signature`` that is a *subject* question — four engravings</span>
-</span><span data-line="162"><span class="sd">        after one portrait are one picture, and using a second of them is the</span>
-</span><span data-line="163"><span class="sd">        repetition a viewer actually notices. Without one it falls back to the</span>
-</span><span data-line="164"><span class="sd">        pHash raster test, which only catches a re-encode of the same file.</span>
-</span><span data-line="165"><span class="sd">        """</span>
-</span><span data-line="166">        <span class="k">if</span> <span class="n">signature</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="167">            <span class="k">if</span> <span class="n">sig_vec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="168">                <span class="k">return</span> <span class="kc">False</span>
-</span><span data-line="169">            <span class="k">return</span> <span class="nb">any</span><span class="p">(</span>
-</span><span data-line="170">                <span class="nb">float</span><span class="p">(</span><span class="n">sig_vec</span> <span class="o">@</span> <span class="n">chosen</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">signature</span><span class="o">.</span><span class="n">threshold</span>
-</span><span data-line="171">                <span class="k">for</span> <span class="n">chosen</span> <span class="ow">in</span> <span class="n">chosen_signatures</span>
-</span><span data-line="172">            <span class="p">)</span>
-</span><span data-line="173">        <span class="k">return</span> <span class="n">hash_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span>
-</span><span data-line="174">            <span class="n">ch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">hamming_distance</span><span class="p">(</span><span class="n">hash_value</span><span class="p">,</span> <span class="n">ch</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">phash_threshold</span>
-</span><span data-line="175">            <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">chosen_hashes</span>
-</span><span data-line="176">        <span class="p">)</span>
-</span><span data-line="177">
-</span><span data-line="178">    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">raw</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">per_beat_candidates</span><span class="p">):</span>
-</span><span data-line="179">        <span class="n">cands</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
-</span><span data-line="180">        <span class="k">if</span> <span class="n">shortlist</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">cands</span><span class="p">:</span>
-</span><span data-line="181">            <span class="n">cands</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">shortlist</span><span class="p">(</span><span class="n">cands</span><span class="p">))</span>
-</span><span data-line="182">        <span class="k">if</span> <span class="ow">not</span> <span class="n">cands</span><span class="p">:</span>
-</span><span data-line="183">            <span class="n">selections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BeatSelection</span><span class="p">(</span><span class="n">beat_index</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">chosen</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_candidates</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
-</span><span data-line="184">            <span class="n">notes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"beat </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: no candidates"</span><span class="p">)</span>
-</span><span data-line="185">            <span class="k">continue</span>
-</span><span data-line="186">
-</span><span data-line="187">        <span class="n">embs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">embed_fn</span><span class="p">(</span><span class="n">cands</span><span class="p">))</span>
-</span><span data-line="188">        <span class="n">hashes</span> <span class="o">=</span> <span class="p">(</span>
-</span><span data-line="189">            <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">cands</span><span class="p">)</span>
-</span><span data-line="190">            <span class="k">if</span> <span class="n">signature</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-</span><span data-line="191">            <span class="k">else</span> <span class="p">[</span><span class="n">hash_fn</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cands</span><span class="p">]</span>
-</span><span data-line="192">        <span class="p">)</span>
-</span><span data-line="193">        <span class="n">sig_vecs</span> <span class="o">=</span> <span class="p">(</span>
-</span><span data-line="194">            <span class="nb">list</span><span class="p">(</span><span class="n">signature</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">cands</span><span class="p">))</span>
-</span><span data-line="195">            <span class="k">if</span> <span class="n">signature</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-</span><span data-line="196">            <span class="k">else</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">cands</span><span class="p">)</span>
-</span><span data-line="197">        <span class="p">)</span>
-</span><span data-line="198">        <span class="n">prev_emb</span> <span class="o">=</span> <span class="n">chosen_embs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">chosen_embs</span> <span class="k">else</span> <span class="kc">None</span>
-</span><span data-line="199">
-</span><span data-line="200">        <span class="n">scored</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span data-line="201">        <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">sv</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">cands</span><span class="p">,</span> <span class="n">embs</span><span class="p">,</span> <span class="n">hashes</span><span class="p">,</span> <span class="n">sig_vecs</span><span class="p">):</span>
-</span><span data-line="202">            <span class="n">near_dup</span> <span class="o">=</span> <span class="n">is_repeat</span><span class="p">(</span><span class="n">sv</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
-</span><span data-line="203">            <span class="n">coh</span> <span class="o">=</span> <span class="n">_cosine</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">prev_emb</span><span class="p">)</span>
-</span><span data-line="204">            <span class="n">red</span> <span class="o">=</span> <span class="nb">max</span><span class="p">((</span><span class="n">_cosine</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">ce</span><span class="p">)</span> <span class="k">for</span> <span class="n">ce</span> <span class="ow">in</span> <span class="n">chosen_embs</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
-</span><span data-line="205">            <span class="n">j</span> <span class="o">=</span> <span class="n">rel_fn</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">+</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">coh</span> <span class="o">-</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">red</span>
-</span><span data-line="206">            <span class="n">scored</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-</span><span data-line="207">                <span class="p">{</span>
-</span><span data-line="208">                    <span class="s2">"j"</span><span class="p">:</span> <span class="n">j</span><span class="p">,</span>
-</span><span data-line="209">                    <span class="s2">"near_dup"</span><span class="p">:</span> <span class="n">near_dup</span><span class="p">,</span>
-</span><span data-line="210">                    <span class="s2">"c"</span><span class="p">:</span> <span class="n">c</span><span class="p">,</span>
-</span><span data-line="211">                    <span class="s2">"e"</span><span class="p">:</span> <span class="n">e</span><span class="p">,</span>
-</span><span data-line="212">                    <span class="s2">"h"</span><span class="p">:</span> <span class="n">h</span><span class="p">,</span>
-</span><span data-line="213">                    <span class="s2">"sv"</span><span class="p">:</span> <span class="n">sv</span><span class="p">,</span>
-</span><span data-line="214">                    <span class="s2">"coh"</span><span class="p">:</span> <span class="n">coh</span><span class="p">,</span>
-</span><span data-line="215">                    <span class="s2">"red"</span><span class="p">:</span> <span class="n">red</span><span class="p">,</span>
-</span><span data-line="216">                <span class="p">}</span>
-</span><span data-line="217">            <span class="p">)</span>
-</span><span data-line="218">
-</span><span data-line="219">        <span class="n">valid</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">scored</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">s</span><span class="p">[</span><span class="s2">"near_dup"</span><span class="p">]]</span>
-</span><span data-line="220">        <span class="n">pool</span> <span class="o">=</span> <span class="n">valid</span> <span class="k">if</span> <span class="n">valid</span> <span class="k">else</span> <span class="n">scored</span>
-</span><span data-line="221">        <span class="n">forced</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">valid</span>
-</span><span data-line="222">        <span class="n">best</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">pool</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="p">[</span><span class="s2">"j"</span><span class="p">])</span>
-</span><span data-line="223">        <span class="k">if</span> <span class="n">forced</span><span class="p">:</span>
-</span><span data-line="224">            <span class="n">notes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-</span><span data-line="225">                <span class="sa">f</span><span class="s2">"beat </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: every candidate near-duplicates an earlier beat; "</span>
-</span><span data-line="226">                <span class="s2">"relaxed the constraint and kept the best by objective"</span>
-</span><span data-line="227">            <span class="p">)</span>
-</span><span data-line="228">
-</span><span data-line="229">        <span class="n">selections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-</span><span data-line="230">            <span class="n">BeatSelection</span><span class="p">(</span>
-</span><span data-line="231">                <span class="n">beat_index</span><span class="o">=</span><span class="n">i</span><span class="p">,</span>
-</span><span data-line="232">                <span class="n">chosen</span><span class="o">=</span><span class="n">best</span><span class="p">[</span><span class="s2">"c"</span><span class="p">],</span>
-</span><span data-line="233">                <span class="n">relevance</span><span class="o">=</span><span class="n">rel_fn</span><span class="p">(</span><span class="n">best</span><span class="p">[</span><span class="s2">"c"</span><span class="p">]),</span>
-</span><span data-line="234">                <span class="n">coherence</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span><span class="n">best</span><span class="p">[</span><span class="s2">"coh"</span><span class="p">],</span> <span class="mi">4</span><span class="p">),</span>
-</span><span data-line="235">                <span class="n">redundancy</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span><span class="n">best</span><span class="p">[</span><span class="s2">"red"</span><span class="p">],</span> <span class="mi">4</span><span class="p">),</span>
-</span><span data-line="236">                <span class="n">forced_duplicate</span><span class="o">=</span><span class="n">forced</span><span class="p">,</span>
-</span><span data-line="237">                <span class="n">n_candidates</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">cands</span><span class="p">),</span>
-</span><span data-line="238">            <span class="p">)</span>
-</span><span data-line="239">        <span class="p">)</span>
-</span><span data-line="240">        <span class="n">chosen_embs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">best</span><span class="p">[</span><span class="s2">"e"</span><span class="p">])</span>
-</span><span data-line="241">        <span class="n">chosen_hashes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">best</span><span class="p">[</span><span class="s2">"h"</span><span class="p">])</span>
-</span><span data-line="242">        <span class="k">if</span> <span class="n">best</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"sv"</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="243">            <span class="n">chosen_signatures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">best</span><span class="p">[</span><span class="s2">"sv"</span><span class="p">])</span>
-</span><span data-line="244">        <span class="n">total</span> <span class="o">+=</span> <span class="n">best</span><span class="p">[</span><span class="s2">"j"</span><span class="p">]</span>
-</span><span data-line="245">
-</span><span data-line="246">    <span class="k">return</span> <span class="n">SequenceSelection</span><span class="p">(</span>
-</span><span data-line="247">        <span class="n">selections</span><span class="o">=</span><span class="n">selections</span><span class="p">,</span> <span class="n">objective</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span><span class="n">total</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">notes</span><span class="o">=</span><span class="n">notes</span>
-</span><span data-line="248">    <span class="p">)</span></div>
+</span><span data-line="161">    <span class="k">def</span><span class="w"> </span><span class="nf">is_repeat</span><span class="p">(</span><span class="n">sig_vec</span><span class="p">,</span> <span class="n">hash_value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span data-line="162"><span class="w">        </span><span class="sd">"""Has this picture already been used earlier in the sequence?</span>
+</span><span data-line="163">
+</span><span data-line="164"><span class="sd">        With a ``signature`` that is a *subject* question — four engravings</span>
+</span><span data-line="165"><span class="sd">        after one portrait are one picture, and using a second of them is the</span>
+</span><span data-line="166"><span class="sd">        repetition a viewer actually notices. Without one it falls back to the</span>
+</span><span data-line="167"><span class="sd">        pHash raster test, which only catches a re-encode of the same file.</span>
+</span><span data-line="168"><span class="sd">        """</span>
+</span><span data-line="169">        <span class="k">if</span> <span class="n">signature</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="170">            <span class="k">if</span> <span class="n">sig_vec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="171">                <span class="k">return</span> <span class="kc">False</span>
+</span><span data-line="172">            <span class="k">return</span> <span class="nb">any</span><span class="p">(</span>
+</span><span data-line="173">                <span class="nb">float</span><span class="p">(</span><span class="n">sig_vec</span> <span class="o">@</span> <span class="n">chosen</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">signature</span><span class="o">.</span><span class="n">threshold</span>
+</span><span data-line="174">                <span class="k">for</span> <span class="n">chosen</span> <span class="ow">in</span> <span class="n">chosen_signatures</span>
+</span><span data-line="175">            <span class="p">)</span>
+</span><span data-line="176">        <span class="k">return</span> <span class="n">hash_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span>
+</span><span data-line="177">            <span class="n">ch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">hamming_distance</span><span class="p">(</span><span class="n">hash_value</span><span class="p">,</span> <span class="n">ch</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">phash_threshold</span>
+</span><span data-line="178">            <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">chosen_hashes</span>
+</span><span data-line="179">        <span class="p">)</span>
+</span><span data-line="180">
+</span><span data-line="181">    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">raw</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">per_beat_candidates</span><span class="p">):</span>
+</span><span data-line="182">        <span class="n">cands</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
+</span><span data-line="183">        <span class="k">if</span> <span class="n">shortlist</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">cands</span><span class="p">:</span>
+</span><span data-line="184">            <span class="n">cands</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">shortlist</span><span class="p">(</span><span class="n">cands</span><span class="p">))</span>
+</span><span data-line="185">        <span class="k">if</span> <span class="ow">not</span> <span class="n">cands</span><span class="p">:</span>
+</span><span data-line="186">            <span class="n">selections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BeatSelection</span><span class="p">(</span><span class="n">beat_index</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">chosen</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_candidates</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+</span><span data-line="187">            <span class="n">notes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"beat </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: no candidates"</span><span class="p">)</span>
+</span><span data-line="188">            <span class="k">continue</span>
+</span><span data-line="189">
+</span><span data-line="190">        <span class="n">embs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">embed_fn</span><span class="p">(</span><span class="n">cands</span><span class="p">))</span>
+</span><span data-line="191">        <span class="n">hashes</span> <span class="o">=</span> <span class="p">(</span>
+</span><span data-line="192">            <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">cands</span><span class="p">)</span>
+</span><span data-line="193">            <span class="k">if</span> <span class="n">signature</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</span><span data-line="194">            <span class="k">else</span> <span class="p">[</span><span class="n">hash_fn</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cands</span><span class="p">]</span>
+</span><span data-line="195">        <span class="p">)</span>
+</span><span data-line="196">        <span class="n">sig_vecs</span> <span class="o">=</span> <span class="p">(</span>
+</span><span data-line="197">            <span class="nb">list</span><span class="p">(</span><span class="n">signature</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">cands</span><span class="p">))</span>
+</span><span data-line="198">            <span class="k">if</span> <span class="n">signature</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</span><span data-line="199">            <span class="k">else</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">cands</span><span class="p">)</span>
+</span><span data-line="200">        <span class="p">)</span>
+</span><span data-line="201">        <span class="n">prev_emb</span> <span class="o">=</span> <span class="n">chosen_embs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">chosen_embs</span> <span class="k">else</span> <span class="kc">None</span>
+</span><span data-line="202">
+</span><span data-line="203">        <span class="n">scored</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="204">        <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">sv</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">cands</span><span class="p">,</span> <span class="n">embs</span><span class="p">,</span> <span class="n">hashes</span><span class="p">,</span> <span class="n">sig_vecs</span><span class="p">):</span>
+</span><span data-line="205">            <span class="n">near_dup</span> <span class="o">=</span> <span class="n">is_repeat</span><span class="p">(</span><span class="n">sv</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
+</span><span data-line="206">            <span class="n">coh</span> <span class="o">=</span> <span class="n">_cosine</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">prev_emb</span><span class="p">)</span>
+</span><span data-line="207">            <span class="n">red</span> <span class="o">=</span> <span class="nb">max</span><span class="p">((</span><span class="n">_cosine</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">ce</span><span class="p">)</span> <span class="k">for</span> <span class="n">ce</span> <span class="ow">in</span> <span class="n">chosen_embs</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+</span><span data-line="208">            <span class="n">j</span> <span class="o">=</span> <span class="n">rel_fn</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">+</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">coh</span> <span class="o">-</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">red</span>
+</span><span data-line="209">            <span class="n">scored</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+</span><span data-line="210">                <span class="p">{</span>
+</span><span data-line="211">                    <span class="s2">"j"</span><span class="p">:</span> <span class="n">j</span><span class="p">,</span>
+</span><span data-line="212">                    <span class="s2">"near_dup"</span><span class="p">:</span> <span class="n">near_dup</span><span class="p">,</span>
+</span><span data-line="213">                    <span class="s2">"c"</span><span class="p">:</span> <span class="n">c</span><span class="p">,</span>
+</span><span data-line="214">                    <span class="s2">"e"</span><span class="p">:</span> <span class="n">e</span><span class="p">,</span>
+</span><span data-line="215">                    <span class="s2">"h"</span><span class="p">:</span> <span class="n">h</span><span class="p">,</span>
+</span><span data-line="216">                    <span class="s2">"sv"</span><span class="p">:</span> <span class="n">sv</span><span class="p">,</span>
+</span><span data-line="217">                    <span class="s2">"coh"</span><span class="p">:</span> <span class="n">coh</span><span class="p">,</span>
+</span><span data-line="218">                    <span class="s2">"red"</span><span class="p">:</span> <span class="n">red</span><span class="p">,</span>
+</span><span data-line="219">                <span class="p">}</span>
+</span><span data-line="220">            <span class="p">)</span>
+</span><span data-line="221">
+</span><span data-line="222">        <span class="n">valid</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">scored</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">s</span><span class="p">[</span><span class="s2">"near_dup"</span><span class="p">]]</span>
+</span><span data-line="223">        <span class="n">pool</span> <span class="o">=</span> <span class="n">valid</span> <span class="k">if</span> <span class="n">valid</span> <span class="k">else</span> <span class="n">scored</span>
+</span><span data-line="224">        <span class="n">forced</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">valid</span>
+</span><span data-line="225">        <span class="n">best</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">pool</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="p">[</span><span class="s2">"j"</span><span class="p">])</span>
+</span><span data-line="226">        <span class="k">if</span> <span class="n">forced</span><span class="p">:</span>
+</span><span data-line="227">            <span class="n">notes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+</span><span data-line="228">                <span class="sa">f</span><span class="s2">"beat </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: every candidate near-duplicates an earlier beat; "</span>
+</span><span data-line="229">                <span class="s2">"relaxed the constraint and kept the best by objective"</span>
+</span><span data-line="230">            <span class="p">)</span>
+</span><span data-line="231">
+</span><span data-line="232">        <span class="n">selections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+</span><span data-line="233">            <span class="n">BeatSelection</span><span class="p">(</span>
+</span><span data-line="234">                <span class="n">beat_index</span><span class="o">=</span><span class="n">i</span><span class="p">,</span>
+</span><span data-line="235">                <span class="n">chosen</span><span class="o">=</span><span class="n">best</span><span class="p">[</span><span class="s2">"c"</span><span class="p">],</span>
+</span><span data-line="236">                <span class="n">relevance</span><span class="o">=</span><span class="n">rel_fn</span><span class="p">(</span><span class="n">best</span><span class="p">[</span><span class="s2">"c"</span><span class="p">]),</span>
+</span><span data-line="237">                <span class="n">coherence</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span><span class="n">best</span><span class="p">[</span><span class="s2">"coh"</span><span class="p">],</span> <span class="mi">4</span><span class="p">),</span>
+</span><span data-line="238">                <span class="n">redundancy</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span><span class="n">best</span><span class="p">[</span><span class="s2">"red"</span><span class="p">],</span> <span class="mi">4</span><span class="p">),</span>
+</span><span data-line="239">                <span class="n">forced_duplicate</span><span class="o">=</span><span class="n">forced</span><span class="p">,</span>
+</span><span data-line="240">                <span class="n">n_candidates</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">cands</span><span class="p">),</span>
+</span><span data-line="241">            <span class="p">)</span>
+</span><span data-line="242">        <span class="p">)</span>
+</span><span data-line="243">        <span class="n">chosen_embs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">best</span><span class="p">[</span><span class="s2">"e"</span><span class="p">])</span>
+</span><span data-line="244">        <span class="n">chosen_hashes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">best</span><span class="p">[</span><span class="s2">"h"</span><span class="p">])</span>
+</span><span data-line="245">        <span class="k">if</span> <span class="n">best</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"sv"</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="246">            <span class="n">chosen_signatures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">best</span><span class="p">[</span><span class="s2">"sv"</span><span class="p">])</span>
+</span><span data-line="247">        <span class="n">total</span> <span class="o">+=</span> <span class="n">best</span><span class="p">[</span><span class="s2">"j"</span><span class="p">]</span>
+</span><span data-line="248">
+</span><span data-line="249">    <span class="k">return</span> <span class="n">SequenceSelection</span><span class="p">(</span>
+</span><span data-line="250">        <span class="n">selections</span><span class="o">=</span><span class="n">selections</span><span class="p">,</span> <span class="n">objective</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span><span class="n">total</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">notes</span><span class="o">=</span><span class="n">notes</span>
+</span><span data-line="251">    <span class="p">)</span></div>
 
-</span><span data-line="249">
-</span><span data-line="250">
+</span><span data-line="252">
+</span><span data-line="253">
 <div class="viewcode-block" id="curate_sequence">
 <a class="viewcode-back" href="../../_autosummary/illustration.sequence.html#illustration.curate_sequence">[docs]</a>
-</span><span data-line="251"><span class="k">def</span><span class="w"> </span><span class="nf">curate_sequence</span><span class="p">(</span>
-</span><span data-line="252">    <span class="n">beats</span><span class="p">:</span> <span class="s2">"Sequence[str]"</span><span class="p">,</span>
-</span><span data-line="253">    <span class="o">*</span><span class="p">,</span>
-</span><span data-line="254">    <span class="n">sources</span><span class="p">:</span> <span class="s2">"str | list[str] | None"</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="255">    <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DFLT_SEQUENCE_N</span><span class="p">,</span>
-</span><span data-line="256">    <span class="n">per_beat</span><span class="p">:</span> <span class="s2">"Callable[[str], Sequence[ImageResult]] | None"</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="257">    <span class="o">**</span><span class="n">select_kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-</span><span data-line="258"><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SequenceResult</span><span class="p">:</span>
-</span><span data-line="259"><span class="w">    </span><span class="sd">"""Curate a whole sequence: gather a candidate pool per beat, then select.</span>
-</span><span data-line="260">
-</span><span data-line="261"><span class="sd">    ``per_beat`` produces the candidate pool for one beat — a sequence of</span>
-</span><span data-line="262"><span class="sd">    :class:`~illustration.schema.ImageResult` (default: a recall + SigLIP rerank</span>
-</span><span data-line="263"><span class="sd">    via :func:`illustration.search`, so pools carry relevance ``.score``). For</span>
-</span><span data-line="264"><span class="sd">    the full per-beat CRAG loop, unwrap the loop's ``Candidate`` envelopes:</span>
-</span><span data-line="265"><span class="sd">    ``per_beat=lambda b: [c.result for c in illustration.curate(b).candidates]``.</span>
-</span><span data-line="266"><span class="sd">    Remaining keyword args pass through to :func:`select_sequence`.</span>
-</span><span data-line="267"><span class="sd">    """</span>
-</span><span data-line="268">    <span class="n">fn</span> <span class="o">=</span> <span class="n">per_beat</span> <span class="k">if</span> <span class="n">per_beat</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">_default_per_beat</span><span class="p">(</span><span class="n">sources</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
-</span><span data-line="269">    <span class="n">pools</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">fn</span><span class="p">(</span><span class="n">beat</span><span class="p">))</span> <span class="k">for</span> <span class="n">beat</span> <span class="ow">in</span> <span class="n">beats</span><span class="p">]</span>
-</span><span data-line="270">    <span class="n">selection</span> <span class="o">=</span> <span class="n">select_sequence</span><span class="p">(</span><span class="n">pools</span><span class="p">,</span> <span class="o">**</span><span class="n">select_kwargs</span><span class="p">)</span>
-</span><span data-line="271">    <span class="k">return</span> <span class="n">SequenceResult</span><span class="p">(</span><span class="n">beats</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">beats</span><span class="p">),</span> <span class="n">selection</span><span class="o">=</span><span class="n">selection</span><span class="p">)</span></div>
+</span><span data-line="254"><span class="k">def</span><span class="w"> </span><span class="nf">curate_sequence</span><span class="p">(</span>
+</span><span data-line="255">    <span class="n">beats</span><span class="p">:</span> <span class="s2">"Sequence[str]"</span><span class="p">,</span>
+</span><span data-line="256">    <span class="o">*</span><span class="p">,</span>
+</span><span data-line="257">    <span class="n">sources</span><span class="p">:</span> <span class="s2">"str | list[str] | None"</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="258">    <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DFLT_SEQUENCE_N</span><span class="p">,</span>
+</span><span data-line="259">    <span class="n">per_beat</span><span class="p">:</span> <span class="s2">"Callable[[str], Sequence[ImageResult]] | None"</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="260">    <span class="o">**</span><span class="n">select_kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+</span><span data-line="261"><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SequenceResult</span><span class="p">:</span>
+</span><span data-line="262"><span class="w">    </span><span class="sd">"""Curate a whole sequence: gather a candidate pool per beat, then select.</span>
+</span><span data-line="263">
+</span><span data-line="264"><span class="sd">    ``per_beat`` produces the candidate pool for one beat — a sequence of</span>
+</span><span data-line="265"><span class="sd">    :class:`~illustration.schema.ImageResult` (default: a recall + SigLIP rerank</span>
+</span><span data-line="266"><span class="sd">    via :func:`illustration.search`, so pools carry relevance ``.score``). For</span>
+</span><span data-line="267"><span class="sd">    the full per-beat CRAG loop, unwrap the loop's ``Candidate`` envelopes:</span>
+</span><span data-line="268"><span class="sd">    ``per_beat=lambda b: [c.result for c in illustration.curate(b).candidates]``.</span>
+</span><span data-line="269"><span class="sd">    Remaining keyword args pass through to :func:`select_sequence`.</span>
+</span><span data-line="270"><span class="sd">    """</span>
+</span><span data-line="271">    <span class="n">fn</span> <span class="o">=</span> <span class="n">per_beat</span> <span class="k">if</span> <span class="n">per_beat</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">_default_per_beat</span><span class="p">(</span><span class="n">sources</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+</span><span data-line="272">    <span class="n">pools</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">fn</span><span class="p">(</span><span class="n">beat</span><span class="p">))</span> <span class="k">for</span> <span class="n">beat</span> <span class="ow">in</span> <span class="n">beats</span><span class="p">]</span>
+</span><span data-line="273">    <span class="n">selection</span> <span class="o">=</span> <span class="n">select_sequence</span><span class="p">(</span><span class="n">pools</span><span class="p">,</span> <span class="o">**</span><span class="n">select_kwargs</span><span class="p">)</span>
+</span><span data-line="274">    <span class="k">return</span> <span class="n">SequenceResult</span><span class="p">(</span><span class="n">beats</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">beats</span><span class="p">),</span> <span class="n">selection</span><span class="o">=</span><span class="n">selection</span><span class="p">)</span></div>
 
-</span><span data-line="272">
-</span><span data-line="273">
-</span><span data-line="274"><span class="c1"># --- perceptual hash (in-house, NumPy-only — no new dependency) --------------</span>
 </span><span data-line="275">
 </span><span data-line="276">
+</span><span data-line="277"><span class="c1"># --- perceptual hash (in-house, NumPy-only — no new dependency) --------------</span>
+</span><span data-line="278">
+</span><span data-line="279">
 <div class="viewcode-block" id="phash">
 <a class="viewcode-back" href="../../_autosummary/illustration.sequence.html#illustration.phash">[docs]</a>
-</span><span data-line="277"><span class="k">def</span><span class="w"> </span><span class="nf">phash</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">hash_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span> <span class="n">highfreq_factor</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span data-line="278"><span class="w">    </span><span class="sd">"""A DCT perceptual hash of a PIL image, as a ``hash_size**2``-bit integer.</span>
-</span><span data-line="279">
-</span><span data-line="280"><span class="sd">    The standard pHash: resize to grayscale, take the low-frequency DCT block,</span>
-</span><span data-line="281"><span class="sd">    threshold against its median (excluding the DC term), pack into bits.</span>
-</span><span data-line="282"><span class="sd">    Implemented with a NumPy DCT matrix so it needs only Pillow + NumPy.</span>
-</span><span data-line="283"><span class="sd">    """</span>
-</span><span data-line="284">    <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-</span><span data-line="285">
-</span><span data-line="286">    <span class="n">img_size</span> <span class="o">=</span> <span class="n">hash_size</span> <span class="o">*</span> <span class="n">highfreq_factor</span>
-</span><span data-line="287">    <span class="n">gray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s2">"L"</span><span class="p">)</span><span class="o">.</span><span class="n">resize</span><span class="p">((</span><span class="n">img_size</span><span class="p">,</span> <span class="n">img_size</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">"float64"</span><span class="p">)</span>
-</span><span data-line="288">    <span class="n">coefs</span> <span class="o">=</span> <span class="n">_dct2</span><span class="p">(</span><span class="n">gray</span><span class="p">)[:</span><span class="n">hash_size</span><span class="p">,</span> <span class="p">:</span><span class="n">hash_size</span><span class="p">]</span>
-</span><span data-line="289">    <span class="n">flat</span> <span class="o">=</span> <span class="n">coefs</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
-</span><span data-line="290">    <span class="n">med</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">flat</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>  <span class="c1"># exclude the DC coefficient</span>
-</span><span data-line="291">    <span class="n">bits</span> <span class="o">=</span> <span class="n">flat</span> <span class="o">&gt;</span> <span class="n">med</span>
-</span><span data-line="292">    <span class="n">value</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span data-line="293">    <span class="k">for</span> <span class="n">bit</span> <span class="ow">in</span> <span class="n">bits</span><span class="p">:</span>
-</span><span data-line="294">        <span class="n">value</span> <span class="o">=</span> <span class="p">(</span><span class="n">value</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">|</span> <span class="nb">int</span><span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="n">bit</span><span class="p">))</span>
-</span><span data-line="295">    <span class="k">return</span> <span class="n">value</span></div>
+</span><span data-line="280"><span class="k">def</span><span class="w"> </span><span class="nf">phash</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">hash_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span> <span class="n">highfreq_factor</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span data-line="281"><span class="w">    </span><span class="sd">"""A DCT perceptual hash of a PIL image, as a ``hash_size**2``-bit integer.</span>
+</span><span data-line="282">
+</span><span data-line="283"><span class="sd">    The standard pHash: resize to grayscale, take the low-frequency DCT block,</span>
+</span><span data-line="284"><span class="sd">    threshold against its median (excluding the DC term), pack into bits.</span>
+</span><span data-line="285"><span class="sd">    Implemented with a NumPy DCT matrix so it needs only Pillow + NumPy.</span>
+</span><span data-line="286"><span class="sd">    """</span>
+</span><span data-line="287">    <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span data-line="288">
+</span><span data-line="289">    <span class="n">img_size</span> <span class="o">=</span> <span class="n">hash_size</span> <span class="o">*</span> <span class="n">highfreq_factor</span>
+</span><span data-line="290">    <span class="n">gray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s2">"L"</span><span class="p">)</span><span class="o">.</span><span class="n">resize</span><span class="p">((</span><span class="n">img_size</span><span class="p">,</span> <span class="n">img_size</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">"float64"</span><span class="p">)</span>
+</span><span data-line="291">    <span class="n">coefs</span> <span class="o">=</span> <span class="n">_dct2</span><span class="p">(</span><span class="n">gray</span><span class="p">)[:</span><span class="n">hash_size</span><span class="p">,</span> <span class="p">:</span><span class="n">hash_size</span><span class="p">]</span>
+</span><span data-line="292">    <span class="n">flat</span> <span class="o">=</span> <span class="n">coefs</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+</span><span data-line="293">    <span class="n">med</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">flat</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>  <span class="c1"># exclude the DC coefficient</span>
+</span><span data-line="294">    <span class="n">bits</span> <span class="o">=</span> <span class="n">flat</span> <span class="o">&gt;</span> <span class="n">med</span>
+</span><span data-line="295">    <span class="n">value</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span data-line="296">    <span class="k">for</span> <span class="n">bit</span> <span class="ow">in</span> <span class="n">bits</span><span class="p">:</span>
+</span><span data-line="297">        <span class="n">value</span> <span class="o">=</span> <span class="p">(</span><span class="n">value</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">|</span> <span class="nb">int</span><span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="n">bit</span><span class="p">))</span>
+</span><span data-line="298">    <span class="k">return</span> <span class="n">value</span></div>
 
-</span><span data-line="296">
-</span><span data-line="297">
+</span><span data-line="299">
+</span><span data-line="300">
 <div class="viewcode-block" id="hamming_distance">
 <a class="viewcode-back" href="../../_autosummary/illustration.sequence.html#illustration.hamming_distance">[docs]</a>
-</span><span data-line="298"><span class="k">def</span><span class="w"> </span><span class="nf">hamming_distance</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span data-line="299"><span class="w">    </span><span class="sd">"""Number of differing bits between two perceptual hashes."""</span>
-</span><span data-line="300">    <span class="k">return</span> <span class="nb">bin</span><span class="p">(</span><span class="n">a</span> <span class="o">^</span> <span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">"1"</span><span class="p">)</span></div>
+</span><span data-line="301"><span class="k">def</span><span class="w"> </span><span class="nf">hamming_distance</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span data-line="302"><span class="w">    </span><span class="sd">"""Number of differing bits between two perceptual hashes."""</span>
+</span><span data-line="303">    <span class="k">return</span> <span class="nb">bin</span><span class="p">(</span><span class="n">a</span> <span class="o">^</span> <span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">"1"</span><span class="p">)</span></div>
 
-</span><span data-line="301">
-</span><span data-line="302">
+</span><span data-line="304">
+</span><span data-line="305">
 <div class="viewcode-block" id="make_phash_hasher">
 <a class="viewcode-back" href="../../_autosummary/illustration.sequence.html#illustration.make_phash_hasher">[docs]</a>
-</span><span data-line="303"><span class="k">def</span><span class="w"> </span><span class="nf">make_phash_hasher</span><span class="p">(</span>
-</span><span data-line="304">    <span class="o">*</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"thumbnail_url"</span><span class="p">,</span> <span class="n">fetch</span><span class="p">:</span> <span class="s2">"Callable | None"</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span data-line="305"><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Hasher</span><span class="p">:</span>
-</span><span data-line="306"><span class="w">    </span><span class="sd">"""A pHash hasher that fetches each result's image once (cached for the pass).</span>
-</span><span data-line="307">
-</span><span data-line="308"><span class="sd">    Returns ``result -&gt; int | None`` (None when the image can't be fetched or</span>
-</span><span data-line="309"><span class="sd">    Pillow/NumPy aren't installed), suitable as :func:`select_sequence`'s</span>
-</span><span data-line="310"><span class="sd">    ``hasher`` seam. The fetch is content-deduped within the pass.</span>
-</span><span data-line="311"><span class="sd">    """</span>
-</span><span data-line="312">    <span class="kn">from</span><span class="w"> </span><span class="nn">illustration._imageio</span><span class="w"> </span><span class="kn">import</span> <span class="n">memoized_image_loader</span>
-</span><span data-line="313">
-</span><span data-line="314">    <span class="n">load</span> <span class="o">=</span> <span class="n">memoized_image_loader</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="n">fetch</span><span class="p">)</span>
-</span><span data-line="315">
-</span><span data-line="316">    <span class="k">def</span><span class="w"> </span><span class="nf">hasher</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="n">ImageResult</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"int | None"</span><span class="p">:</span>
-</span><span data-line="317">        <span class="n">image</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
-</span><span data-line="318">        <span class="k">if</span> <span class="n">image</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="319">            <span class="k">return</span> <span class="kc">None</span>
-</span><span data-line="320">        <span class="k">try</span><span class="p">:</span>
-</span><span data-line="321">            <span class="k">return</span> <span class="n">phash</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
-</span><span data-line="322">        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>  <span class="c1"># pragma: no cover - decode/transform failure</span>
-</span><span data-line="323">            <span class="k">return</span> <span class="kc">None</span>
-</span><span data-line="324">
-</span><span data-line="325">    <span class="k">return</span> <span class="n">hasher</span></div>
-
-</span><span data-line="326">
+</span><span data-line="306"><span class="k">def</span><span class="w"> </span><span class="nf">make_phash_hasher</span><span class="p">(</span>
+</span><span data-line="307">    <span class="o">*</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"thumbnail_url"</span><span class="p">,</span> <span class="n">fetch</span><span class="p">:</span> <span class="s2">"Callable | None"</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="308"><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Hasher</span><span class="p">:</span>
+</span><span data-line="309"><span class="w">    </span><span class="sd">"""A pHash hasher that fetches each result's image once (cached for the pass).</span>
+</span><span data-line="310">
+</span><span data-line="311"><span class="sd">    Returns ``result -&gt; int | None`` (None when the image can't be fetched or</span>
+</span><span data-line="312"><span class="sd">    Pillow/NumPy aren't installed), suitable as :func:`select_sequence`'s</span>
+</span><span data-line="313"><span class="sd">    ``hasher`` seam. The fetch is content-deduped within the pass.</span>
+</span><span data-line="314"><span class="sd">    """</span>
+</span><span data-line="315">    <span class="kn">from</span><span class="w"> </span><span class="nn">illustration._imageio</span><span class="w"> </span><span class="kn">import</span> <span class="n">memoized_image_loader</span>
+</span><span data-line="316">
+</span><span data-line="317">    <span class="n">load</span> <span class="o">=</span> <span class="n">memoized_image_loader</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="n">fetch</span><span class="p">)</span>
+</span><span data-line="318">
+</span><span data-line="319">    <span class="k">def</span><span class="w"> </span><span class="nf">hasher</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="n">ImageResult</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"int | None"</span><span class="p">:</span>
+</span><span data-line="320">        <span class="n">image</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</span><span data-line="321">        <span class="k">if</span> <span class="n">image</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="322">            <span class="k">return</span> <span class="kc">None</span>
+</span><span data-line="323">        <span class="k">try</span><span class="p">:</span>
+</span><span data-line="324">            <span class="k">return</span> <span class="n">phash</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+</span><span data-line="325">        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>  <span class="c1"># pragma: no cover - decode/transform failure</span>
+</span><span data-line="326">            <span class="k">return</span> <span class="kc">None</span>
 </span><span data-line="327">
-</span><span data-line="328"><span class="c1"># --- internals --------------------------------------------------------------</span>
+</span><span data-line="328">    <span class="k">return</span> <span class="n">hasher</span></div>
+
 </span><span data-line="329">
 </span><span data-line="330">
-</span><span data-line="331"><span class="k">def</span><span class="w"> </span><span class="nf">_default_relevance</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="n">ImageResult</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span><span data-line="332">    <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">score</span> <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">score</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mf">0.0</span>
+</span><span data-line="331"><span class="c1"># --- internals --------------------------------------------------------------</span>
+</span><span data-line="332">
 </span><span data-line="333">
-</span><span data-line="334">
-</span><span data-line="335"><span class="k">def</span><span class="w"> </span><span class="nf">_default_embed</span><span class="p">(</span><span class="n">results</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">ImageResult</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
-</span><span data-line="336"><span class="w">    </span><span class="sd">"""Default coherence/redundancy embeddings: cached SigLIP, else all-None."""</span>
-</span><span data-line="337">    <span class="k">try</span><span class="p">:</span>
-</span><span data-line="338">        <span class="kn">from</span><span class="w"> </span><span class="nn">illustration.reranking</span><span class="w"> </span><span class="kn">import</span> <span class="n">embed_images</span>
-</span><span data-line="339">
-</span><span data-line="340">        <span class="k">return</span> <span class="n">embed_images</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
-</span><span data-line="341">    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-</span><span data-line="342">        <span class="c1"># rerank deps missing (or a transient embed failure) -&gt; coherence off</span>
-</span><span data-line="343">        <span class="k">return</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">results</span><span class="p">))</span>
-</span><span data-line="344">
-</span><span data-line="345">
-</span><span data-line="346"><span class="k">def</span><span class="w"> </span><span class="nf">_default_per_beat</span><span class="p">(</span><span class="n">sources</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"Callable[[str], list[ImageResult]]"</span><span class="p">:</span>
-</span><span data-line="347">    <span class="k">def</span><span class="w"> </span><span class="nf">per_beat</span><span class="p">(</span><span class="n">beat</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ImageResult</span><span class="p">]:</span>
-</span><span data-line="348">        <span class="kn">import</span><span class="w"> </span><span class="nn">illustration</span>  <span class="c1"># lazy: avoid an import cycle at module load</span>
-</span><span data-line="349">
-</span><span data-line="350">        <span class="kn">from</span><span class="w"> </span><span class="nn">illustration.reranking</span><span class="w"> </span><span class="kn">import</span> <span class="n">_importable</span>
-</span><span data-line="351">
-</span><span data-line="352">        <span class="n">use_rerank</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span>
-</span><span data-line="353">            <span class="n">_importable</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"torch"</span><span class="p">,</span> <span class="s2">"transformers"</span><span class="p">,</span> <span class="s2">"PIL"</span><span class="p">,</span> <span class="s2">"numpy"</span><span class="p">)</span>
-</span><span data-line="354">        <span class="p">)</span>
-</span><span data-line="355">        <span class="k">return</span> <span class="n">illustration</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">beat</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="n">sources</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">rerank</span><span class="o">=</span><span class="n">use_rerank</span><span class="p">)</span>
-</span><span data-line="356">
-</span><span data-line="357">    <span class="k">return</span> <span class="n">per_beat</span>
-</span><span data-line="358">
+</span><span data-line="334"><span class="k">def</span><span class="w"> </span><span class="nf">_default_relevance</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="n">ImageResult</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span data-line="335">    <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">score</span> <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">score</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mf">0.0</span>
+</span><span data-line="336">
+</span><span data-line="337">
+</span><span data-line="338"><span class="k">def</span><span class="w"> </span><span class="nf">_default_embed</span><span class="p">(</span><span class="n">results</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">ImageResult</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+</span><span data-line="339"><span class="w">    </span><span class="sd">"""Default coherence/redundancy embeddings: cached SigLIP, else all-None."""</span>
+</span><span data-line="340">    <span class="k">try</span><span class="p">:</span>
+</span><span data-line="341">        <span class="kn">from</span><span class="w"> </span><span class="nn">illustration.reranking</span><span class="w"> </span><span class="kn">import</span> <span class="n">embed_images</span>
+</span><span data-line="342">
+</span><span data-line="343">        <span class="k">return</span> <span class="n">embed_images</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+</span><span data-line="344">    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+</span><span data-line="345">        <span class="c1"># rerank deps missing (or a transient embed failure) -&gt; coherence off</span>
+</span><span data-line="346">        <span class="k">return</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">results</span><span class="p">))</span>
+</span><span data-line="347">
+</span><span data-line="348">
+</span><span data-line="349"><span class="k">def</span><span class="w"> </span><span class="nf">_default_per_beat</span><span class="p">(</span><span class="n">sources</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"Callable[[str], list[ImageResult]]"</span><span class="p">:</span>
+</span><span data-line="350">    <span class="k">def</span><span class="w"> </span><span class="nf">per_beat</span><span class="p">(</span><span class="n">beat</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ImageResult</span><span class="p">]:</span>
+</span><span data-line="351">        <span class="kn">import</span><span class="w"> </span><span class="nn">illustration</span>  <span class="c1"># lazy: avoid an import cycle at module load</span>
+</span><span data-line="352">
+</span><span data-line="353">        <span class="kn">from</span><span class="w"> </span><span class="nn">illustration.reranking</span><span class="w"> </span><span class="kn">import</span> <span class="n">_importable</span>
+</span><span data-line="354">
+</span><span data-line="355">        <span class="n">use_rerank</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span>
+</span><span data-line="356">            <span class="n">_importable</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"torch"</span><span class="p">,</span> <span class="s2">"transformers"</span><span class="p">,</span> <span class="s2">"PIL"</span><span class="p">,</span> <span class="s2">"numpy"</span><span class="p">)</span>
+</span><span data-line="357">        <span class="p">)</span>
+</span><span data-line="358">        <span class="k">return</span> <span class="n">illustration</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">beat</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="n">sources</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">rerank</span><span class="o">=</span><span class="n">use_rerank</span><span class="p">)</span>
 </span><span data-line="359">
-</span><span data-line="360"><span class="k">def</span><span class="w"> </span><span class="nf">_cosine</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span><span data-line="361">    <span class="k">if</span> <span class="n">a</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">b</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="362">        <span class="k">return</span> <span class="mf">0.0</span>
-</span><span data-line="363">    <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-</span><span data-line="364">
-</span><span data-line="365">    <span class="n">av</span><span class="p">,</span> <span class="n">bv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">"float64"</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">"float64"</span><span class="p">)</span>
-</span><span data-line="366">    <span class="n">na</span><span class="p">,</span> <span class="n">nb</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">av</span><span class="p">)),</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">bv</span><span class="p">))</span>
-</span><span data-line="367">    <span class="k">if</span> <span class="n">na</span> <span class="o">==</span> <span class="mf">0.0</span> <span class="ow">or</span> <span class="n">nb</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
-</span><span data-line="368">        <span class="k">return</span> <span class="mf">0.0</span>
-</span><span data-line="369">    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">av</span><span class="p">,</span> <span class="n">bv</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">na</span> <span class="o">*</span> <span class="n">nb</span><span class="p">))</span>
-</span><span data-line="370">
-</span><span data-line="371">
-</span><span data-line="372"><span class="k">def</span><span class="w"> </span><span class="nf">_dct2</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
-</span><span data-line="373"><span class="w">    </span><span class="sd">"""2-D DCT-II of a square matrix via a NumPy basis matrix (no SciPy)."""</span>
-</span><span data-line="374">    <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-</span><span data-line="375">
-</span><span data-line="376">    <span class="n">n</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</span><span data-line="377">    <span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
-</span><span data-line="378">    <span class="c1"># D[freq, sample] = cos(pi/n * (sample + 0.5) * freq): frequency is the ROW</span>
-</span><span data-line="379">    <span class="c1"># index so the [:hash_size, :hash_size] slice in phash() is the true</span>
-</span><span data-line="380">    <span class="c1"># low-frequency block (a transpose here silently destroys discrimination).</span>
-</span><span data-line="381">    <span class="n">basis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="n">n</span> <span class="o">*</span> <span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">k</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">])</span>
-</span><span data-line="382">    <span class="k">return</span> <span class="n">basis</span> <span class="o">@</span> <span class="n">matrix</span> <span class="o">@</span> <span class="n">basis</span><span class="o">.</span><span class="n">T</span>
+</span><span data-line="360">    <span class="k">return</span> <span class="n">per_beat</span>
+</span><span data-line="361">
+</span><span data-line="362">
+</span><span data-line="363"><span class="k">def</span><span class="w"> </span><span class="nf">_cosine</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span data-line="364">    <span class="k">if</span> <span class="n">a</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">b</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="365">        <span class="k">return</span> <span class="mf">0.0</span>
+</span><span data-line="366">    <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span data-line="367">
+</span><span data-line="368">    <span class="n">av</span><span class="p">,</span> <span class="n">bv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">"float64"</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">"float64"</span><span class="p">)</span>
+</span><span data-line="369">    <span class="n">na</span><span class="p">,</span> <span class="n">nb</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">av</span><span class="p">)),</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">bv</span><span class="p">))</span>
+</span><span data-line="370">    <span class="k">if</span> <span class="n">na</span> <span class="o">==</span> <span class="mf">0.0</span> <span class="ow">or</span> <span class="n">nb</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+</span><span data-line="371">        <span class="k">return</span> <span class="mf">0.0</span>
+</span><span data-line="372">    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">av</span><span class="p">,</span> <span class="n">bv</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">na</span> <span class="o">*</span> <span class="n">nb</span><span class="p">))</span>
+</span><span data-line="373">
+</span><span data-line="374">
+</span><span data-line="375"><span class="k">def</span><span class="w"> </span><span class="nf">_dct2</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
+</span><span data-line="376"><span class="w">    </span><span class="sd">"""2-D DCT-II of a square matrix via a NumPy basis matrix (no SciPy)."""</span>
+</span><span data-line="377">    <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span data-line="378">
+</span><span data-line="379">    <span class="n">n</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span data-line="380">    <span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+</span><span data-line="381">    <span class="c1"># D[freq, sample] = cos(pi/n * (sample + 0.5) * freq): frequency is the ROW</span>
+</span><span data-line="382">    <span class="c1"># index so the [:hash_size, :hash_size] slice in phash() is the true</span>
+</span><span data-line="383">    <span class="c1"># low-frequency block (a transpose here silently destroys discrimination).</span>
+</span><span data-line="384">    <span class="n">basis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="n">n</span> <span class="o">*</span> <span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">k</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">])</span>
+</span><span data-line="385">    <span class="k">return</span> <span class="n">basis</span> <span class="o">@</span> <span class="n">matrix</span> <span class="o">@</span> <span class="n">basis</span><span class="o">.</span><span class="n">T</span>
 </span></pre></div>
         </article><button class="back-to-top" type="button">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -572,7 +575,7 @@ data-aria-dark="Switch to auto color mode">
     </div>
   </div>
 </footer>
-      <script src="../../_static/documentation_options.js?v=056c92e6"></script>
+      <script src="../../_static/documentation_options.js?v=a11416ff"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>

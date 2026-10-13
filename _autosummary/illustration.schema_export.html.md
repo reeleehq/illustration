@@ -15,6 +15,11 @@ What lands in `<out_dir>`:
 
 - `image-result.schema.json` — [`ImageResult`](illustration.schema.html.md#illustration.schema.ImageResult) as
   JSON Schema (the codegen input for the Zod type).
+- `media-result.schema.json` — the discriminated union of
+  [`ImageResult`](illustration.schema.html.md#illustration.schema.ImageResult) and
+  [`VideoResult`](illustration.schema.html.md#illustration.schema.VideoResult) (`oneOf` plus a `media_type`
+  > discriminator mapping). `image-result.schema.json` stays the image contract
+  > on its own, and is what the TS twin generates from.
 - `sources.json` — one record per registered source: endpoint, parameter
   names, paging caps, fixed params, auth style, canonical→native parameter
   names, and its [`SourceInfo`](illustration.base.html.md#illustration.base.SourceInfo).

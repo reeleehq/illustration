@@ -161,9 +161,9 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="20">
 </span><span data-line="21"><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 </span><span data-line="22">
-</span><span data-line="23"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Mapping</span>
+</span><span data-line="23"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Annotated</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Union</span>
 </span><span data-line="24">
-</span><span data-line="25"><span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
+</span><span data-line="25"><span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Discriminator</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">Tag</span><span class="p">,</span> <span class="n">TypeAdapter</span><span class="p">,</span> <span class="n">model_validator</span>
 </span><span data-line="26">
 </span><span data-line="27"><span class="kn">from</span><span class="w"> </span><span class="nn">illustration.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">DFLT_LICENSE_ALLOWLIST</span>
 </span><span data-line="28"><span class="kn">from</span><span class="w"> </span><span class="nn">illustration.licensing</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
@@ -174,220 +174,423 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="33"><span class="p">)</span>
 </span><span data-line="34">
 </span><span data-line="35"><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-</span><span data-line="36">    <span class="s2">"ImageResult"</span><span class="p">,</span>
-</span><span data-line="37">    <span class="s2">"license_allowlist"</span><span class="p">,</span>
-</span><span data-line="38">    <span class="s2">"check_attributions"</span><span class="p">,</span>
-</span><span data-line="39">    <span class="s2">"to_search_hit"</span><span class="p">,</span>
-</span><span data-line="40">    <span class="s2">"RIGHTS_FIELDS"</span><span class="p">,</span>
-</span><span data-line="41"><span class="p">]</span>
-</span><span data-line="42">
-</span><span data-line="43"><span class="c1">#: The **rights record**: the fields that answer "may we ship this, and whom</span>
-</span><span data-line="44"><span class="c1">#: must we credit?". This tuple is the SSOT for that question — anything that</span>
-</span><span data-line="45"><span class="c1">#: persists, forwards or re-materialises an :class:`ImageResult` copies exactly</span>
-</span><span data-line="46"><span class="c1">#: these, by these names, so no rename table is ever needed downstream. It is</span>
-</span><span data-line="47"><span class="c1">#: the one field set that cannot be reconstructed later: a dead URL, a</span>
-</span><span data-line="48"><span class="c1">#: re-keyed provider or a re-tagged aggregator all leave a stored selection</span>
-</span><span data-line="49"><span class="c1">#: unable to answer it.</span>
-</span><span data-line="50"><span class="n">RIGHTS_FIELDS</span> <span class="o">=</span> <span class="p">(</span>
-</span><span data-line="51">    <span class="s2">"license"</span><span class="p">,</span>
-</span><span data-line="52">    <span class="s2">"license_url"</span><span class="p">,</span>
-</span><span data-line="53">    <span class="s2">"attribution"</span><span class="p">,</span>
-</span><span data-line="54">    <span class="s2">"source_page_url"</span><span class="p">,</span>
-</span><span data-line="55">    <span class="s2">"author"</span><span class="p">,</span>
-</span><span data-line="56">    <span class="s2">"author_url"</span><span class="p">,</span>
-</span><span data-line="57">    <span class="s2">"cacheable"</span><span class="p">,</span>
-</span><span data-line="58"><span class="p">)</span>
-</span><span data-line="59">
-</span><span data-line="60">
-<div class="viewcode-block" id="ImageResult">
-<a class="viewcode-back" href="../../_autosummary/illustration.schema.html#illustration.ImageResult">[docs]</a>
-</span><span data-line="61"><span class="k">class</span><span class="w"> </span><span class="nc">ImageResult</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-</span><span data-line="62"><span class="w">    </span><span class="sd">"""One normalized image hit from any provider.</span>
-</span><span data-line="63">
-</span><span data-line="64"><span class="sd">    The first eight fields plus ``cacheable`` are the cross-provider minimum the</span>
-</span><span data-line="65"><span class="sd">    design guarantees; the rest are populated when a provider supplies them.</span>
-</span><span data-line="66"><span class="sd">    """</span>
-</span><span data-line="67">
-</span><span data-line="68">    <span class="n">provider</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"Source/provider name, e.g. 'openverse'."</span><span class="p">)</span>
-</span><span data-line="69">    <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"Provider-native identifier."</span><span class="p">)</span>
-</span><span data-line="70">    <span class="n">url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"Full-resolution image URL."</span><span class="p">)</span>
-</span><span data-line="71">    <span class="n">thumbnail_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span data-line="72">    <span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span data-line="73">    <span class="n">height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span data-line="74">    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span data-line="75">    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-</span><span data-line="76">        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Alt text / longer description."</span>
-</span><span data-line="77">    <span class="p">)</span>
-</span><span data-line="78">    <span class="n">tags</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span> <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span><span class="s2">"default"</span><span class="p">:</span> <span class="p">[]})</span>
-</span><span data-line="79">    <span class="n">license</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-</span><span data-line="80">        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"License code or name (e.g. 'by-sa')."</span>
-</span><span data-line="81">    <span class="p">)</span>
-</span><span data-line="82">    <span class="n">license_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span data-line="83">    <span class="n">attribution</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-</span><span data-line="84">        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Ready-to-render attribution sentence."</span>
-</span><span data-line="85">    <span class="p">)</span>
-</span><span data-line="86">    <span class="n">source_page_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span data-line="87">    <span class="n">author</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span data-line="88">    <span class="n">author_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span data-line="89">    <span class="n">cacheable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-</span><span data-line="90">        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"May the bytes be downloaded/cached to our server?"</span>
-</span><span data-line="91">    <span class="p">)</span>
-</span><span data-line="92">    <span class="n">avg_color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-</span><span data-line="93">        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Dominant-color hint where available."</span>
-</span><span data-line="94">    <span class="p">)</span>
-</span><span data-line="95">    <span class="c1"># provenance / forward-compatibility</span>
-</span><span data-line="96">    <span class="n">query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-</span><span data-line="97">        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Canonical query that produced this hit."</span>
-</span><span data-line="98">    <span class="p">)</span>
-</span><span data-line="99">    <span class="n">score</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-</span><span data-line="100">        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Reserved for Layer-2 rerank; None at Layer 1."</span>
-</span><span data-line="101">    <span class="p">)</span>
-</span><span data-line="102">    <span class="n">raw</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-</span><span data-line="103">        <span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span>
-</span><span data-line="104">        <span class="n">description</span><span class="o">=</span><span class="s2">"Untranslated provider payload."</span><span class="p">,</span>
-</span><span data-line="105">        <span class="c1"># A default_factory emits no JSON-Schema default; the TS twin needs one</span>
-</span><span data-line="106">        <span class="c1"># so a parsed result carries `{}` (and `[]` for tags) like this side does.</span>
-</span><span data-line="107">        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span><span class="s2">"default"</span><span class="p">:</span> <span class="p">{}},</span>
-</span><span data-line="108">    <span class="p">)</span>
-</span><span data-line="109">
-<div class="viewcode-block" id="ImageResult.to_search_hit">
-<a class="viewcode-back" href="../../_autosummary/illustration.schema.html#illustration.ImageResult.to_search_hit">[docs]</a>
-</span><span data-line="110">    <span class="k">def</span><span class="w"> </span><span class="nf">to_search_hit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span data-line="111"><span class="w">        </span><span class="sd">"""Adapt to an ``ir.SearchHit`` for Layer-2 cross-provider fusion.</span>
-</span><span data-line="112">
-</span><span data-line="113"><span class="sd">        Imported lazily so ``import illustration`` never requires ``ir``.</span>
-</span><span data-line="114"><span class="sd">        """</span>
-</span><span data-line="115">        <span class="k">return</span> <span class="n">to_search_hit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+</span><span data-line="36">    <span class="s2">"MediaResult"</span><span class="p">,</span>
+</span><span data-line="37">    <span class="s2">"ImageResult"</span><span class="p">,</span>
+</span><span data-line="38">    <span class="s2">"VideoResult"</span><span class="p">,</span>
+</span><span data-line="39">    <span class="s2">"Rendition"</span><span class="p">,</span>
+</span><span data-line="40">    <span class="s2">"TimeSpan"</span><span class="p">,</span>
+</span><span data-line="41">    <span class="s2">"AnyMediaResult"</span><span class="p">,</span>
+</span><span data-line="42">    <span class="s2">"parse_media_result"</span><span class="p">,</span>
+</span><span data-line="43">    <span class="s2">"require_image"</span><span class="p">,</span>
+</span><span data-line="44">    <span class="s2">"MEDIA_TYPES"</span><span class="p">,</span>
+</span><span data-line="45">    <span class="s2">"VIDEO_RIGHTS_FIELDS"</span><span class="p">,</span>
+</span><span data-line="46">    <span class="s2">"MEDIA_RIGHTS_FIELDS"</span><span class="p">,</span>
+</span><span data-line="47">    <span class="s2">"license_allowlist"</span><span class="p">,</span>
+</span><span data-line="48">    <span class="s2">"check_attributions"</span><span class="p">,</span>
+</span><span data-line="49">    <span class="s2">"to_search_hit"</span><span class="p">,</span>
+</span><span data-line="50">    <span class="s2">"RIGHTS_FIELDS"</span><span class="p">,</span>
+</span><span data-line="51"><span class="p">]</span>
+</span><span data-line="52">
+</span><span data-line="53"><span class="c1">#: The **rights record**: the fields that answer "may we ship this, and whom</span>
+</span><span data-line="54"><span class="c1">#: must we credit?". This tuple is the SSOT for that question — anything that</span>
+</span><span data-line="55"><span class="c1">#: persists, forwards or re-materialises an :class:`ImageResult` copies exactly</span>
+</span><span data-line="56"><span class="c1">#: these, by these names, so no rename table is ever needed downstream. It is</span>
+</span><span data-line="57"><span class="c1">#: the one field set that cannot be reconstructed later: a dead URL, a</span>
+</span><span data-line="58"><span class="c1">#: re-keyed provider or a re-tagged aggregator all leave a stored selection</span>
+</span><span data-line="59"><span class="c1">#: unable to answer it.</span>
+</span><span data-line="60"><span class="n">RIGHTS_FIELDS</span> <span class="o">=</span> <span class="p">(</span>
+</span><span data-line="61">    <span class="s2">"license"</span><span class="p">,</span>
+</span><span data-line="62">    <span class="s2">"license_url"</span><span class="p">,</span>
+</span><span data-line="63">    <span class="s2">"attribution"</span><span class="p">,</span>
+</span><span data-line="64">    <span class="s2">"source_page_url"</span><span class="p">,</span>
+</span><span data-line="65">    <span class="s2">"author"</span><span class="p">,</span>
+</span><span data-line="66">    <span class="s2">"author_url"</span><span class="p">,</span>
+</span><span data-line="67">    <span class="s2">"cacheable"</span><span class="p">,</span>
+</span><span data-line="68"><span class="p">)</span>
+</span><span data-line="69">
+</span><span data-line="70">
+</span><span data-line="71"><span class="c1">#: The extra rights flags a **video** hit carries (stock footage is licensed</span>
+</span><span data-line="72"><span class="c1">#: with restrictions a photo rarely has). They answer the same question as</span>
+</span><span data-line="73"><span class="c1">#: :data:`RIGHTS_FIELDS` and are persisted under the same names, but they live</span>
+</span><span data-line="74"><span class="c1">#: beside it rather than inside it: :data:`RIGHTS_FIELDS` is what an *image*</span>
+</span><span data-line="75"><span class="c1">#: has, and it is projected wholesale onto ``walkthru.AssetRights`` and read off</span>
+</span><span data-line="76"><span class="c1">#: every :class:`ImageResult`. All four are optional; ``None`` means *not</span>
+</span><span data-line="77"><span class="c1">#: recorded*, which is not the same claim as ``False``.</span>
+</span><span data-line="78"><span class="n">VIDEO_RIGHTS_FIELDS</span> <span class="o">=</span> <span class="p">(</span>
+</span><span data-line="79">    <span class="s2">"editorial_only"</span><span class="p">,</span>
+</span><span data-line="80">    <span class="s2">"has_model_release"</span><span class="p">,</span>
+</span><span data-line="81">    <span class="s2">"has_property_release"</span><span class="p">,</span>
+</span><span data-line="82">    <span class="s2">"audio_policy"</span><span class="p">,</span>
+</span><span data-line="83"><span class="p">)</span>
+</span><span data-line="84">
+</span><span data-line="85"><span class="c1">#: Everything that answers "may we ship this?" for *any* media type — what</span>
+</span><span data-line="86"><span class="c1">#: persistence stores. For an image the last four are simply never recorded.</span>
+</span><span data-line="87"><span class="n">MEDIA_RIGHTS_FIELDS</span> <span class="o">=</span> <span class="n">RIGHTS_FIELDS</span> <span class="o">+</span> <span class="n">VIDEO_RIGHTS_FIELDS</span>
+</span><span data-line="88">
+</span><span data-line="89"><span class="c1">#: The values of the ``media_type`` tag, in union order.</span>
+</span><span data-line="90"><span class="n">MEDIA_TYPES</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"image"</span><span class="p">,</span> <span class="s2">"video"</span><span class="p">)</span>
+</span><span data-line="91">
+</span><span data-line="92">
+<div class="viewcode-block" id="MediaResult">
+<a class="viewcode-back" href="../../_autosummary/illustration.schema.html#illustration.MediaResult">[docs]</a>
+</span><span data-line="93"><span class="k">class</span><span class="w"> </span><span class="nc">MediaResult</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+</span><span data-line="94"><span class="w">    </span><span class="sd">"""What every normalized hit from any provider carries, whatever the media.</span>
+</span><span data-line="95">
+</span><span data-line="96"><span class="sd">    A base, not a result: instantiate :class:`ImageResult` or</span>
+</span><span data-line="97"><span class="sd">    :class:`VideoResult`. Neither subclasses the other, on purpose — code typed</span>
+</span><span data-line="98"><span class="sd">    on images (the ``burns`` render hook, ``sequence``'s pHash dedupe) must not</span>
+</span><span data-line="99"><span class="sd">    silently accept a video; see :func:`require_image`.</span>
+</span><span data-line="100">
+</span><span data-line="101"><span class="sd">    ``media_type`` tells them apart: ``"image"`` or ``"video"``. It is a real</span>
+</span><span data-line="102"><span class="sd">    serialized field on :class:`VideoResult` only. :class:`ImageResult` reports</span>
+</span><span data-line="103"><span class="sd">    ``"image"`` through a read-only property and does not serialize it, so the</span>
+</span><span data-line="104"><span class="sd">    image contract (dumps, JSON Schema, stored selections, parity fixtures) is</span>
+</span><span data-line="105"><span class="sd">    byte-for-byte what it was; a payload with no tag *is* an image</span>
+</span><span data-line="106"><span class="sd">    (:func:`parse_media_result`).</span>
+</span><span data-line="107"><span class="sd">    """</span>
+</span><span data-line="108">
+</span><span data-line="109">    <span class="n">provider</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"Source/provider name, e.g. 'openverse'."</span><span class="p">)</span>
+</span><span data-line="110">    <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"Provider-native identifier."</span><span class="p">)</span>
+</span><span data-line="111">    <span class="n">url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"Full-resolution image URL."</span><span class="p">)</span>
+</span><span data-line="112">    <span class="n">thumbnail_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="113">    <span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="114">    <span class="n">height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="115">    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="116">    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+</span><span data-line="117">        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Alt text / longer description."</span>
+</span><span data-line="118">    <span class="p">)</span>
+</span><span data-line="119">    <span class="n">tags</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span> <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span><span class="s2">"default"</span><span class="p">:</span> <span class="p">[]})</span>
+</span><span data-line="120">    <span class="n">license</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+</span><span data-line="121">        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"License code or name (e.g. 'by-sa')."</span>
+</span><span data-line="122">    <span class="p">)</span>
+</span><span data-line="123">    <span class="n">license_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="124">    <span class="n">attribution</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+</span><span data-line="125">        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Ready-to-render attribution sentence."</span>
+</span><span data-line="126">    <span class="p">)</span>
+</span><span data-line="127">    <span class="n">source_page_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="128">    <span class="n">author</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="129">    <span class="n">author_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="130">    <span class="n">cacheable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+</span><span data-line="131">        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"May the bytes be downloaded/cached to our server?"</span>
+</span><span data-line="132">    <span class="p">)</span>
+</span><span data-line="133">    <span class="n">avg_color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+</span><span data-line="134">        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Dominant-color hint where available."</span>
+</span><span data-line="135">    <span class="p">)</span>
+</span><span data-line="136">    <span class="c1"># provenance / forward-compatibility</span>
+</span><span data-line="137">    <span class="n">query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+</span><span data-line="138">        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Canonical query that produced this hit."</span>
+</span><span data-line="139">    <span class="p">)</span>
+</span><span data-line="140">    <span class="n">score</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+</span><span data-line="141">        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Reserved for Layer-2 rerank; None at Layer 1."</span>
+</span><span data-line="142">    <span class="p">)</span>
+</span><span data-line="143">    <span class="n">raw</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+</span><span data-line="144">        <span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span>
+</span><span data-line="145">        <span class="n">description</span><span class="o">=</span><span class="s2">"Untranslated provider payload."</span><span class="p">,</span>
+</span><span data-line="146">        <span class="c1"># A default_factory emits no JSON-Schema default; the TS twin needs one</span>
+</span><span data-line="147">        <span class="c1"># so a parsed result carries `{}` (and `[]` for tags) like this side does.</span>
+</span><span data-line="148">        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span><span class="s2">"default"</span><span class="p">:</span> <span class="p">{}},</span>
+</span><span data-line="149">    <span class="p">)</span>
+</span><span data-line="150">
+<div class="viewcode-block" id="MediaResult.to_search_hit">
+<a class="viewcode-back" href="../../_autosummary/illustration.schema.html#illustration.MediaResult.to_search_hit">[docs]</a>
+</span><span data-line="151">    <span class="k">def</span><span class="w"> </span><span class="nf">to_search_hit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span data-line="152"><span class="w">        </span><span class="sd">"""Adapt to an ``ir.SearchHit`` for Layer-2 cross-provider fusion.</span>
+</span><span data-line="153">
+</span><span data-line="154"><span class="sd">        Imported lazily so ``import illustration`` never requires ``ir``.</span>
+</span><span data-line="155"><span class="sd">        """</span>
+</span><span data-line="156">        <span class="k">return</span> <span class="n">to_search_hit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 </div>
 
-</span><span data-line="116">
-</span><span data-line="117">
+</span><span data-line="157">
+</span><span data-line="158">
+<div class="viewcode-block" id="ImageResult">
+<a class="viewcode-back" href="../../_autosummary/illustration.schema.html#illustration.ImageResult">[docs]</a>
+</span><span data-line="159"><span class="k">class</span><span class="w"> </span><span class="nc">ImageResult</span><span class="p">(</span><span class="n">MediaResult</span><span class="p">):</span>
+</span><span data-line="160"><span class="w">    </span><span class="sd">"""One normalized image hit from any provider.</span>
+</span><span data-line="161">
+</span><span data-line="162"><span class="sd">    The first eight fields plus ``cacheable`` are the cross-provider minimum the</span>
+</span><span data-line="163"><span class="sd">    design guarantees; the rest are populated when a provider supplies them.</span>
+</span><span data-line="164"><span class="sd">    """</span>
+</span><span data-line="165">
+</span><span data-line="166">    <span class="nd">@property</span>
+</span><span data-line="167">    <span class="k">def</span><span class="w"> </span><span class="nf">media_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">"image"</span><span class="p">]:</span>
+</span><span data-line="168"><span class="w">        </span><span class="sd">"""Always ``"image"``; deliberately not a serialized field (see :class:`MediaResult`)."""</span>
+</span><span data-line="169">        <span class="k">return</span> <span class="s2">"image"</span></div>
+
+</span><span data-line="170">
+</span><span data-line="171">
+<div class="viewcode-block" id="Rendition">
+<a class="viewcode-back" href="../../_autosummary/illustration.schema.html#illustration.Rendition">[docs]</a>
+</span><span data-line="172"><span class="k">class</span><span class="w"> </span><span class="nc">Rendition</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+</span><span data-line="173"><span class="w">    </span><span class="sd">"""One playable encoding of a video, as a provider offers it."""</span>
+</span><span data-line="174">
+</span><span data-line="175">    <span class="n">url</span><span class="p">:</span> <span class="nb">str</span>
+</span><span data-line="176">    <span class="n">mime_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="177">    <span class="n">video_codec</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="178">    <span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="179">    <span class="n">height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="180">    <span class="n">fps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="181">    <span class="n">size_bytes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="182">    <span class="n">quality_label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+</span><span data-line="183">        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"The provider's own label, e.g. 'hd' or '4k'."</span>
+</span><span data-line="184">    <span class="p">)</span>
+</span><span data-line="185">    <span class="n">expires_at</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+</span><span data-line="186">        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"ISO-8601 expiry of a signed URL, when it has one."</span>
+</span><span data-line="187">    <span class="p">)</span></div>
+
+</span><span data-line="188">
+</span><span data-line="189">
+<div class="viewcode-block" id="TimeSpan">
+<a class="viewcode-back" href="../../_autosummary/illustration.schema.html#illustration.TimeSpan">[docs]</a>
+</span><span data-line="190"><span class="k">class</span><span class="w"> </span><span class="nc">TimeSpan</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+</span><span data-line="191"><span class="w">    </span><span class="sd">"""A span of a media file, in seconds.</span>
+</span><span data-line="192">
+</span><span data-line="193"><span class="sd">    Maps onto an OTIO ``TimeRange``, a schema.org ``Clip`` and a media-fragment</span>
+</span><span data-line="194"><span class="sd">    ``#t=start,end``.</span>
+</span><span data-line="195"><span class="sd">    """</span>
+</span><span data-line="196">
+</span><span data-line="197">    <span class="n">start</span><span class="p">:</span> <span class="nb">float</span>
+</span><span data-line="198">    <span class="n">end</span><span class="p">:</span> <span class="nb">float</span>
+</span><span data-line="199">
+</span><span data-line="200">    <span class="nd">@model_validator</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">"after"</span><span class="p">)</span>
+</span><span data-line="201">    <span class="k">def</span><span class="w"> </span><span class="nf">_ordered</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"TimeSpan"</span><span class="p">:</span>
+</span><span data-line="202">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">end</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">:</span>
+</span><span data-line="203">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"TimeSpan end (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="si">}</span><span class="s2">) is before start (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+</span><span data-line="204">        <span class="k">return</span> <span class="bp">self</span></div>
+
+</span><span data-line="205">
+</span><span data-line="206">
+<div class="viewcode-block" id="VideoResult">
+<a class="viewcode-back" href="../../_autosummary/illustration.schema.html#illustration.VideoResult">[docs]</a>
+</span><span data-line="207"><span class="k">class</span><span class="w"> </span><span class="nc">VideoResult</span><span class="p">(</span><span class="n">MediaResult</span><span class="p">):</span>
+</span><span data-line="208"><span class="w">    </span><span class="sd">"""One normalized video hit from any provider.</span>
+</span><span data-line="209">
+</span><span data-line="210"><span class="sd">    Carries the :class:`MediaResult` fields plus what is specific to footage.</span>
+</span><span data-line="211"><span class="sd">    ``url`` stays the best *progressive* rendition at search time, so a reader</span>
+</span><span data-line="212"><span class="sd">    of ``.url`` keeps working; ``renditions`` lists every encoding on offer.</span>
+</span><span data-line="213">
+</span><span data-line="214"><span class="sd">    The four :data:`VIDEO_RIGHTS_FIELDS` are optional; ``None`` means *not</span>
+</span><span data-line="215"><span class="sd">    recorded*.</span>
+</span><span data-line="216"><span class="sd">    """</span>
+</span><span data-line="217">
+</span><span data-line="218">    <span class="n">media_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">"video"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"video"</span>
+</span><span data-line="219">    <span class="n">url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"The best progressive rendition at search time."</span><span class="p">)</span>
+</span><span data-line="220">    <span class="n">duration_s</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="221">    <span class="n">fps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="222">    <span class="n">has_audio</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="223">    <span class="n">renditions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Rendition</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+</span><span data-line="224">        <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span> <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span><span class="s2">"default"</span><span class="p">:</span> <span class="p">[]}</span>
+</span><span data-line="225">    <span class="p">)</span>
+</span><span data-line="226">    <span class="n">poster_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="227">    <span class="n">preview_frames</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+</span><span data-line="228">        <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span> <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span><span class="s2">"default"</span><span class="p">:</span> <span class="p">[]}</span>
+</span><span data-line="229">    <span class="p">)</span>
+</span><span data-line="230">    <span class="n">moment</span><span class="p">:</span> <span class="n">TimeSpan</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+</span><span data-line="231">        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"The span that matched the query, when the provider says."</span>
+</span><span data-line="232">    <span class="p">)</span>
+</span><span data-line="233">    <span class="c1"># --- video rights record (VIDEO_RIGHTS_FIELDS) ---</span>
+</span><span data-line="234">    <span class="n">editorial_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+</span><span data-line="235">        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Editorial use only (no commercial/advertising use)."</span>
+</span><span data-line="236">    <span class="p">)</span>
+</span><span data-line="237">    <span class="n">has_model_release</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="238">    <span class="n">has_property_release</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="239">    <span class="n">audio_policy</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+</span><span data-line="240">        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"What the soundtrack may be used for, as the provider words it."</span>
+</span><span data-line="241">    <span class="p">)</span></div>
+
+</span><span data-line="242">
+</span><span data-line="243">
+</span><span data-line="244"><span class="k">def</span><span class="w"> </span><span class="nf">_media_type_of</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="245"><span class="w">    </span><span class="sd">"""The union's callable discriminator: the tag, or ``"image"`` when absent."""</span>
+</span><span data-line="246">    <span class="n">tag</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"media_type"</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">)</span> <span class="k">else</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">"media_type"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</span><span data-line="247">    <span class="k">return</span> <span class="n">tag</span> <span class="ow">or</span> <span class="s2">"image"</span>
+</span><span data-line="248">
+</span><span data-line="249">
+</span><span data-line="250"><span class="c1">#: Either kind of hit. Discriminated by ``media_type``; a payload without the</span>
+</span><span data-line="251"><span class="c1">#: tag is an image, so every stored selection and cached result still loads.</span>
+</span><span data-line="252"><span class="n">AnyMediaResult</span> <span class="o">=</span> <span class="n">Annotated</span><span class="p">[</span>
+</span><span data-line="253">    <span class="n">Union</span><span class="p">[</span>
+</span><span data-line="254">        <span class="n">Annotated</span><span class="p">[</span><span class="n">ImageResult</span><span class="p">,</span> <span class="n">Tag</span><span class="p">(</span><span class="s2">"image"</span><span class="p">)],</span>
+</span><span data-line="255">        <span class="n">Annotated</span><span class="p">[</span><span class="n">VideoResult</span><span class="p">,</span> <span class="n">Tag</span><span class="p">(</span><span class="s2">"video"</span><span class="p">)],</span>
+</span><span data-line="256">    <span class="p">],</span>
+</span><span data-line="257">    <span class="n">Discriminator</span><span class="p">(</span><span class="n">_media_type_of</span><span class="p">),</span>
+</span><span data-line="258"><span class="p">]</span>
+</span><span data-line="259">
+</span><span data-line="260"><span class="n">_MEDIA_ADAPTER</span> <span class="o">=</span> <span class="n">TypeAdapter</span><span class="p">(</span><span class="n">AnyMediaResult</span><span class="p">)</span>
+</span><span data-line="261">
+</span><span data-line="262">
+<div class="viewcode-block" id="parse_media_result">
+<a class="viewcode-back" href="../../_autosummary/illustration.schema.html#illustration.parse_media_result">[docs]</a>
+</span><span data-line="263"><span class="k">def</span><span class="w"> </span><span class="nf">parse_media_result</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"ImageResult | VideoResult"</span><span class="p">:</span>
+</span><span data-line="264"><span class="w">    </span><span class="sd">"""Validate a dict (or pass through a model) into the right result type.</span>
+</span><span data-line="265">
+</span><span data-line="266"><span class="sd">    &gt;&gt;&gt; parse_media_result({"provider": "p", "id": "1", "url": "u"}).media_type</span>
+</span><span data-line="267"><span class="sd">    'image'</span>
+</span><span data-line="268"><span class="sd">    &gt;&gt;&gt; parse_media_result({"provider": "p", "id": "1", "url": "u", "media_type": "video"}).media_type</span>
+</span><span data-line="269"><span class="sd">    'video'</span>
+</span><span data-line="270"><span class="sd">    """</span>
+</span><span data-line="271">    <span class="k">return</span> <span class="n">_MEDIA_ADAPTER</span><span class="o">.</span><span class="n">validate_python</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span></div>
+
+</span><span data-line="272">
+</span><span data-line="273">
+<div class="viewcode-block" id="require_image">
+<a class="viewcode-back" href="../../_autosummary/illustration.schema.html#illustration.require_image">[docs]</a>
+</span><span data-line="274"><span class="k">def</span><span class="w"> </span><span class="nf">require_image</span><span class="p">(</span>
+</span><span data-line="275">    <span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">where</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"this function"</span><span class="p">,</span> <span class="n">strict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span data-line="276"><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"ImageResult"</span><span class="p">:</span>
+</span><span data-line="277"><span class="w">    </span><span class="sd">"""Return ``obj`` if it is an :class:`ImageResult`, else raise ``TypeError``.</span>
+</span><span data-line="278">
+</span><span data-line="279"><span class="sd">    ``strict=False`` refuses only other :class:`MediaResult` kinds (a video) and</span>
+</span><span data-line="280"><span class="sd">    lets a duck-typed stand-in through, for call sites that always took those.</span>
+</span><span data-line="281">
+</span><span data-line="282"><span class="sd">    The guard for image-only code paths. A :class:`VideoResult` is not an</span>
+</span><span data-line="283"><span class="sd">    :class:`ImageResult` by design, but duck-typed code that reads ``.url`` would</span>
+</span><span data-line="284"><span class="sd">    take one without complaint and fetch a movie as a picture; this makes that</span>
+</span><span data-line="285"><span class="sd">    loud.</span>
+</span><span data-line="286">
+</span><span data-line="287"><span class="sd">    &gt;&gt;&gt; require_image(VideoResult(provider="p", id="1", url="u"), where="render")</span>
+</span><span data-line="288"><span class="sd">    Traceback (most recent call last):</span>
+</span><span data-line="289"><span class="sd">    ...</span>
+</span><span data-line="290"><span class="sd">    TypeError: render expects an ImageResult, got VideoResult</span>
+</span><span data-line="291"><span class="sd">    """</span>
+</span><span data-line="292">    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">ImageResult</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">strict</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">MediaResult</span><span class="p">)):</span>
+</span><span data-line="293">        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">where</span><span class="si">}</span><span class="s2"> expects an ImageResult, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span data-line="294">    <span class="k">return</span> <span class="n">obj</span></div>
+
+</span><span data-line="295">
+</span><span data-line="296">
+</span><span data-line="297">
 <div class="viewcode-block" id="to_search_hit">
 <a class="viewcode-back" href="../../_autosummary/illustration.schema.html#illustration.to_search_hit">[docs]</a>
-</span><span data-line="118"><span class="k">def</span><span class="w"> </span><span class="nf">to_search_hit</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="s2">"ImageResult"</span><span class="p">):</span>
-</span><span data-line="119"><span class="w">    </span><span class="sd">"""Map an :class:`ImageResult` to an ``ir.SearchHit`` for Layer-2 fusion.</span>
-</span><span data-line="120">
-</span><span data-line="121"><span class="sd">    The bridge into the ``ir`` retrieval substrate so the agentic layer can</span>
-</span><span data-line="122"><span class="sd">    ``ir.fuse_hits`` across providers. ``ir`` is imported here, not at module</span>
-</span><span data-line="123"><span class="sd">    top, to keep the base façade dependency-light. Identity follows ir's</span>
-</span><span data-line="124"><span class="sd">    ``(source, artifact_id)`` keying: ``source`` is the provider and</span>
-</span><span data-line="125"><span class="sd">    ``artifact_id`` is the provider-native id. The image URL is placed under the</span>
-</span><span data-line="126"><span class="sd">    ``path`` metadata key so ``SearchHit.pointer`` (which scans</span>
-</span><span data-line="127"><span class="sd">    ``ir.base.POINTER_KEYS``) resolves to it; the full normalized result rides</span>
-</span><span data-line="128"><span class="sd">    along in ``metadata`` too.</span>
-</span><span data-line="129">
-</span><span data-line="130"><span class="sd">    ``score`` is ``0.0`` for any hit not yet reranked (Layer 1 leaves</span>
-</span><span data-line="131"><span class="sd">    ``ImageResult.score`` as ``None``) — rely on *rank*, not magnitude, until a</span>
-</span><span data-line="132"><span class="sd">    Layer-2 reranker populates it; ``ir.fuse_hits`` (RRF) is rank-based, so this</span>
-</span><span data-line="133"><span class="sd">    is correct for fusion.</span>
-</span><span data-line="134"><span class="sd">    """</span>
-</span><span data-line="135">    <span class="kn">from</span><span class="w"> </span><span class="nn">ir</span><span class="w"> </span><span class="kn">import</span> <span class="n">SearchHit</span>  <span class="c1"># lazy: Layer-2 dependency only</span>
-</span><span data-line="136">
-</span><span data-line="137">    <span class="k">return</span> <span class="n">SearchHit</span><span class="p">(</span>
-</span><span data-line="138">        <span class="n">artifact_id</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
-</span><span data-line="139">        <span class="n">surface_kind</span><span class="o">=</span><span class="s2">"image"</span><span class="p">,</span>
-</span><span data-line="140">        <span class="n">score</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">score</span> <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">score</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mf">0.0</span><span class="p">,</span>
-</span><span data-line="141">        <span class="n">text</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">description</span> <span class="ow">or</span> <span class="n">result</span><span class="o">.</span><span class="n">title</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">,</span>
-</span><span data-line="142">        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="o">**</span><span class="n">result</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(),</span> <span class="s2">"path"</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">url</span><span class="p">},</span>
-</span><span data-line="143">        <span class="n">source</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">provider</span><span class="p">,</span>
-</span><span data-line="144">    <span class="p">)</span></div>
+</span><span data-line="298"><span class="k">def</span><span class="w"> </span><span class="nf">to_search_hit</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="s2">"MediaResult"</span><span class="p">):</span>
+</span><span data-line="299"><span class="w">    </span><span class="sd">"""Map an :class:`ImageResult` to an ``ir.SearchHit`` for Layer-2 fusion.</span>
+</span><span data-line="300">
+</span><span data-line="301"><span class="sd">    The bridge into the ``ir`` retrieval substrate so the agentic layer can</span>
+</span><span data-line="302"><span class="sd">    ``ir.fuse_hits`` across providers. ``ir`` is imported here, not at module</span>
+</span><span data-line="303"><span class="sd">    top, to keep the base façade dependency-light. Identity follows ir's</span>
+</span><span data-line="304"><span class="sd">    ``(source, artifact_id)`` keying: ``source`` is the provider and</span>
+</span><span data-line="305"><span class="sd">    ``artifact_id`` is the provider-native id. The image URL is placed under the</span>
+</span><span data-line="306"><span class="sd">    ``path`` metadata key so ``SearchHit.pointer`` (which scans</span>
+</span><span data-line="307"><span class="sd">    ``ir.base.POINTER_KEYS``) resolves to it; the full normalized result rides</span>
+</span><span data-line="308"><span class="sd">    along in ``metadata`` too.</span>
+</span><span data-line="309">
+</span><span data-line="310"><span class="sd">    ``score`` is ``0.0`` for any hit not yet reranked (Layer 1 leaves</span>
+</span><span data-line="311"><span class="sd">    ``ImageResult.score`` as ``None``) — rely on *rank*, not magnitude, until a</span>
+</span><span data-line="312"><span class="sd">    Layer-2 reranker populates it; ``ir.fuse_hits`` (RRF) is rank-based, so this</span>
+</span><span data-line="313"><span class="sd">    is correct for fusion.</span>
+</span><span data-line="314"><span class="sd">    """</span>
+</span><span data-line="315">    <span class="kn">from</span><span class="w"> </span><span class="nn">ir</span><span class="w"> </span><span class="kn">import</span> <span class="n">SearchHit</span>  <span class="c1"># lazy: Layer-2 dependency only</span>
+</span><span data-line="316">
+</span><span data-line="317">    <span class="k">return</span> <span class="n">SearchHit</span><span class="p">(</span>
+</span><span data-line="318">        <span class="n">artifact_id</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+</span><span data-line="319">        <span class="n">surface_kind</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="s2">"media_type"</span><span class="p">,</span> <span class="s2">"image"</span><span class="p">),</span>
+</span><span data-line="320">        <span class="n">score</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">score</span> <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">score</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mf">0.0</span><span class="p">,</span>
+</span><span data-line="321">        <span class="n">text</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">description</span> <span class="ow">or</span> <span class="n">result</span><span class="o">.</span><span class="n">title</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">,</span>
+</span><span data-line="322">        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="o">**</span><span class="n">result</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(),</span> <span class="s2">"path"</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">url</span><span class="p">},</span>
+</span><span data-line="323">        <span class="n">source</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">provider</span><span class="p">,</span>
+</span><span data-line="324">    <span class="p">)</span></div>
 
-</span><span data-line="145">
-</span><span data-line="146">
+</span><span data-line="325">
+</span><span data-line="326">
 <div class="viewcode-block" id="license_allowlist">
 <a class="viewcode-back" href="../../_autosummary/illustration.schema.html#illustration.license_allowlist">[docs]</a>
-</span><span data-line="147"><span class="k">def</span><span class="w"> </span><span class="nf">license_allowlist</span><span class="p">(</span>
-</span><span data-line="148">    <span class="n">results</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="s2">"ImageResult"</span><span class="p">],</span>
-</span><span data-line="149">    <span class="o">*</span><span class="p">,</span>
-</span><span data-line="150">    <span class="n">allow</span><span class="p">:</span> <span class="s2">"Iterable[str] | None"</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="151"><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="s2">"ImageResult"</span><span class="p">]:</span>
-</span><span data-line="152"><span class="w">    </span><span class="sd">"""Keep only results whose license is on the allowlist (R3's license gate).</span>
-</span><span data-line="153">
-</span><span data-line="154"><span class="sd">    The mandatory per-file license-verification gate for commercial-adjacent</span>
-</span><span data-line="155"><span class="sd">    use: aggregators disclaim license accuracy, so callers should gate on a</span>
-</span><span data-line="156"><span class="sd">    known-good set. Both sides are run through</span>
-</span><span data-line="157"><span class="sd">    :func:`illustration.licensing.normalize_license` first, so a provider's own</span>
-</span><span data-line="158"><span class="sd">    spelling (``cc-by-sa-4.0`` from Commons, ``Pixabay License``) matches the</span>
-</span><span data-line="159"><span class="sd">    canonical code without the allowlist having to enumerate every dialect —</span>
-</span><span data-line="160"><span class="sd">    and without ever dropping an ``nc``/``nd`` restriction. Results with no</span>
-</span><span data-line="161"><span class="sd">    ``license`` are dropped (unknown == not allowed).</span>
-</span><span data-line="162">
-</span><span data-line="163"><span class="sd">    &gt;&gt;&gt; a = ImageResult(provider="p", id="1", url="u", license="cc0")</span>
-</span><span data-line="164"><span class="sd">    &gt;&gt;&gt; b = ImageResult(provider="p", id="2", url="u", license="by-nc")</span>
-</span><span data-line="165"><span class="sd">    &gt;&gt;&gt; c = ImageResult(provider="p", id="3", url="u", license=None)</span>
-</span><span data-line="166"><span class="sd">    &gt;&gt;&gt; [r.id for r in license_allowlist([a, b, c])]</span>
-</span><span data-line="167"><span class="sd">    ['1']</span>
-</span><span data-line="168"><span class="sd">    &gt;&gt;&gt; [r.id for r in license_allowlist([a, b, c], allow={"by-nc"})]</span>
-</span><span data-line="169"><span class="sd">    ['2']</span>
-</span><span data-line="170">
-</span><span data-line="171"><span class="sd">    Provider dialects pass the same gate:</span>
-</span><span data-line="172">
-</span><span data-line="173"><span class="sd">    &gt;&gt;&gt; w = ImageResult(provider="wikimedia", id="4", url="u", license="cc-by-sa-4.0")</span>
-</span><span data-line="174"><span class="sd">    &gt;&gt;&gt; p = ImageResult(provider="pixabay", id="5", url="u", license="Pixabay License")</span>
-</span><span data-line="175"><span class="sd">    &gt;&gt;&gt; nd = ImageResult(provider="wikimedia", id="6", url="u", license="cc-by-nd-4.0")</span>
-</span><span data-line="176"><span class="sd">    &gt;&gt;&gt; [r.id for r in license_allowlist([w, p, nd])]</span>
-</span><span data-line="177"><span class="sd">    ['4', '5']</span>
-</span><span data-line="178"><span class="sd">    """</span>
-</span><span data-line="179">    <span class="n">allowed</span> <span class="o">=</span> <span class="p">{</span>
-</span><span data-line="180">        <span class="n">normalize_license</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
-</span><span data-line="181">        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="p">(</span><span class="n">allow</span> <span class="k">if</span> <span class="n">allow</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">DFLT_LICENSE_ALLOWLIST</span><span class="p">)</span>
-</span><span data-line="182">    <span class="p">}</span>
-</span><span data-line="183">    <span class="n">allowed</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-</span><span data-line="184">    <span class="k">return</span> <span class="p">[</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="n">normalize_license</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">license</span><span class="p">)</span> <span class="ow">in</span> <span class="n">allowed</span><span class="p">]</span></div>
+</span><span data-line="327"><span class="k">def</span><span class="w"> </span><span class="nf">license_allowlist</span><span class="p">(</span>
+</span><span data-line="328">    <span class="n">results</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="s2">"MediaResult"</span><span class="p">],</span>
+</span><span data-line="329">    <span class="o">*</span><span class="p">,</span>
+</span><span data-line="330">    <span class="n">allow</span><span class="p">:</span> <span class="s2">"Iterable[str] | None"</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="331"><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="s2">"MediaResult"</span><span class="p">]:</span>
+</span><span data-line="332"><span class="w">    </span><span class="sd">"""Keep only results whose license is on the allowlist (R3's license gate).</span>
+</span><span data-line="333">
+</span><span data-line="334"><span class="sd">    The mandatory per-file license-verification gate for commercial-adjacent</span>
+</span><span data-line="335"><span class="sd">    use: aggregators disclaim license accuracy, so callers should gate on a</span>
+</span><span data-line="336"><span class="sd">    known-good set. Both sides are run through</span>
+</span><span data-line="337"><span class="sd">    :func:`illustration.licensing.normalize_license` first, so a provider's own</span>
+</span><span data-line="338"><span class="sd">    spelling (``cc-by-sa-4.0`` from Commons, ``Pixabay License``) matches the</span>
+</span><span data-line="339"><span class="sd">    canonical code without the allowlist having to enumerate every dialect —</span>
+</span><span data-line="340"><span class="sd">    and without ever dropping an ``nc``/``nd`` restriction. Results with no</span>
+</span><span data-line="341"><span class="sd">    ``license`` are dropped (unknown == not allowed).</span>
+</span><span data-line="342">
+</span><span data-line="343"><span class="sd">    &gt;&gt;&gt; a = ImageResult(provider="p", id="1", url="u", license="cc0")</span>
+</span><span data-line="344"><span class="sd">    &gt;&gt;&gt; b = ImageResult(provider="p", id="2", url="u", license="by-nc")</span>
+</span><span data-line="345"><span class="sd">    &gt;&gt;&gt; c = ImageResult(provider="p", id="3", url="u", license=None)</span>
+</span><span data-line="346"><span class="sd">    &gt;&gt;&gt; [r.id for r in license_allowlist([a, b, c])]</span>
+</span><span data-line="347"><span class="sd">    ['1']</span>
+</span><span data-line="348"><span class="sd">    &gt;&gt;&gt; [r.id for r in license_allowlist([a, b, c], allow={"by-nc"})]</span>
+</span><span data-line="349"><span class="sd">    ['2']</span>
+</span><span data-line="350">
+</span><span data-line="351"><span class="sd">    Provider dialects pass the same gate:</span>
+</span><span data-line="352">
+</span><span data-line="353"><span class="sd">    &gt;&gt;&gt; w = ImageResult(provider="wikimedia", id="4", url="u", license="cc-by-sa-4.0")</span>
+</span><span data-line="354"><span class="sd">    &gt;&gt;&gt; p = ImageResult(provider="pixabay", id="5", url="u", license="Pixabay License")</span>
+</span><span data-line="355"><span class="sd">    &gt;&gt;&gt; nd = ImageResult(provider="wikimedia", id="6", url="u", license="cc-by-nd-4.0")</span>
+</span><span data-line="356"><span class="sd">    &gt;&gt;&gt; [r.id for r in license_allowlist([w, p, nd])]</span>
+</span><span data-line="357"><span class="sd">    ['4', '5']</span>
+</span><span data-line="358"><span class="sd">    """</span>
+</span><span data-line="359">    <span class="n">allowed</span> <span class="o">=</span> <span class="p">{</span>
+</span><span data-line="360">        <span class="n">normalize_license</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+</span><span data-line="361">        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="p">(</span><span class="n">allow</span> <span class="k">if</span> <span class="n">allow</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">DFLT_LICENSE_ALLOWLIST</span><span class="p">)</span>
+</span><span data-line="362">    <span class="p">}</span>
+</span><span data-line="363">    <span class="n">allowed</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+</span><span data-line="364">    <span class="k">return</span> <span class="p">[</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="n">normalize_license</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">license</span><span class="p">)</span> <span class="ow">in</span> <span class="n">allowed</span><span class="p">]</span></div>
 
-</span><span data-line="185">
-</span><span data-line="186">
+</span><span data-line="365">
+</span><span data-line="366">
 <div class="viewcode-block" id="check_attributions">
 <a class="viewcode-back" href="../../_autosummary/illustration.schema.html#illustration.check_attributions">[docs]</a>
-</span><span data-line="187"><span class="k">def</span><span class="w"> </span><span class="nf">check_attributions</span><span class="p">(</span><span class="n">results</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="s2">"ImageResult"</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="s2">"ImageResult"</span><span class="p">]:</span>
-</span><span data-line="188"><span class="w">    </span><span class="sd">"""Return the results whose ``attribution`` does not visibly name a licence.</span>
-</span><span data-line="189">
-</span><span data-line="190"><span class="sd">    ``license_allowlist`` gates on the *machine-readable* ``license`` field;</span>
-</span><span data-line="191"><span class="sd">    this is the companion audit for the *human-readable* ``attribution``</span>
-</span><span data-line="192"><span class="sd">    string a credit roll actually renders. CC BY / CC BY-SA require the</span>
-</span><span data-line="193"><span class="sd">    licence to be identified in the credit — a licensed result with a</span>
-</span><span data-line="194"><span class="sd">    populated, correct ``license`` can still carry an ``attribution`` that is</span>
-</span><span data-line="195"><span class="sd">    just an author's name (illustration#22, seen on ~4% of one Wikimedia</span>
-</span><span data-line="196"><span class="sd">    session's hits), which silently breaches that condition if a consumer</span>
-</span><span data-line="197"><span class="sd">    renders ``attribution`` verbatim, as the package's own guide tells them</span>
-</span><span data-line="198"><span class="sd">    to. This never rewrites or drops a result — it is read-only, for a</span>
-</span><span data-line="199"><span class="sd">    pipeline to review, log, or compose a fallback credit from ``author`` /</span>
-</span><span data-line="200"><span class="sd">    ``license`` / ``license_url`` for exactly the results it returns.</span>
-</span><span data-line="201">
-</span><span data-line="202"><span class="sd">    What counts as "naming the licence" depends on the licence. For the</span>
-</span><span data-line="203"><span class="sd">    CC BY family (``by``, ``by-sa``, ``by-nc``, ...) the attribution must name</span>
-</span><span data-line="204"><span class="sd">    *that* licence (see :func:`illustration.licensing.licenses_named`), or</span>
-</span><span data-line="205"><span class="sd">    contain the result's ``license_url``: "© Jane Doe", "Public domain", or a</span>
-</span><span data-line="206"><span class="sd">    different CC code (e.g. "CC BY" for a ``by-nc`` image, which drops the NC</span>
-</span><span data-line="207"><span class="sd">    restriction) are all flagged. For any other licence, the looser</span>
-</span><span data-line="208"><span class="sd">    :func:`illustration.licensing.mentions_license` signal is used.</span>
-</span><span data-line="209">
-</span><span data-line="210"><span class="sd">    A result with no ``license`` at all is not flagged: there is nothing to</span>
-</span><span data-line="211"><span class="sd">    name, and it should already have been dropped by ``license_allowlist`` if</span>
-</span><span data-line="212"><span class="sd">    that matters to the caller.</span>
-</span><span data-line="213">
-</span><span data-line="214"><span class="sd">    &gt;&gt;&gt; a = ImageResult(provider="p", id="1", url="u", license="by-sa", attribution="Jane Doe")</span>
-</span><span data-line="215"><span class="sd">    &gt;&gt;&gt; b = ImageResult(provider="p", id="2", url="u", license="by-sa",</span>
-</span><span data-line="216"><span class="sd">    ...                  attribution="Jane Doe / CC BY-SA 4.0, via Wikimedia Commons")</span>
-</span><span data-line="217"><span class="sd">    &gt;&gt;&gt; c = ImageResult(provider="p", id="3", url="u", license=None, attribution=None)</span>
-</span><span data-line="218"><span class="sd">    &gt;&gt;&gt; [r.id for r in check_attributions([a, b, c])]</span>
-</span><span data-line="219"><span class="sd">    ['1']</span>
-</span><span data-line="220"><span class="sd">    """</span>
-</span><span data-line="221">
-</span><span data-line="222">    <span class="k">return</span> <span class="p">[</span>
-</span><span data-line="223">        <span class="n">r</span>
-</span><span data-line="224">        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span>
-</span><span data-line="225">        <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">license</span>
-</span><span data-line="226">        <span class="ow">and</span> <span class="ow">not</span> <span class="n">attribution_names_license</span><span class="p">(</span>
-</span><span data-line="227">            <span class="n">r</span><span class="o">.</span><span class="n">attribution</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">license</span><span class="p">,</span> <span class="n">license_url</span><span class="o">=</span><span class="n">r</span><span class="o">.</span><span class="n">license_url</span>
-</span><span data-line="228">        <span class="p">)</span>
-</span><span data-line="229">    <span class="p">]</span></div>
+</span><span data-line="367"><span class="k">def</span><span class="w"> </span><span class="nf">check_attributions</span><span class="p">(</span><span class="n">results</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="s2">"MediaResult"</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="s2">"MediaResult"</span><span class="p">]:</span>
+</span><span data-line="368"><span class="w">    </span><span class="sd">"""Return the results whose ``attribution`` does not visibly name a licence.</span>
+</span><span data-line="369">
+</span><span data-line="370"><span class="sd">    ``license_allowlist`` gates on the *machine-readable* ``license`` field;</span>
+</span><span data-line="371"><span class="sd">    this is the companion audit for the *human-readable* ``attribution``</span>
+</span><span data-line="372"><span class="sd">    string a credit roll actually renders. CC BY / CC BY-SA require the</span>
+</span><span data-line="373"><span class="sd">    licence to be identified in the credit — a licensed result with a</span>
+</span><span data-line="374"><span class="sd">    populated, correct ``license`` can still carry an ``attribution`` that is</span>
+</span><span data-line="375"><span class="sd">    just an author's name (illustration#22, seen on ~4% of one Wikimedia</span>
+</span><span data-line="376"><span class="sd">    session's hits), which silently breaches that condition if a consumer</span>
+</span><span data-line="377"><span class="sd">    renders ``attribution`` verbatim, as the package's own guide tells them</span>
+</span><span data-line="378"><span class="sd">    to. This never rewrites or drops a result — it is read-only, for a</span>
+</span><span data-line="379"><span class="sd">    pipeline to review, log, or compose a fallback credit from ``author`` /</span>
+</span><span data-line="380"><span class="sd">    ``license`` / ``license_url`` for exactly the results it returns.</span>
+</span><span data-line="381">
+</span><span data-line="382"><span class="sd">    What counts as "naming the licence" depends on the licence. For the</span>
+</span><span data-line="383"><span class="sd">    CC BY family (``by``, ``by-sa``, ``by-nc``, ...) the attribution must name</span>
+</span><span data-line="384"><span class="sd">    *that* licence (see :func:`illustration.licensing.licenses_named`), or</span>
+</span><span data-line="385"><span class="sd">    contain the result's ``license_url``: "© Jane Doe", "Public domain", or a</span>
+</span><span data-line="386"><span class="sd">    different CC code (e.g. "CC BY" for a ``by-nc`` image, which drops the NC</span>
+</span><span data-line="387"><span class="sd">    restriction) are all flagged. For any other licence, the looser</span>
+</span><span data-line="388"><span class="sd">    :func:`illustration.licensing.mentions_license` signal is used.</span>
+</span><span data-line="389">
+</span><span data-line="390"><span class="sd">    A result with no ``license`` at all is not flagged: there is nothing to</span>
+</span><span data-line="391"><span class="sd">    name, and it should already have been dropped by ``license_allowlist`` if</span>
+</span><span data-line="392"><span class="sd">    that matters to the caller.</span>
+</span><span data-line="393">
+</span><span data-line="394"><span class="sd">    &gt;&gt;&gt; a = ImageResult(provider="p", id="1", url="u", license="by-sa", attribution="Jane Doe")</span>
+</span><span data-line="395"><span class="sd">    &gt;&gt;&gt; b = ImageResult(provider="p", id="2", url="u", license="by-sa",</span>
+</span><span data-line="396"><span class="sd">    ...                  attribution="Jane Doe / CC BY-SA 4.0, via Wikimedia Commons")</span>
+</span><span data-line="397"><span class="sd">    &gt;&gt;&gt; c = ImageResult(provider="p", id="3", url="u", license=None, attribution=None)</span>
+</span><span data-line="398"><span class="sd">    &gt;&gt;&gt; [r.id for r in check_attributions([a, b, c])]</span>
+</span><span data-line="399"><span class="sd">    ['1']</span>
+</span><span data-line="400"><span class="sd">    """</span>
+</span><span data-line="401">
+</span><span data-line="402">    <span class="k">return</span> <span class="p">[</span>
+</span><span data-line="403">        <span class="n">r</span>
+</span><span data-line="404">        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span>
+</span><span data-line="405">        <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">license</span>
+</span><span data-line="406">        <span class="ow">and</span> <span class="ow">not</span> <span class="n">attribution_names_license</span><span class="p">(</span>
+</span><span data-line="407">            <span class="n">r</span><span class="o">.</span><span class="n">attribution</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">license</span><span class="p">,</span> <span class="n">license_url</span><span class="o">=</span><span class="n">r</span><span class="o">.</span><span class="n">license_url</span>
+</span><span data-line="408">        <span class="p">)</span>
+</span><span data-line="409">    <span class="p">]</span></div>
 
-</span><span data-line="230">
-</span><span data-line="231">
-</span><span data-line="232"><span class="k">def</span><span class="w"> </span><span class="nf">_coerce_results</span><span class="p">(</span><span class="n">items</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ImageResult</span><span class="p">]:</span>
-</span><span data-line="233"><span class="w">    </span><span class="sd">"""Validate a sequence of dicts back into :class:`ImageResult` (cache reads)."""</span>
-</span><span data-line="234">    <span class="k">return</span> <span class="p">[</span><span class="n">ImageResult</span><span class="o">.</span><span class="n">model_validate</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">items</span><span class="p">]</span>
+</span><span data-line="410">
+</span><span data-line="411">
+</span><span data-line="412"><span class="k">def</span><span class="w"> </span><span class="nf">_coerce_results</span><span class="p">(</span><span class="n">items</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ImageResult</span> <span class="o">|</span> <span class="n">VideoResult</span><span class="p">]:</span>
+</span><span data-line="413"><span class="w">    </span><span class="sd">"""Validate a sequence of dicts back into results (cache reads).</span>
+</span><span data-line="414">
+</span><span data-line="415"><span class="sd">    Through the media union, so a cached video comes back a video — with its</span>
+</span><span data-line="416"><span class="sd">    rights flags — rather than an image that quietly lost them. An untagged</span>
+</span><span data-line="417"><span class="sd">    (older) payload is an image.</span>
+</span><span data-line="418"><span class="sd">    """</span>
+</span><span data-line="419">    <span class="k">return</span> <span class="p">[</span><span class="n">parse_media_result</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">items</span><span class="p">]</span>
 </span></pre></div>
         </article><button class="back-to-top" type="button">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -415,7 +618,7 @@ data-aria-dark="Switch to auto color mode">
     </div>
   </div>
 </footer>
-      <script src="../../_static/documentation_options.js?v=056c92e6"></script>
+      <script src="../../_static/documentation_options.js?v=a11416ff"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>

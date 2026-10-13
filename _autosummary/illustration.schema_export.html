@@ -164,9 +164,17 @@ this module writes it out as JSON, the TS build generates its types from the
 schema and reads the registries as data, and its parity tests replay the
 fixtures below and assert the same output byte for byte.</p>
 <p>What lands in <code class="docutils literal notranslate"><span class="pre">&lt;out_dir&gt;</span></code>:</p>
-<ul class="simple">
+<ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">image-result.schema.json</span></code> — <a class="reference internal" href="illustration.schema.html#illustration.schema.ImageResult" title="illustration.schema.ImageResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImageResult</span></code></a> as
 JSON Schema (the codegen input for the Zod type).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">media-result.schema.json</span></code> — the discriminated union of
+<a class="reference internal" href="illustration.schema.html#illustration.schema.ImageResult" title="illustration.schema.ImageResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImageResult</span></code></a> and
+<a class="reference internal" href="illustration.schema.html#illustration.schema.VideoResult" title="illustration.schema.VideoResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">VideoResult</span></code></a> (<code class="docutils literal notranslate"><span class="pre">oneOf</span></code> plus a <code class="docutils literal notranslate"><span class="pre">media_type</span></code></p>
+<blockquote>
+<div><p>discriminator mapping). <code class="docutils literal notranslate"><span class="pre">image-result.schema.json</span></code> stays the image contract
+on its own, and is what the TS twin generates from.</p>
+</div></blockquote>
+</li>
 <li><p><code class="docutils literal notranslate"><span class="pre">sources.json</span></code> — one record per registered source: endpoint, parameter
 names, paging caps, fixed params, auth style, canonical→native parameter
 names, and its <a class="reference internal" href="illustration.base.html#illustration.base.SourceInfo" title="illustration.base.SourceInfo"><code class="xref py py-class docutils literal notranslate"><span class="pre">SourceInfo</span></code></a>.</p></li>
@@ -306,7 +314,7 @@ to replay for it.</p>
     </div>
   </div>
 </footer>
-      <script src="../_static/documentation_options.js?v=056c92e6"></script>
+      <script src="../_static/documentation_options.js?v=a11416ff"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>

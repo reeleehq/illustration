@@ -9,6 +9,8 @@
    .. autosummary::
    
       search
+      parse_media_result
+      require_image
       license_allowlist
       check_attributions
       normalize_license
@@ -68,6 +70,10 @@
    .. autosummary::
    
       ImageResult
+      VideoResult
+      MediaResult
+      Rendition
+      TimeSpan
       RetrievalSource
       SourceInfo
       SourcesView

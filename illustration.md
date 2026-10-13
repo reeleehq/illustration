@@ -1,4 +1,4 @@
-> built 2026-10-13 03:04 UTC from b8d2bba (main) · illustration 0.0.20. Details: build_info.json
+> built 2026-10-13 03:11 UTC from cd0e840 (main) · illustration 0.0.21. Details: build_info.json
 
 # index.html.md
 
@@ -1897,6 +1897,8 @@ See `misc/docs/design/illustration_design.md` for the full design.
 
 | [`search`](_autosummary/illustration.html.md#illustration.search)(query, \*[, n, source, orientation, ...])   | Search for up to `n` images matching `query` from one or more sources.                                                                |
 |-----------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
+| [`parse_media_result`](_autosummary/illustration.html.md#illustration.parse_media_result)(obj)                            | Validate a dict (or pass through a model) into the right result type.                                                                 |
+| [`require_image`](_autosummary/illustration.html.md#illustration.require_image)(obj, \*[, where, strict])            | Return `obj` if it is an [`ImageResult`](_autosummary/illustration.html.md#illustration.ImageResult), else raise `TypeError`.                        |
 | [`license_allowlist`](_autosummary/illustration.html.md#illustration.license_allowlist)(results, \*[, allow])            | Keep only results whose license is on the allowlist (R3's license gate).                                                              |
 | [`check_attributions`](_autosummary/illustration.html.md#illustration.check_attributions)(results)                        | Return the results whose `attribution` does not visibly name a licence.                                                               |
 | [`normalize_license`](_autosummary/illustration.html.md#illustration.normalize_license)(value)                           | Fold a provider's licence spelling onto one canonical, comparable code.                                                               |
@@ -1955,6 +1957,10 @@ See `misc/docs/design/illustration_design.md` for the full design.
 
 | [`ImageResult`](_autosummary/illustration.html.md#illustration.ImageResult)(\*\*data)                     | One normalized image hit from any provider.                                  |
 |--------------------------------------------------------------------------------------------|------------------------------------------------------------------------------|
+| [`VideoResult`](_autosummary/illustration.html.md#illustration.VideoResult)(\*\*data)                     | One normalized video hit from any provider.                                  |
+| [`MediaResult`](_autosummary/illustration.html.md#illustration.MediaResult)(\*\*data)                     | What every normalized hit from any provider carries, whatever the media.     |
+| [`Rendition`](_autosummary/illustration.html.md#illustration.Rendition)(\*\*data)                       | One playable encoding of a video, as a provider offers it.                   |
+| [`TimeSpan`](_autosummary/illustration.html.md#illustration.TimeSpan)(\*\*data)                        | A span of a media file, in seconds.                                          |
 | [`RetrievalSource`](_autosummary/illustration.html.md#illustration.RetrievalSource)(\*[, session])            | Abstract base for a pure image-search provider.                              |
 | [`SourceInfo`](_autosummary/illustration.html.md#illustration.SourceInfo)(name[, description, ...])      | Static, human-facing metadata about a source (for discovery + the gate).     |
 | [`SourcesView`](_autosummary/illustration.html.md#illustration.SourcesView)()                             | A live `Mapping` over the registry with dict- *and* attribute-access.        |
@@ -2107,22 +2113,20 @@ Base class for every error raised by [`illustration`](_autosummary/illustration.
 
 ### *class* illustration.ImageResult(\*\*data)
 
-Bases: `BaseModel`
+Bases: [`MediaResult`](_autosummary/illustration.schema.html.md#illustration.schema.MediaResult)
 
 One normalized image hit from any provider.
 
 The first eight fields plus `cacheable` are the cross-provider minimum the
 design guarantees; the rest are populated when a provider supplies them.
 
+#### *property* media_type *: [Literal](https://docs.python.org/3/library/typing.html#typing.Literal)['image']*
+
+Always `"image"`; deliberately not a serialized field (see [`MediaResult`](_autosummary/illustration.html.md#illustration.MediaResult)).
+
 #### model_config *: [ClassVar](https://docs.python.org/3/library/typing.html#typing.ClassVar)[ConfigDict]* *= {}*
 
 Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
-
-#### to_search_hit()
-
-Adapt to an `ir.SearchHit` for Layer-2 cross-provider fusion.
-
-Imported lazily so `import illustration` never requires `ir`.
 
 ### *class* illustration.InspectReport(\*\*data)
 
@@ -2143,6 +2147,34 @@ One iteration of the loop — the run-log R2 requires for observability.
 #### model_config *: [ClassVar](https://docs.python.org/3/library/typing.html#typing.ClassVar)[ConfigDict]* *= {}*
 
 Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
+
+### *class* illustration.MediaResult(\*\*data)
+
+Bases: `BaseModel`
+
+What every normalized hit from any provider carries, whatever the media.
+
+A base, not a result: instantiate [`ImageResult`](_autosummary/illustration.html.md#illustration.ImageResult) or
+[`VideoResult`](_autosummary/illustration.html.md#illustration.VideoResult). Neither subclasses the other, on purpose — code typed
+on images (the `burns` render hook, `sequence`’s pHash dedupe) must not
+silently accept a video; see [`require_image()`](_autosummary/illustration.html.md#illustration.require_image).
+
+`media_type` tells them apart: `"image"` or `"video"`. It is a real
+serialized field on [`VideoResult`](_autosummary/illustration.html.md#illustration.VideoResult) only. [`ImageResult`](_autosummary/illustration.html.md#illustration.ImageResult) reports
+`"image"` through a read-only property and does not serialize it, so the
+image contract (dumps, JSON Schema, stored selections, parity fixtures) is
+byte-for-byte what it was; a payload with no tag *is* an image
+([`parse_media_result()`](_autosummary/illustration.html.md#illustration.parse_media_result)).
+
+#### model_config *: [ClassVar](https://docs.python.org/3/library/typing.html#typing.ClassVar)[ConfigDict]* *= {}*
+
+Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
+
+#### to_search_hit()
+
+Adapt to an `ir.SearchHit` for Layer-2 cross-provider fusion.
+
+Imported lazily so `import illustration` never requires `ir`.
 
 ### *exception* illustration.MissingCredentialError(provider, , env_var=None, console_url=None)
 
@@ -2183,6 +2215,16 @@ A provider’s HTTP API returned an error or an unusable response.
 Bases: [`ProviderError`](_autosummary/illustration.errors.html.md#illustration.errors.ProviderError)
 
 A provider returned HTTP 429 (rate limit exceeded).
+
+### *class* illustration.Rendition(\*\*data)
+
+Bases: `BaseModel`
+
+One playable encoding of a video, as a provider offers it.
+
+#### model_config *: [ClassVar](https://docs.python.org/3/library/typing.html#typing.ClassVar)[ConfigDict]* *= {}*
+
+Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
 
 ### *exception* illustration.RerankDependencyError(missing=None)
 
@@ -2371,11 +2413,41 @@ Attribute access (`sources.openverse`) is a convenience; dict access
 for a source whose name collides with a `Mapping` method (`get`,
 `keys`, `values`, …).
 
+### *class* illustration.TimeSpan(\*\*data)
+
+Bases: `BaseModel`
+
+A span of a media file, in seconds.
+
+Maps onto an OTIO `TimeRange`, a schema.org `Clip` and a media-fragment
+`#t=start,end`.
+
+#### model_config *: [ClassVar](https://docs.python.org/3/library/typing.html#typing.ClassVar)[ConfigDict]* *= {}*
+
+Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
+
 ### *exception* illustration.UnknownSourceError(name, known=None)
 
 Bases: [`IllustrationError`](_autosummary/illustration.errors.html.md#illustration.errors.IllustrationError), [`KeyError`](https://docs.python.org/3/builtins/exceptions.html#KeyError)
 
 A source name was requested that is not in the registry.
+
+### *class* illustration.VideoResult(\*\*data)
+
+Bases: [`MediaResult`](_autosummary/illustration.schema.html.md#illustration.schema.MediaResult)
+
+One normalized video hit from any provider.
+
+Carries the [`MediaResult`](_autosummary/illustration.html.md#illustration.MediaResult) fields plus what is specific to footage.
+`url` stays the best *progressive* rendition at search time, so a reader
+of `.url` keeps working; `renditions` lists every encoding on offer.
+
+The four `VIDEO_RIGHTS_FIELDS` are optional; `None` means \*not
+recorded\*.
+
+#### model_config *: [ClassVar](https://docs.python.org/3/library/typing.html#typing.ClassVar)[ConfigDict]* *= {}*
+
+Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
 
 ### illustration.blur_check(, min_variance=100.0)
 
@@ -2430,7 +2502,7 @@ name, and it should already have been dropped by `license_allowlist` if
 that matters to the caller.
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`ImageResult`](_autosummary/illustration.schema.html.md#illustration.schema.ImageResult)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`MediaResult`](_autosummary/illustration.schema.html.md#illustration.schema.MediaResult)]
 
 ```pycon
 >>> a = ImageResult(provider="p", id="1", url="u", license="by-sa", attribution="Jane Doe")
@@ -2786,7 +2858,7 @@ and without ever dropping an `nc`/`nd` restriction. Results with no
 `license` are dropped (unknown == not allowed).
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`ImageResult`](_autosummary/illustration.schema.html.md#illustration.schema.ImageResult)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`MediaResult`](_autosummary/illustration.schema.html.md#illustration.schema.MediaResult)]
 
 ```pycon
 >>> a = ImageResult(provider="p", id="1", url="u", license="cc0")
@@ -2911,6 +2983,20 @@ The installed package version, or `'0+unknown'` if not installed.
 True
 ```
 
+### illustration.parse_media_result(obj)
+
+Validate a dict (or pass through a model) into the right result type.
+
+* **Return type:**
+  [`ImageResult`](_autosummary/illustration.schema.html.md#illustration.schema.ImageResult) | [`VideoResult`](_autosummary/illustration.schema.html.md#illustration.schema.VideoResult)
+
+```pycon
+>>> parse_media_result({"provider": "p", "id": "1", "url": "u"}).media_type
+'image'
+>>> parse_media_result({"provider": "p", "id": "1", "url": "u", "media_type": "video"}).media_type
+'video'
+```
+
 ### illustration.persist_sequence(result, , store=None, actor='agent:illustration-curate', activity='infer', at_time=None)
 
 Persist a [`SequenceResult`](_autosummary/illustration.sequence.html.md#illustration.sequence.SequenceResult) as lacing annotations.
@@ -3012,6 +3098,28 @@ Returns whatever `render` returns (the output path for the default).
 
 * **Return type:**
   [`Any`](https://docs.python.org/3/library/typing.html#typing.Any)
+
+### illustration.require_image(obj, , where='this function', strict=True)
+
+Return `obj` if it is an [`ImageResult`](_autosummary/illustration.html.md#illustration.ImageResult), else raise `TypeError`.
+
+`strict=False` refuses only other [`MediaResult`](_autosummary/illustration.html.md#illustration.MediaResult) kinds (a video) and
+lets a duck-typed stand-in through, for call sites that always took those.
+
+The guard for image-only code paths. A [`VideoResult`](_autosummary/illustration.html.md#illustration.VideoResult) is not an
+[`ImageResult`](_autosummary/illustration.html.md#illustration.ImageResult) by design, but duck-typed code that reads `.url` would
+take one without complaint and fetch a movie as a picture; this makes that
+loud.
+
+* **Return type:**
+  [`ImageResult`](_autosummary/illustration.schema.html.md#illustration.schema.ImageResult)
+
+```pycon
+>>> require_image(VideoResult(provider="p", id="1", url="u"), where="render")
+Traceback (most recent call last):
+...
+TypeError: render expects an ImageResult, got VideoResult
+```
 
 ### illustration.requires_credentials(provider)
 
@@ -4651,29 +4759,81 @@ provider-specific field the normalized schema doesn’t name.
 
 ### Module Attributes
 
-| [`RIGHTS_FIELDS`](_autosummary/illustration.schema.html.md#illustration.schema.RIGHTS_FIELDS)   | the fields that answer "may we ship this, and whom must we credit?".   |
-|------------------------------------------------------------------|------------------------------------------------------------------------|
+| [`RIGHTS_FIELDS`](_autosummary/illustration.schema.html.md#illustration.schema.RIGHTS_FIELDS)       | the fields that answer "may we ship this, and whom must we credit?".                                             |
+|----------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------|
+| [`VIDEO_RIGHTS_FIELDS`](_autosummary/illustration.schema.html.md#illustration.schema.VIDEO_RIGHTS_FIELDS) | The extra rights flags a **video** hit carries (stock footage is licensed with restrictions a photo rarely has). |
+| [`MEDIA_RIGHTS_FIELDS`](_autosummary/illustration.schema.html.md#illustration.schema.MEDIA_RIGHTS_FIELDS) | Everything that answers "may we ship this?" for *any* media type — what persistence stores.                      |
+| [`MEDIA_TYPES`](_autosummary/illustration.schema.html.md#illustration.schema.MEDIA_TYPES)         | The values of the `media_type` tag, in union order.                                                              |
+| [`AnyMediaResult`](_autosummary/illustration.schema.html.md#illustration.schema.AnyMediaResult)      | Either kind of hit.                                                                                              |
 
 ### Functions
 
-| [`license_allowlist`](_autosummary/illustration.schema.html.md#illustration.schema.license_allowlist)(results, \*[, allow])   | Keep only results whose license is on the allowlist (R3's license gate).                                     |
-|--------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------|
-| [`check_attributions`](_autosummary/illustration.schema.html.md#illustration.schema.check_attributions)(results)               | Return the results whose `attribution` does not visibly name a licence.                                      |
-| [`to_search_hit`](_autosummary/illustration.schema.html.md#illustration.schema.to_search_hit)(result)                     | Map an [`ImageResult`](_autosummary/illustration.schema.html.md#illustration.schema.ImageResult) to an `ir.SearchHit` for Layer-2 fusion. |
+| [`parse_media_result`](_autosummary/illustration.schema.html.md#illustration.schema.parse_media_result)(obj)                 | Validate a dict (or pass through a model) into the right result type.                                          |
+|------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------|
+| [`require_image`](_autosummary/illustration.schema.html.md#illustration.schema.require_image)(obj, \*[, where, strict]) | Return `obj` if it is an [`ImageResult`](_autosummary/illustration.schema.html.md#illustration.schema.ImageResult), else raise `TypeError`. |
+| [`license_allowlist`](_autosummary/illustration.schema.html.md#illustration.schema.license_allowlist)(results, \*[, allow]) | Keep only results whose license is on the allowlist (R3's license gate).                                       |
+| [`check_attributions`](_autosummary/illustration.schema.html.md#illustration.schema.check_attributions)(results)             | Return the results whose `attribution` does not visibly name a licence.                                        |
+| [`to_search_hit`](_autosummary/illustration.schema.html.md#illustration.schema.to_search_hit)(result)                   | Map an [`ImageResult`](_autosummary/illustration.schema.html.md#illustration.schema.ImageResult) to an `ir.SearchHit` for Layer-2 fusion.   |
 
 ### Classes
 
-| [`ImageResult`](_autosummary/illustration.schema.html.md#illustration.schema.ImageResult)(\*\*data)   | One normalized image hit from any provider.   |
-|--------------------------------------------------------------------------|-----------------------------------------------|
+| [`MediaResult`](_autosummary/illustration.schema.html.md#illustration.schema.MediaResult)(\*\*data)   | What every normalized hit from any provider carries, whatever the media.   |
+|--------------------------------------------------------------------------|----------------------------------------------------------------------------|
+| [`ImageResult`](_autosummary/illustration.schema.html.md#illustration.schema.ImageResult)(\*\*data)   | One normalized image hit from any provider.                                |
+| [`VideoResult`](_autosummary/illustration.schema.html.md#illustration.schema.VideoResult)(\*\*data)   | One normalized video hit from any provider.                                |
+| [`Rendition`](_autosummary/illustration.schema.html.md#illustration.schema.Rendition)(\*\*data)     | One playable encoding of a video, as a provider offers it.                 |
+| [`TimeSpan`](_autosummary/illustration.schema.html.md#illustration.schema.TimeSpan)(\*\*data)      | A span of a media file, in seconds.                                        |
+
+### illustration.schema.AnyMediaResult
+
+Either kind of hit. Discriminated by `media_type`; a payload without the
+tag is an image, so every stored selection and cached result still loads.
+
+alias of `Annotated`[`Annotated`[[`ImageResult`](_autosummary/illustration.schema.html.md#illustration.schema.ImageResult), `Tag`(tag=image)] | `Annotated`[[`VideoResult`](_autosummary/illustration.schema.html.md#illustration.schema.VideoResult), `Tag`(tag=video)], `Discriminator`(discriminator=`_media_type_of`, custom_error_type=[`None`](https://docs.python.org/3/builtins/constants.html#None), custom_error_message=[`None`](https://docs.python.org/3/builtins/constants.html#None), custom_error_context=[`None`](https://docs.python.org/3/builtins/constants.html#None))]
 
 ### *class* illustration.schema.ImageResult(\*\*data)
 
-Bases: `BaseModel`
+Bases: [`MediaResult`](_autosummary/illustration.schema.html.md#illustration.schema.MediaResult)
 
 One normalized image hit from any provider.
 
 The first eight fields plus `cacheable` are the cross-provider minimum the
 design guarantees; the rest are populated when a provider supplies them.
+
+#### *property* media_type *: [Literal](https://docs.python.org/3/library/typing.html#typing.Literal)['image']*
+
+Always `"image"`; deliberately not a serialized field (see [`MediaResult`](_autosummary/illustration.schema.html.md#illustration.schema.MediaResult)).
+
+#### model_config *: [ClassVar](https://docs.python.org/3/library/typing.html#typing.ClassVar)[ConfigDict]* *= {}*
+
+Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
+
+### illustration.schema.MEDIA_RIGHTS_FIELDS *= ('license', 'license_url', 'attribution', 'source_page_url', 'author', 'author_url', 'cacheable', 'editorial_only', 'has_model_release', 'has_property_release', 'audio_policy')*
+
+Everything that answers “may we ship this?” for *any* media type — what
+persistence stores. For an image the last four are simply never recorded.
+
+### illustration.schema.MEDIA_TYPES *= ('image', 'video')*
+
+The values of the `media_type` tag, in union order.
+
+### *class* illustration.schema.MediaResult(\*\*data)
+
+Bases: `BaseModel`
+
+What every normalized hit from any provider carries, whatever the media.
+
+A base, not a result: instantiate [`ImageResult`](_autosummary/illustration.schema.html.md#illustration.schema.ImageResult) or
+[`VideoResult`](_autosummary/illustration.schema.html.md#illustration.schema.VideoResult). Neither subclasses the other, on purpose — code typed
+on images (the `burns` render hook, `sequence`’s pHash dedupe) must not
+silently accept a video; see [`require_image()`](_autosummary/illustration.schema.html.md#illustration.schema.require_image).
+
+`media_type` tells them apart: `"image"` or `"video"`. It is a real
+serialized field on [`VideoResult`](_autosummary/illustration.schema.html.md#illustration.schema.VideoResult) only. [`ImageResult`](_autosummary/illustration.schema.html.md#illustration.schema.ImageResult) reports
+`"image"` through a read-only property and does not serialize it, so the
+image contract (dumps, JSON Schema, stored selections, parity fixtures) is
+byte-for-byte what it was; a payload with no tag *is* an image
+([`parse_media_result()`](_autosummary/illustration.schema.html.md#illustration.schema.parse_media_result)).
 
 #### model_config *: [ClassVar](https://docs.python.org/3/library/typing.html#typing.ClassVar)[ConfigDict]* *= {}*
 
@@ -4697,6 +4857,56 @@ unable to answer it.
 
 * **Type:**
   The **rights record**
+
+### *class* illustration.schema.Rendition(\*\*data)
+
+Bases: `BaseModel`
+
+One playable encoding of a video, as a provider offers it.
+
+#### model_config *: [ClassVar](https://docs.python.org/3/library/typing.html#typing.ClassVar)[ConfigDict]* *= {}*
+
+Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
+
+### *class* illustration.schema.TimeSpan(\*\*data)
+
+Bases: `BaseModel`
+
+A span of a media file, in seconds.
+
+Maps onto an OTIO `TimeRange`, a schema.org `Clip` and a media-fragment
+`#t=start,end`.
+
+#### model_config *: [ClassVar](https://docs.python.org/3/library/typing.html#typing.ClassVar)[ConfigDict]* *= {}*
+
+Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
+
+### illustration.schema.VIDEO_RIGHTS_FIELDS *= ('editorial_only', 'has_model_release', 'has_property_release', 'audio_policy')*
+
+The extra rights flags a **video** hit carries (stock footage is licensed
+with restrictions a photo rarely has). They answer the same question as
+[`RIGHTS_FIELDS`](_autosummary/illustration.schema.html.md#illustration.schema.RIGHTS_FIELDS) and are persisted under the same names, but they live
+beside it rather than inside it: [`RIGHTS_FIELDS`](_autosummary/illustration.schema.html.md#illustration.schema.RIGHTS_FIELDS) is what an *image*
+has, and it is projected wholesale onto `walkthru.AssetRights` and read off
+every [`ImageResult`](_autosummary/illustration.schema.html.md#illustration.schema.ImageResult). All four are optional; `None` means \*not
+recorded\*, which is not the same claim as `False`.
+
+### *class* illustration.schema.VideoResult(\*\*data)
+
+Bases: [`MediaResult`](_autosummary/illustration.schema.html.md#illustration.schema.MediaResult)
+
+One normalized video hit from any provider.
+
+Carries the [`MediaResult`](_autosummary/illustration.schema.html.md#illustration.schema.MediaResult) fields plus what is specific to footage.
+`url` stays the best *progressive* rendition at search time, so a reader
+of `.url` keeps working; `renditions` lists every encoding on offer.
+
+The four [`VIDEO_RIGHTS_FIELDS`](_autosummary/illustration.schema.html.md#illustration.schema.VIDEO_RIGHTS_FIELDS) are optional; `None` means \*not
+recorded\*.
+
+#### model_config *: [ClassVar](https://docs.python.org/3/library/typing.html#typing.ClassVar)[ConfigDict]* *= {}*
+
+Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
 
 ### illustration.schema.check_attributions(results)
 
@@ -4727,7 +4937,7 @@ name, and it should already have been dropped by `license_allowlist` if
 that matters to the caller.
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`ImageResult`](_autosummary/illustration.schema.html.md#illustration.schema.ImageResult)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`MediaResult`](_autosummary/illustration.schema.html.md#illustration.schema.MediaResult)]
 
 ```pycon
 >>> a = ImageResult(provider="p", id="1", url="u", license="by-sa", attribution="Jane Doe")
@@ -4752,7 +4962,7 @@ and without ever dropping an `nc`/`nd` restriction. Results with no
 `license` are dropped (unknown == not allowed).
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`ImageResult`](_autosummary/illustration.schema.html.md#illustration.schema.ImageResult)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`MediaResult`](_autosummary/illustration.schema.html.md#illustration.schema.MediaResult)]
 
 ```pycon
 >>> a = ImageResult(provider="p", id="1", url="u", license="cc0")
@@ -4772,6 +4982,42 @@ Provider dialects pass the same gate:
 >>> nd = ImageResult(provider="wikimedia", id="6", url="u", license="cc-by-nd-4.0")
 >>> [r.id for r in license_allowlist([w, p, nd])]
 ['4', '5']
+```
+
+### illustration.schema.parse_media_result(obj)
+
+Validate a dict (or pass through a model) into the right result type.
+
+* **Return type:**
+  [`ImageResult`](_autosummary/illustration.schema.html.md#illustration.schema.ImageResult) | [`VideoResult`](_autosummary/illustration.schema.html.md#illustration.schema.VideoResult)
+
+```pycon
+>>> parse_media_result({"provider": "p", "id": "1", "url": "u"}).media_type
+'image'
+>>> parse_media_result({"provider": "p", "id": "1", "url": "u", "media_type": "video"}).media_type
+'video'
+```
+
+### illustration.schema.require_image(obj, , where='this function', strict=True)
+
+Return `obj` if it is an [`ImageResult`](_autosummary/illustration.schema.html.md#illustration.schema.ImageResult), else raise `TypeError`.
+
+`strict=False` refuses only other [`MediaResult`](_autosummary/illustration.schema.html.md#illustration.schema.MediaResult) kinds (a video) and
+lets a duck-typed stand-in through, for call sites that always took those.
+
+The guard for image-only code paths. A [`VideoResult`](_autosummary/illustration.schema.html.md#illustration.schema.VideoResult) is not an
+[`ImageResult`](_autosummary/illustration.schema.html.md#illustration.schema.ImageResult) by design, but duck-typed code that reads `.url` would
+take one without complaint and fetch a movie as a picture; this makes that
+loud.
+
+* **Return type:**
+  [`ImageResult`](_autosummary/illustration.schema.html.md#illustration.schema.ImageResult)
+
+```pycon
+>>> require_image(VideoResult(provider="p", id="1", url="u"), where="render")
+Traceback (most recent call last):
+...
+TypeError: render expects an ImageResult, got VideoResult
 ```
 
 ### illustration.schema.to_search_hit(result)
@@ -4812,6 +5058,11 @@ What lands in `<out_dir>`:
 
 - `image-result.schema.json` — [`ImageResult`](_autosummary/illustration.schema.html.md#illustration.schema.ImageResult) as
   JSON Schema (the codegen input for the Zod type).
+- `media-result.schema.json` — the discriminated union of
+  [`ImageResult`](_autosummary/illustration.schema.html.md#illustration.schema.ImageResult) and
+  [`VideoResult`](_autosummary/illustration.schema.html.md#illustration.schema.VideoResult) (`oneOf` plus a `media_type`
+  > discriminator mapping). `image-result.schema.json` stays the image contract
+  > on its own, and is what the TS twin generates from.
 - `sources.json` — one record per registered source: endpoint, parameter
   names, paging caps, fixed params, auth style, canonical→native parameter
   names, and its [`SourceInfo`](_autosummary/illustration.base.html.md#illustration.base.SourceInfo).
@@ -5232,18 +5483,16 @@ Beats with no chosen image are skipped. Needs the `[video]` extra.
 
 # About this build
 
-This documentation was built on **2026-10-13 03:04 UTC** from commit <a href="https://github.com/reeleehq/illustration/commit/b8d2bba94b36e75c00e7e1e0960963f8e20689da"><code>b8d2bba</code></a> on branch <code>main</code>, for **illustration 0.0.20** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-10-13 03:11 UTC** from commit <a href="https://github.com/reeleehq/illustration/commit/cd0e840a45516cd23b8e784d101aa76c980f4bbb"><code>cd0e840</code></a> on branch <code>main</code>, for **illustration 0.0.21** (from <code>pyproject.toml</code>).
 
-#### WARNING
-The documentation and the package may be misaligned:
-
-- The documented version (0.0.20) is behind the latest release on PyPI (0.0.21): `pip install illustration` gives newer code than these docs describe.
+#### NOTE
+Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
 
 ## Source
 
 |                     |                                                                                                                                                              |
 |---------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/reeleehq/illustration/commit/b8d2bba94b36e75c00e7e1e0960963f8e20689da"><code>b8d2bba94b36e75c00e7e1e0960963f8e20689da</code></a> |
+| Commit              | <a href="https://github.com/reeleehq/illustration/commit/cd0e840a45516cd23b8e784d101aa76c980f4bbb"><code>cd0e840a45516cd23b8e784d101aa76c980f4bbb</code></a> |
 | Branch              | <code>main</code>                                                                                                                                            |
 | Tags at this commit | none                                                                                                                                                         |
 | Working tree        | clean                                                                                                                                                        |
@@ -5254,15 +5503,15 @@ The documentation and the package may be misaligned:
 |              |                                                                                             |
 |--------------|---------------------------------------------------------------------------------------------|
 | Repository   | <code>reeleehq/illustration</code>                                                          |
-| Run          | <a href="https://github.com/reeleehq/illustration/actions/runs/38339820350">38339820350</a> |
+| Run          | <a href="https://github.com/reeleehq/illustration/actions/runs/38340418864">38340418864</a> |
 | Ref          | <code>refs/heads/main</code>                                                                |
-| Event commit | <code>b8d2bba94b36e75c00e7e1e0960963f8e20689da</code> (in the history of the built commit)  |
+| Event commit | <code>cd0e840a45516cd23b8e784d101aa76c980f4bbb</code> (in the history of the built commit)  |
 
 ## Tools
 
 |          |         |
 |----------|---------|
-| epythet  | 0.2.12  |
+| epythet  | 0.2.13  |
 | Sphinx   | 9.1.0   |
 | docutils | 0.22.4  |
 | Python   | 3.12.15 |
@@ -5281,14 +5530,14 @@ The documentation and the package may be misaligned:
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/illustration/0.0.21/">0.0.21</a>, newer than the documented version (0.0.20).
+Latest release: <a href="https://pypi.org/project/illustration/0.0.21/">0.0.21</a>, the same as the documented version.
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/reeleehq/illustration && cd illustration
-git checkout b8d2bba94b36e75c00e7e1e0960963f8e20689da
-pip install "epythet==0.2.12"
+git checkout cd0e840a45516cd23b8e784d101aa76c980f4bbb
+pip install "epythet==0.2.13"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```
 

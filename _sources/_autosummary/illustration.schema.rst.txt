@@ -9,11 +9,17 @@ illustration.schema
    .. autosummary::
    
       RIGHTS_FIELDS
+      VIDEO_RIGHTS_FIELDS
+      MEDIA_RIGHTS_FIELDS
+      MEDIA_TYPES
+      AnyMediaResult
    
    .. rubric:: Functions
 
    .. autosummary::
    
+      parse_media_result
+      require_image
       license_allowlist
       check_attributions
       to_search_hit
@@ -22,5 +28,9 @@ illustration.schema
 
    .. autosummary::
    
+      MediaResult
       ImageResult
+      VideoResult
+      Rendition
+      TimeSpan
    

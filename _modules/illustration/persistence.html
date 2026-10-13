@@ -185,11 +185,11 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="44">
 </span><span data-line="45"><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 </span><span data-line="46">
-</span><span data-line="47"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Sequence</span>
+</span><span data-line="47"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Sequence</span>
 </span><span data-line="48">
 </span><span data-line="49"><span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
 </span><span data-line="50">
-</span><span data-line="51"><span class="kn">from</span><span class="w"> </span><span class="nn">illustration.schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">RIGHTS_FIELDS</span><span class="p">,</span> <span class="n">ImageResult</span>
+</span><span data-line="51"><span class="kn">from</span><span class="w"> </span><span class="nn">illustration.schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">MEDIA_RIGHTS_FIELDS</span><span class="p">,</span> <span class="n">RIGHTS_FIELDS</span><span class="p">,</span> <span class="n">ImageResult</span><span class="p">,</span> <span class="n">MediaResult</span>
 </span><span data-line="52">
 </span><span data-line="53"><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
 </span><span data-line="54">    <span class="s2">"persist_sequence"</span><span class="p">,</span>
@@ -230,256 +230,267 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="89">    <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
 </span><span data-line="90">    <span class="n">url</span><span class="p">:</span> <span class="nb">str</span>
 </span><span data-line="91">    <span class="n">score</span><span class="p">:</span> <span class="s2">"float | None"</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span data-line="92">    <span class="c1"># --- the rights record (names pinned to ImageResult) ---</span>
-</span><span data-line="93">    <span class="n">license</span><span class="p">:</span> <span class="s2">"str | None"</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span data-line="94">    <span class="n">license_url</span><span class="p">:</span> <span class="s2">"str | None"</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span data-line="95">    <span class="n">attribution</span><span class="p">:</span> <span class="s2">"str | None"</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span data-line="96">    <span class="n">source_page_url</span><span class="p">:</span> <span class="s2">"str | None"</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span data-line="97">    <span class="n">author</span><span class="p">:</span> <span class="s2">"str | None"</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span data-line="98">    <span class="n">author_url</span><span class="p">:</span> <span class="s2">"str | None"</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span data-line="99">    <span class="n">cacheable</span><span class="p">:</span> <span class="s2">"bool | None"</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span data-line="100">
-</span><span data-line="101">
+</span><span data-line="92">    <span class="c1">#: Which kind of media this is. Absent in a body written before video</span>
+</span><span data-line="93">    <span class="c1">#: existed, which is therefore an image.</span>
+</span><span data-line="94">    <span class="n">media_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">"image"</span><span class="p">,</span> <span class="s2">"video"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"image"</span>
+</span><span data-line="95">    <span class="c1"># --- the rights record (names pinned to ImageResult) ---</span>
+</span><span data-line="96">    <span class="n">license</span><span class="p">:</span> <span class="s2">"str | None"</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="97">    <span class="n">license_url</span><span class="p">:</span> <span class="s2">"str | None"</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="98">    <span class="n">attribution</span><span class="p">:</span> <span class="s2">"str | None"</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="99">    <span class="n">source_page_url</span><span class="p">:</span> <span class="s2">"str | None"</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="100">    <span class="n">author</span><span class="p">:</span> <span class="s2">"str | None"</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="101">    <span class="n">author_url</span><span class="p">:</span> <span class="s2">"str | None"</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="102">    <span class="n">cacheable</span><span class="p">:</span> <span class="s2">"bool | None"</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="103">    <span class="c1"># --- the video half of the rights record (VIDEO_RIGHTS_FIELDS) ---</span>
+</span><span data-line="104">    <span class="c1"># `None` = not recorded: always so for an image.</span>
+</span><span data-line="105">    <span class="n">editorial_only</span><span class="p">:</span> <span class="s2">"bool | None"</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="106">    <span class="n">has_model_release</span><span class="p">:</span> <span class="s2">"bool | None"</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="107">    <span class="n">has_property_release</span><span class="p">:</span> <span class="s2">"bool | None"</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="108">    <span class="n">audio_policy</span><span class="p">:</span> <span class="s2">"str | None"</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="109">
+</span><span data-line="110">
 <div class="viewcode-block" id="SelectionBody">
 <a class="viewcode-back" href="../../_autosummary/illustration.persistence.html#illustration.SelectionBody">[docs]</a>
-</span><span data-line="102"><span class="k">class</span><span class="w"> </span><span class="nc">SelectionBody</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-</span><span data-line="103"><span class="w">    </span><span class="sd">"""The typed body of an illustration selection annotation (lacing body schema)."""</span>
-</span><span data-line="104">
-</span><span data-line="105">    <span class="n">model_config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"extra"</span><span class="p">:</span> <span class="s2">"forbid"</span><span class="p">}</span>
-</span><span data-line="106">
-</span><span data-line="107">    <span class="n">beat</span><span class="p">:</span> <span class="nb">str</span>
-</span><span data-line="108">    <span class="n">beat_index</span><span class="p">:</span> <span class="nb">int</span>
-</span><span data-line="109">    <span class="n">source</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># "machine" | "director"</span>
-</span><span data-line="110">    <span class="n">selected</span><span class="p">:</span> <span class="s2">"_CandidateRef | None"</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span data-line="111">    <span class="n">candidates</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">_CandidateRef</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
-</span><span data-line="112">    <span class="n">forced_duplicate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span data-line="113">    <span class="n">reason</span><span class="p">:</span> <span class="s2">"str | None"</span> <span class="o">=</span> <span class="kc">None</span></div>
-
-</span><span data-line="114">
+</span><span data-line="111"><span class="k">class</span><span class="w"> </span><span class="nc">SelectionBody</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+</span><span data-line="112"><span class="w">    </span><span class="sd">"""The typed body of an illustration selection annotation (lacing body schema)."""</span>
+</span><span data-line="113">
+</span><span data-line="114">    <span class="n">model_config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"extra"</span><span class="p">:</span> <span class="s2">"forbid"</span><span class="p">}</span>
 </span><span data-line="115">
+</span><span data-line="116">    <span class="n">beat</span><span class="p">:</span> <span class="nb">str</span>
+</span><span data-line="117">    <span class="n">beat_index</span><span class="p">:</span> <span class="nb">int</span>
+</span><span data-line="118">    <span class="n">source</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># "machine" | "director"</span>
+</span><span data-line="119">    <span class="n">selected</span><span class="p">:</span> <span class="s2">"_CandidateRef | None"</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="120">    <span class="n">candidates</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">_CandidateRef</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+</span><span data-line="121">    <span class="n">forced_duplicate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span data-line="122">    <span class="n">reason</span><span class="p">:</span> <span class="s2">"str | None"</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+</span><span data-line="123">
+</span><span data-line="124">
 <div class="viewcode-block" id="persist_sequence">
 <a class="viewcode-back" href="../../_autosummary/illustration.persistence.html#illustration.persist_sequence">[docs]</a>
-</span><span data-line="116"><span class="k">def</span><span class="w"> </span><span class="nf">persist_sequence</span><span class="p">(</span>
-</span><span data-line="117">    <span class="n">result</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-</span><span data-line="118">    <span class="o">*</span><span class="p">,</span>
-</span><span data-line="119">    <span class="n">store</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="120">    <span class="n">actor</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"agent:illustration-curate"</span><span class="p">,</span>
-</span><span data-line="121">    <span class="n">activity</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"infer"</span><span class="p">,</span>
-</span><span data-line="122">    <span class="n">at_time</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="123"><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-</span><span data-line="124"><span class="w">    </span><span class="sd">"""Persist a :class:`~illustration.sequence.SequenceResult` as lacing annotations.</span>
-</span><span data-line="125">
-</span><span data-line="126"><span class="sd">    One ``selections``-tier annotation per beat (machine choices), keyed on the</span>
-</span><span data-line="127"><span class="sd">    ordinal beat timeline. Returns the store (a fresh ``lacing.MemoryStore`` when</span>
-</span><span data-line="128"><span class="sd">    ``store`` is None). ``at_time`` (a ``lacing.RationalTime``) overrides the</span>
-</span><span data-line="129"><span class="sd">    provenance timestamp — pass it for deterministic ordering in tests; defaults</span>
-</span><span data-line="130"><span class="sd">    to wall-clock ``RationalTime.now()``.</span>
-</span><span data-line="131"><span class="sd">    """</span>
-</span><span data-line="132">    <span class="n">store</span> <span class="o">=</span> <span class="n">_ensure_store</span><span class="p">(</span><span class="n">store</span><span class="p">)</span>
-</span><span data-line="133">    <span class="k">for</span> <span class="n">bs</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">selection</span><span class="o">.</span><span class="n">selections</span><span class="p">:</span>
-</span><span data-line="134">        <span class="n">body</span> <span class="o">=</span> <span class="n">SelectionBody</span><span class="p">(</span>
-</span><span data-line="135">            <span class="n">beat</span><span class="o">=</span><span class="n">_beat_text</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">bs</span><span class="o">.</span><span class="n">beat_index</span><span class="p">),</span>
-</span><span data-line="136">            <span class="n">beat_index</span><span class="o">=</span><span class="n">bs</span><span class="o">.</span><span class="n">beat_index</span><span class="p">,</span>
-</span><span data-line="137">            <span class="n">source</span><span class="o">=</span><span class="s2">"machine"</span><span class="p">,</span>
-</span><span data-line="138">            <span class="n">selected</span><span class="o">=</span><span class="n">_candidate_ref</span><span class="p">(</span><span class="n">bs</span><span class="o">.</span><span class="n">chosen</span><span class="p">),</span>
-</span><span data-line="139">            <span class="n">candidates</span><span class="o">=</span><span class="p">[</span><span class="n">_candidate_ref</span><span class="p">(</span><span class="n">bs</span><span class="o">.</span><span class="n">chosen</span><span class="p">)]</span> <span class="k">if</span> <span class="n">bs</span><span class="o">.</span><span class="n">chosen</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[],</span>
-</span><span data-line="140">            <span class="n">forced_duplicate</span><span class="o">=</span><span class="nb">bool</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="s2">"forced_duplicate"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)),</span>
-</span><span data-line="141">        <span class="p">)</span>
-</span><span data-line="142">        <span class="n">_add_selection</span><span class="p">(</span>
-</span><span data-line="143">            <span class="n">store</span><span class="p">,</span> <span class="n">bs</span><span class="o">.</span><span class="n">beat_index</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="n">actor</span><span class="o">=</span><span class="n">actor</span><span class="p">,</span> <span class="n">activity</span><span class="o">=</span><span class="n">activity</span><span class="p">,</span> <span class="n">at_time</span><span class="o">=</span><span class="n">at_time</span>
-</span><span data-line="144">        <span class="p">)</span>
-</span><span data-line="145">    <span class="k">return</span> <span class="n">store</span></div>
+</span><span data-line="125"><span class="k">def</span><span class="w"> </span><span class="nf">persist_sequence</span><span class="p">(</span>
+</span><span data-line="126">    <span class="n">result</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+</span><span data-line="127">    <span class="o">*</span><span class="p">,</span>
+</span><span data-line="128">    <span class="n">store</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="129">    <span class="n">actor</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"agent:illustration-curate"</span><span class="p">,</span>
+</span><span data-line="130">    <span class="n">activity</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"infer"</span><span class="p">,</span>
+</span><span data-line="131">    <span class="n">at_time</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="132"><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+</span><span data-line="133"><span class="w">    </span><span class="sd">"""Persist a :class:`~illustration.sequence.SequenceResult` as lacing annotations.</span>
+</span><span data-line="134">
+</span><span data-line="135"><span class="sd">    One ``selections``-tier annotation per beat (machine choices), keyed on the</span>
+</span><span data-line="136"><span class="sd">    ordinal beat timeline. Returns the store (a fresh ``lacing.MemoryStore`` when</span>
+</span><span data-line="137"><span class="sd">    ``store`` is None). ``at_time`` (a ``lacing.RationalTime``) overrides the</span>
+</span><span data-line="138"><span class="sd">    provenance timestamp — pass it for deterministic ordering in tests; defaults</span>
+</span><span data-line="139"><span class="sd">    to wall-clock ``RationalTime.now()``.</span>
+</span><span data-line="140"><span class="sd">    """</span>
+</span><span data-line="141">    <span class="n">store</span> <span class="o">=</span> <span class="n">_ensure_store</span><span class="p">(</span><span class="n">store</span><span class="p">)</span>
+</span><span data-line="142">    <span class="k">for</span> <span class="n">bs</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">selection</span><span class="o">.</span><span class="n">selections</span><span class="p">:</span>
+</span><span data-line="143">        <span class="n">body</span> <span class="o">=</span> <span class="n">SelectionBody</span><span class="p">(</span>
+</span><span data-line="144">            <span class="n">beat</span><span class="o">=</span><span class="n">_beat_text</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">bs</span><span class="o">.</span><span class="n">beat_index</span><span class="p">),</span>
+</span><span data-line="145">            <span class="n">beat_index</span><span class="o">=</span><span class="n">bs</span><span class="o">.</span><span class="n">beat_index</span><span class="p">,</span>
+</span><span data-line="146">            <span class="n">source</span><span class="o">=</span><span class="s2">"machine"</span><span class="p">,</span>
+</span><span data-line="147">            <span class="n">selected</span><span class="o">=</span><span class="n">_candidate_ref</span><span class="p">(</span><span class="n">bs</span><span class="o">.</span><span class="n">chosen</span><span class="p">),</span>
+</span><span data-line="148">            <span class="n">candidates</span><span class="o">=</span><span class="p">[</span><span class="n">_candidate_ref</span><span class="p">(</span><span class="n">bs</span><span class="o">.</span><span class="n">chosen</span><span class="p">)]</span> <span class="k">if</span> <span class="n">bs</span><span class="o">.</span><span class="n">chosen</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[],</span>
+</span><span data-line="149">            <span class="n">forced_duplicate</span><span class="o">=</span><span class="nb">bool</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="s2">"forced_duplicate"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)),</span>
+</span><span data-line="150">        <span class="p">)</span>
+</span><span data-line="151">        <span class="n">_add_selection</span><span class="p">(</span>
+</span><span data-line="152">            <span class="n">store</span><span class="p">,</span> <span class="n">bs</span><span class="o">.</span><span class="n">beat_index</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="n">actor</span><span class="o">=</span><span class="n">actor</span><span class="p">,</span> <span class="n">activity</span><span class="o">=</span><span class="n">activity</span><span class="p">,</span> <span class="n">at_time</span><span class="o">=</span><span class="n">at_time</span>
+</span><span data-line="153">        <span class="p">)</span>
+</span><span data-line="154">    <span class="k">return</span> <span class="n">store</span></div>
 
-</span><span data-line="146">
-</span><span data-line="147">
+</span><span data-line="155">
+</span><span data-line="156">
 <div class="viewcode-block" id="record_override">
 <a class="viewcode-back" href="../../_autosummary/illustration.persistence.html#illustration.record_override">[docs]</a>
-</span><span data-line="148"><span class="k">def</span><span class="w"> </span><span class="nf">record_override</span><span class="p">(</span>
-</span><span data-line="149">    <span class="n">store</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-</span><span data-line="150">    <span class="n">beat_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-</span><span data-line="151">    <span class="n">chosen</span><span class="p">:</span> <span class="s2">"ImageResult | None"</span><span class="p">,</span>
-</span><span data-line="152">    <span class="o">*</span><span class="p">,</span>
-</span><span data-line="153">    <span class="n">beat</span><span class="p">:</span> <span class="s2">"str | None"</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="154">    <span class="n">actor</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"user:director"</span><span class="p">,</span>
-</span><span data-line="155">    <span class="n">reason</span><span class="p">:</span> <span class="s2">"str | None"</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="156">    <span class="n">at_time</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="157"><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-</span><span data-line="158"><span class="w">    </span><span class="sd">"""Append a director override for ``beat_index`` (a new, superseding annotation).</span>
-</span><span data-line="159">
-</span><span data-line="160"><span class="sd">    Never mutates the machine's annotation — the override is a fresh annotation on</span>
-</span><span data-line="161"><span class="sd">    the same beat, with ``provenance.was_derived_from`` pointing at the most-recent</span>
-</span><span data-line="162"><span class="sd">    prior selection (STAM-style append-only layering). Returns the new annotation.</span>
-</span><span data-line="163"><span class="sd">    """</span>
-</span><span data-line="164">    <span class="n">prior</span> <span class="o">=</span> <span class="n">_latest_annotation</span><span class="p">(</span><span class="n">store</span><span class="p">,</span> <span class="n">beat_index</span><span class="p">)</span>
-</span><span data-line="165">    <span class="n">derived</span> <span class="o">=</span> <span class="p">[</span><span class="n">prior</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="k">if</span> <span class="n">prior</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[]</span>
-</span><span data-line="166">    <span class="n">beat_text</span> <span class="o">=</span> <span class="p">(</span>
-</span><span data-line="167">        <span class="n">beat</span> <span class="k">if</span> <span class="n">beat</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">(</span><span class="n">prior</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"beat"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span> <span class="k">if</span> <span class="n">prior</span> <span class="k">else</span> <span class="s2">""</span><span class="p">)</span>
-</span><span data-line="168">    <span class="p">)</span>
-</span><span data-line="169">    <span class="n">body</span> <span class="o">=</span> <span class="n">SelectionBody</span><span class="p">(</span>
-</span><span data-line="170">        <span class="n">beat</span><span class="o">=</span><span class="n">beat_text</span><span class="p">,</span>
-</span><span data-line="171">        <span class="n">beat_index</span><span class="o">=</span><span class="n">beat_index</span><span class="p">,</span>
-</span><span data-line="172">        <span class="n">source</span><span class="o">=</span><span class="s2">"director"</span><span class="p">,</span>
-</span><span data-line="173">        <span class="n">selected</span><span class="o">=</span><span class="n">_candidate_ref</span><span class="p">(</span><span class="n">chosen</span><span class="p">),</span>
-</span><span data-line="174">        <span class="n">candidates</span><span class="o">=</span><span class="p">[</span><span class="n">_candidate_ref</span><span class="p">(</span><span class="n">chosen</span><span class="p">)]</span> <span class="k">if</span> <span class="n">chosen</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[],</span>
-</span><span data-line="175">        <span class="n">reason</span><span class="o">=</span><span class="n">reason</span><span class="p">,</span>
-</span><span data-line="176">    <span class="p">)</span>
-</span><span data-line="177">    <span class="k">return</span> <span class="n">_add_selection</span><span class="p">(</span>
-</span><span data-line="178">        <span class="n">store</span><span class="p">,</span>
-</span><span data-line="179">        <span class="n">beat_index</span><span class="p">,</span>
-</span><span data-line="180">        <span class="n">body</span><span class="p">,</span>
-</span><span data-line="181">        <span class="n">actor</span><span class="o">=</span><span class="n">actor</span><span class="p">,</span>
-</span><span data-line="182">        <span class="n">activity</span><span class="o">=</span><span class="s2">"derive"</span><span class="p">,</span>
-</span><span data-line="183">        <span class="n">was_derived_from</span><span class="o">=</span><span class="n">derived</span><span class="p">,</span>
-</span><span data-line="184">        <span class="n">at_time</span><span class="o">=</span><span class="n">at_time</span><span class="p">,</span>
-</span><span data-line="185">    <span class="p">)</span></div>
+</span><span data-line="157"><span class="k">def</span><span class="w"> </span><span class="nf">record_override</span><span class="p">(</span>
+</span><span data-line="158">    <span class="n">store</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+</span><span data-line="159">    <span class="n">beat_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+</span><span data-line="160">    <span class="n">chosen</span><span class="p">:</span> <span class="s2">"ImageResult | None"</span><span class="p">,</span>
+</span><span data-line="161">    <span class="o">*</span><span class="p">,</span>
+</span><span data-line="162">    <span class="n">beat</span><span class="p">:</span> <span class="s2">"str | None"</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="163">    <span class="n">actor</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"user:director"</span><span class="p">,</span>
+</span><span data-line="164">    <span class="n">reason</span><span class="p">:</span> <span class="s2">"str | None"</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="165">    <span class="n">at_time</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="166"><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+</span><span data-line="167"><span class="w">    </span><span class="sd">"""Append a director override for ``beat_index`` (a new, superseding annotation).</span>
+</span><span data-line="168">
+</span><span data-line="169"><span class="sd">    Never mutates the machine's annotation — the override is a fresh annotation on</span>
+</span><span data-line="170"><span class="sd">    the same beat, with ``provenance.was_derived_from`` pointing at the most-recent</span>
+</span><span data-line="171"><span class="sd">    prior selection (STAM-style append-only layering). Returns the new annotation.</span>
+</span><span data-line="172"><span class="sd">    """</span>
+</span><span data-line="173">    <span class="n">prior</span> <span class="o">=</span> <span class="n">_latest_annotation</span><span class="p">(</span><span class="n">store</span><span class="p">,</span> <span class="n">beat_index</span><span class="p">)</span>
+</span><span data-line="174">    <span class="n">derived</span> <span class="o">=</span> <span class="p">[</span><span class="n">prior</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="k">if</span> <span class="n">prior</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[]</span>
+</span><span data-line="175">    <span class="n">beat_text</span> <span class="o">=</span> <span class="p">(</span>
+</span><span data-line="176">        <span class="n">beat</span> <span class="k">if</span> <span class="n">beat</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">(</span><span class="n">prior</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"beat"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span> <span class="k">if</span> <span class="n">prior</span> <span class="k">else</span> <span class="s2">""</span><span class="p">)</span>
+</span><span data-line="177">    <span class="p">)</span>
+</span><span data-line="178">    <span class="n">body</span> <span class="o">=</span> <span class="n">SelectionBody</span><span class="p">(</span>
+</span><span data-line="179">        <span class="n">beat</span><span class="o">=</span><span class="n">beat_text</span><span class="p">,</span>
+</span><span data-line="180">        <span class="n">beat_index</span><span class="o">=</span><span class="n">beat_index</span><span class="p">,</span>
+</span><span data-line="181">        <span class="n">source</span><span class="o">=</span><span class="s2">"director"</span><span class="p">,</span>
+</span><span data-line="182">        <span class="n">selected</span><span class="o">=</span><span class="n">_candidate_ref</span><span class="p">(</span><span class="n">chosen</span><span class="p">),</span>
+</span><span data-line="183">        <span class="n">candidates</span><span class="o">=</span><span class="p">[</span><span class="n">_candidate_ref</span><span class="p">(</span><span class="n">chosen</span><span class="p">)]</span> <span class="k">if</span> <span class="n">chosen</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[],</span>
+</span><span data-line="184">        <span class="n">reason</span><span class="o">=</span><span class="n">reason</span><span class="p">,</span>
+</span><span data-line="185">    <span class="p">)</span>
+</span><span data-line="186">    <span class="k">return</span> <span class="n">_add_selection</span><span class="p">(</span>
+</span><span data-line="187">        <span class="n">store</span><span class="p">,</span>
+</span><span data-line="188">        <span class="n">beat_index</span><span class="p">,</span>
+</span><span data-line="189">        <span class="n">body</span><span class="p">,</span>
+</span><span data-line="190">        <span class="n">actor</span><span class="o">=</span><span class="n">actor</span><span class="p">,</span>
+</span><span data-line="191">        <span class="n">activity</span><span class="o">=</span><span class="s2">"derive"</span><span class="p">,</span>
+</span><span data-line="192">        <span class="n">was_derived_from</span><span class="o">=</span><span class="n">derived</span><span class="p">,</span>
+</span><span data-line="193">        <span class="n">at_time</span><span class="o">=</span><span class="n">at_time</span><span class="p">,</span>
+</span><span data-line="194">    <span class="p">)</span></div>
 
-</span><span data-line="186">
-</span><span data-line="187">
+</span><span data-line="195">
+</span><span data-line="196">
 <div class="viewcode-block" id="resolve_selection">
 <a class="viewcode-back" href="../../_autosummary/illustration.persistence.html#illustration.resolve_selection">[docs]</a>
-</span><span data-line="188"><span class="k">def</span><span class="w"> </span><span class="nf">resolve_selection</span><span class="p">(</span><span class="n">store</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">beat_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"dict | None"</span><span class="p">:</span>
-</span><span data-line="189"><span class="w">    </span><span class="sd">"""The *active* selection body for a beat — the latest annotation wins.</span>
-</span><span data-line="190">
-</span><span data-line="191"><span class="sd">    Resolves machine choice vs. director override by provenance timestamp, so a</span>
-</span><span data-line="192"><span class="sd">    later override supersedes the machine's choice without deleting it.</span>
-</span><span data-line="193"><span class="sd">    """</span>
-</span><span data-line="194">    <span class="n">ann</span> <span class="o">=</span> <span class="n">_latest_annotation</span><span class="p">(</span><span class="n">store</span><span class="p">,</span> <span class="n">beat_index</span><span class="p">)</span>
-</span><span data-line="195">    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">ann</span><span class="o">.</span><span class="n">body</span><span class="p">)</span> <span class="k">if</span> <span class="n">ann</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span></div>
+</span><span data-line="197"><span class="k">def</span><span class="w"> </span><span class="nf">resolve_selection</span><span class="p">(</span><span class="n">store</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">beat_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"dict | None"</span><span class="p">:</span>
+</span><span data-line="198"><span class="w">    </span><span class="sd">"""The *active* selection body for a beat — the latest annotation wins.</span>
+</span><span data-line="199">
+</span><span data-line="200"><span class="sd">    Resolves machine choice vs. director override by provenance timestamp, so a</span>
+</span><span data-line="201"><span class="sd">    later override supersedes the machine's choice without deleting it.</span>
+</span><span data-line="202"><span class="sd">    """</span>
+</span><span data-line="203">    <span class="n">ann</span> <span class="o">=</span> <span class="n">_latest_annotation</span><span class="p">(</span><span class="n">store</span><span class="p">,</span> <span class="n">beat_index</span><span class="p">)</span>
+</span><span data-line="204">    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">ann</span><span class="o">.</span><span class="n">body</span><span class="p">)</span> <span class="k">if</span> <span class="n">ann</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span></div>
 
-</span><span data-line="196">
-</span><span data-line="197">
+</span><span data-line="205">
+</span><span data-line="206">
 <div class="viewcode-block" id="resolved_selections">
 <a class="viewcode-back" href="../../_autosummary/illustration.persistence.html#illustration.resolved_selections">[docs]</a>
-</span><span data-line="198"><span class="k">def</span><span class="w"> </span><span class="nf">resolved_selections</span><span class="p">(</span><span class="n">store</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"dict[int, dict]"</span><span class="p">:</span>
-</span><span data-line="199"><span class="w">    </span><span class="sd">"""The active selection body per beat index (resolved over all overrides)."""</span>
-</span><span data-line="200">    <span class="n">out</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-</span><span data-line="201">    <span class="k">for</span> <span class="n">ann</span> <span class="ow">in</span> <span class="n">store</span><span class="o">.</span><span class="n">by_tier</span><span class="p">(</span><span class="n">SELECTIONS_TIER</span><span class="p">):</span>
-</span><span data-line="202">        <span class="n">idx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ann</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"beat_index"</span><span class="p">))</span>
-</span><span data-line="203">        <span class="n">cur</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
-</span><span data-line="204">        <span class="k">if</span> <span class="n">cur</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">_gen_seconds</span><span class="p">(</span><span class="n">ann</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">cur</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-</span><span data-line="205">            <span class="n">out</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">_gen_seconds</span><span class="p">(</span><span class="n">ann</span><span class="p">),</span> <span class="nb">dict</span><span class="p">(</span><span class="n">ann</span><span class="o">.</span><span class="n">body</span><span class="p">))</span>
-</span><span data-line="206">    <span class="k">return</span> <span class="p">{</span><span class="n">idx</span><span class="p">:</span> <span class="n">body</span> <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span> <span class="ow">in</span> <span class="n">out</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span></div>
+</span><span data-line="207"><span class="k">def</span><span class="w"> </span><span class="nf">resolved_selections</span><span class="p">(</span><span class="n">store</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"dict[int, dict]"</span><span class="p">:</span>
+</span><span data-line="208"><span class="w">    </span><span class="sd">"""The active selection body per beat index (resolved over all overrides)."""</span>
+</span><span data-line="209">    <span class="n">out</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span data-line="210">    <span class="k">for</span> <span class="n">ann</span> <span class="ow">in</span> <span class="n">store</span><span class="o">.</span><span class="n">by_tier</span><span class="p">(</span><span class="n">SELECTIONS_TIER</span><span class="p">):</span>
+</span><span data-line="211">        <span class="n">idx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ann</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"beat_index"</span><span class="p">))</span>
+</span><span data-line="212">        <span class="n">cur</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+</span><span data-line="213">        <span class="k">if</span> <span class="n">cur</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">_gen_seconds</span><span class="p">(</span><span class="n">ann</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">cur</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+</span><span data-line="214">            <span class="n">out</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">_gen_seconds</span><span class="p">(</span><span class="n">ann</span><span class="p">),</span> <span class="nb">dict</span><span class="p">(</span><span class="n">ann</span><span class="o">.</span><span class="n">body</span><span class="p">))</span>
+</span><span data-line="215">    <span class="k">return</span> <span class="p">{</span><span class="n">idx</span><span class="p">:</span> <span class="n">body</span> <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span> <span class="ow">in</span> <span class="n">out</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span></div>
 
-</span><span data-line="207">
-</span><span data-line="208">
+</span><span data-line="216">
+</span><span data-line="217">
 <div class="viewcode-block" id="export_otio">
 <a class="viewcode-back" href="../../_autosummary/illustration.persistence.html#illustration.export_otio">[docs]</a>
-</span><span data-line="209"><span class="k">def</span><span class="w"> </span><span class="nf">export_otio</span><span class="p">(</span><span class="n">store</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="s2">"str | None"</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"bytes | None"</span><span class="p">:</span>
-</span><span data-line="210"><span class="w">    </span><span class="sd">"""Export the annotation store to OpenTimelineIO (needs ``lacing[otio]``).</span>
-</span><span data-line="211">
-</span><span data-line="212"><span class="sd">    Thin passthrough to lacing's OTIO adapter, so selections can flow into video</span>
-</span><span data-line="213"><span class="sd">    tools. Returns the bytes when ``target`` is None, else writes the file.</span>
-</span><span data-line="214"><span class="sd">    """</span>
-</span><span data-line="215">    <span class="kn">import</span><span class="w"> </span><span class="nn">lacing.adapters.otio</span>  <span class="c1"># noqa: F401 - self-registers the "otio" adapter</span>
-</span><span data-line="216">    <span class="kn">from</span><span class="w"> </span><span class="nn">lacing.adapters</span><span class="w"> </span><span class="kn">import</span> <span class="n">dump</span>
-</span><span data-line="217">
-</span><span data-line="218">    <span class="k">return</span> <span class="n">dump</span><span class="p">(</span><span class="n">store</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">"otio"</span><span class="p">)</span></div>
-
-</span><span data-line="219">
+</span><span data-line="218"><span class="k">def</span><span class="w"> </span><span class="nf">export_otio</span><span class="p">(</span><span class="n">store</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="s2">"str | None"</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"bytes | None"</span><span class="p">:</span>
+</span><span data-line="219"><span class="w">    </span><span class="sd">"""Export the annotation store to OpenTimelineIO (needs ``lacing[otio]``).</span>
 </span><span data-line="220">
-</span><span data-line="221"><span class="c1"># --- internals --------------------------------------------------------------</span>
-</span><span data-line="222">
-</span><span data-line="223"><span class="n">_REGISTERED</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span data-line="224">
-</span><span data-line="225">
-</span><span data-line="226"><span class="k">def</span><span class="w"> </span><span class="nf">_ensure_registered</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="227">    <span class="k">global</span> <span class="n">_REGISTERED</span>
-</span><span data-line="228">    <span class="k">if</span> <span class="n">_REGISTERED</span><span class="p">:</span>
-</span><span data-line="229">        <span class="k">return</span>
-</span><span data-line="230">    <span class="kn">from</span><span class="w"> </span><span class="nn">lacing</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_body_schema</span>
+</span><span data-line="221"><span class="sd">    Thin passthrough to lacing's OTIO adapter, so selections can flow into video</span>
+</span><span data-line="222"><span class="sd">    tools. Returns the bytes when ``target`` is None, else writes the file.</span>
+</span><span data-line="223"><span class="sd">    """</span>
+</span><span data-line="224">    <span class="kn">import</span><span class="w"> </span><span class="nn">lacing.adapters.otio</span>  <span class="c1"># noqa: F401 - self-registers the "otio" adapter</span>
+</span><span data-line="225">    <span class="kn">from</span><span class="w"> </span><span class="nn">lacing.adapters</span><span class="w"> </span><span class="kn">import</span> <span class="n">dump</span>
+</span><span data-line="226">
+</span><span data-line="227">    <span class="k">return</span> <span class="n">dump</span><span class="p">(</span><span class="n">store</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">"otio"</span><span class="p">)</span></div>
+
+</span><span data-line="228">
+</span><span data-line="229">
+</span><span data-line="230"><span class="c1"># --- internals --------------------------------------------------------------</span>
 </span><span data-line="231">
-</span><span data-line="232">    <span class="c1"># register_body_schema overwrites idempotently; the _REGISTERED guard keeps</span>
-</span><span data-line="233">    <span class="c1"># this a once-per-process call, and a real error (bad URI/type) surfaces.</span>
-</span><span data-line="234">    <span class="n">register_body_schema</span><span class="p">(</span><span class="n">SELECTION_SCHEMA_URI</span><span class="p">,</span> <span class="n">SelectionBody</span><span class="p">)</span>
-</span><span data-line="235">    <span class="n">_REGISTERED</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span data-line="236">
-</span><span data-line="237">
-</span><span data-line="238"><span class="k">def</span><span class="w"> </span><span class="nf">_ensure_store</span><span class="p">(</span><span class="n">store</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-</span><span data-line="239">    <span class="n">_ensure_registered</span><span class="p">()</span>
-</span><span data-line="240">    <span class="kn">from</span><span class="w"> </span><span class="nn">lacing</span><span class="w"> </span><span class="kn">import</span> <span class="n">MemoryStore</span><span class="p">,</span> <span class="n">Tier</span>
-</span><span data-line="241">
-</span><span data-line="242">    <span class="k">if</span> <span class="n">store</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="243">        <span class="n">store</span> <span class="o">=</span> <span class="n">MemoryStore</span><span class="p">()</span>
-</span><span data-line="244">    <span class="k">if</span> <span class="n">store</span><span class="o">.</span><span class="n">get_tier</span><span class="p">(</span><span class="n">SELECTIONS_TIER</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="245">        <span class="n">store</span><span class="o">.</span><span class="n">add_tier</span><span class="p">(</span><span class="n">Tier</span><span class="p">(</span><span class="n">SELECTIONS_TIER</span><span class="p">))</span>
-</span><span data-line="246">    <span class="k">return</span> <span class="n">store</span>
-</span><span data-line="247">
-</span><span data-line="248">
-</span><span data-line="249"><span class="k">def</span><span class="w"> </span><span class="nf">_add_selection</span><span class="p">(</span>
-</span><span data-line="250">    <span class="n">store</span><span class="p">,</span>
-</span><span data-line="251">    <span class="n">beat_index</span><span class="p">,</span>
-</span><span data-line="252">    <span class="n">body</span><span class="p">:</span> <span class="n">SelectionBody</span><span class="p">,</span>
-</span><span data-line="253">    <span class="o">*</span><span class="p">,</span>
-</span><span data-line="254">    <span class="n">actor</span><span class="p">,</span>
-</span><span data-line="255">    <span class="n">activity</span><span class="p">,</span>
-</span><span data-line="256">    <span class="n">was_derived_from</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-</span><span data-line="257">    <span class="n">at_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-</span><span data-line="258"><span class="p">):</span>
-</span><span data-line="259">    <span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">uuid4</span>
-</span><span data-line="260">
-</span><span data-line="261">    <span class="kn">from</span><span class="w"> </span><span class="nn">lacing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Annotation</span><span class="p">,</span> <span class="n">NodeRef</span><span class="p">,</span> <span class="n">Provenance</span><span class="p">,</span> <span class="n">RationalTime</span><span class="p">,</span> <span class="n">TimeInterval</span>
-</span><span data-line="262">
-</span><span data-line="263">    <span class="n">when</span> <span class="o">=</span> <span class="n">at_time</span> <span class="k">if</span> <span class="n">at_time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">RationalTime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-</span><span data-line="264">    <span class="n">interval</span> <span class="o">=</span> <span class="n">TimeInterval</span><span class="p">(</span>
-</span><span data-line="265">        <span class="n">RationalTime</span><span class="p">(</span><span class="n">beat_index</span><span class="p">,</span> <span class="n">rate</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">RationalTime</span><span class="p">(</span><span class="n">beat_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">rate</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-</span><span data-line="266">    <span class="p">)</span>
-</span><span data-line="267">    <span class="n">ann</span> <span class="o">=</span> <span class="n">Annotation</span><span class="p">(</span>
-</span><span data-line="268">        <span class="nb">id</span><span class="o">=</span><span class="n">uuid4</span><span class="p">(),</span>
-</span><span data-line="269">        <span class="n">tier</span><span class="o">=</span><span class="n">SELECTIONS_TIER</span><span class="p">,</span>
-</span><span data-line="270">        <span class="n">reference</span><span class="o">=</span><span class="n">NodeRef</span><span class="p">(</span><span class="n">scene_path</span><span class="o">=</span><span class="sa">f</span><span class="s2">"beat/</span><span class="si">{</span><span class="n">beat_index</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">),</span>
-</span><span data-line="271">        <span class="n">body</span><span class="o">=</span><span class="n">body</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(),</span>
-</span><span data-line="272">        <span class="n">body_schema_uri</span><span class="o">=</span><span class="n">SELECTION_SCHEMA_URI</span><span class="p">,</span>
-</span><span data-line="273">        <span class="n">provenance</span><span class="o">=</span><span class="n">Provenance</span><span class="p">(</span>
-</span><span data-line="274">            <span class="n">was_generated_by</span><span class="o">=</span><span class="n">actor</span><span class="p">,</span>
-</span><span data-line="275">            <span class="n">was_attributed_to</span><span class="o">=</span><span class="n">actor</span><span class="p">,</span>
-</span><span data-line="276">            <span class="n">was_derived_from</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">was_derived_from</span> <span class="ow">or</span> <span class="p">[]),</span>
-</span><span data-line="277">            <span class="n">generated_at_time</span><span class="o">=</span><span class="n">when</span><span class="p">,</span>
-</span><span data-line="278">            <span class="n">activity</span><span class="o">=</span><span class="n">activity</span><span class="p">,</span>
-</span><span data-line="279">        <span class="p">),</span>
-</span><span data-line="280">    <span class="p">)</span>
-</span><span data-line="281">    <span class="n">store</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ann</span><span class="p">)</span>
-</span><span data-line="282">    <span class="k">return</span> <span class="n">ann</span>
-</span><span data-line="283">
-</span><span data-line="284">
-</span><span data-line="285"><span class="k">def</span><span class="w"> </span><span class="nf">_latest_annotation</span><span class="p">(</span><span class="n">store</span><span class="p">,</span> <span class="n">beat_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-</span><span data-line="286">    <span class="c1"># by_tier yields in append (insertion) order; tie-break a timestamp draw</span>
-</span><span data-line="287">    <span class="c1"># toward the later-inserted annotation, so resolve_selection and</span>
-</span><span data-line="288">    <span class="c1"># resolved_selections agree on "the latest override wins".</span>
-</span><span data-line="289">    <span class="n">anns</span> <span class="o">=</span> <span class="p">[</span>
-</span><span data-line="290">        <span class="n">a</span>
-</span><span data-line="291">        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">store</span><span class="o">.</span><span class="n">by_tier</span><span class="p">(</span><span class="n">SELECTIONS_TIER</span><span class="p">)</span>
-</span><span data-line="292">        <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"beat_index"</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">==</span> <span class="n">beat_index</span>
-</span><span data-line="293">    <span class="p">]</span>
-</span><span data-line="294">    <span class="k">if</span> <span class="ow">not</span> <span class="n">anns</span><span class="p">:</span>
-</span><span data-line="295">        <span class="k">return</span> <span class="kc">None</span>
-</span><span data-line="296">    <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="n">anns</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="p">(</span><span class="n">_gen_seconds</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]))[</span><span class="mi">1</span><span class="p">]</span>
-</span><span data-line="297">
-</span><span data-line="298">
-</span><span data-line="299"><span class="k">def</span><span class="w"> </span><span class="nf">_gen_seconds</span><span class="p">(</span><span class="n">ann</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span><span data-line="300">    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">ann</span><span class="o">.</span><span class="n">provenance</span><span class="o">.</span><span class="n">generated_at_time</span><span class="o">.</span><span class="n">to_seconds</span><span class="p">())</span>
-</span><span data-line="301">
-</span><span data-line="302">
-</span><span data-line="303"><span class="k">def</span><span class="w"> </span><span class="nf">_candidate_ref</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="s2">"ImageResult | None"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"_CandidateRef | None"</span><span class="p">:</span>
-</span><span data-line="304"><span class="w">    </span><span class="sd">"""Project an :class:`ImageResult` onto the stored reference — identity + rights.</span>
-</span><span data-line="305">
-</span><span data-line="306"><span class="sd">    The rights fields are copied by iterating ``RIGHTS_FIELDS`` rather than being</span>
-</span><span data-line="307"><span class="sd">    listed again here, so the projection cannot fall behind the SSOT silently;</span>
-</span><span data-line="308"><span class="sd">    ``tests/test_persistence.py`` asserts the model declares every one of them.</span>
-</span><span data-line="309"><span class="sd">    """</span>
-</span><span data-line="310">    <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="311">        <span class="k">return</span> <span class="kc">None</span>
-</span><span data-line="312">    <span class="k">return</span> <span class="n">_CandidateRef</span><span class="p">(</span>
-</span><span data-line="313">        <span class="n">provider</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">provider</span><span class="p">,</span>
-</span><span data-line="314">        <span class="nb">id</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
-</span><span data-line="315">        <span class="n">url</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
-</span><span data-line="316">        <span class="n">score</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">score</span><span class="p">,</span>
-</span><span data-line="317">        <span class="o">**</span><span class="p">{</span><span class="n">field</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">RIGHTS_FIELDS</span><span class="p">},</span>
-</span><span data-line="318">    <span class="p">)</span>
-</span><span data-line="319">
-</span><span data-line="320">
-</span><span data-line="321"><span class="k">def</span><span class="w"> </span><span class="nf">_beat_text</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">beat_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span data-line="322">    <span class="n">beats</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="s2">"beats"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]</span>
-</span><span data-line="323">    <span class="k">return</span> <span class="n">beats</span><span class="p">[</span><span class="n">beat_index</span><span class="p">]</span> <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">beat_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">beats</span><span class="p">)</span> <span class="k">else</span> <span class="s2">""</span>
+</span><span data-line="232"><span class="n">_REGISTERED</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span data-line="233">
+</span><span data-line="234">
+</span><span data-line="235"><span class="k">def</span><span class="w"> </span><span class="nf">_ensure_registered</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="236">    <span class="k">global</span> <span class="n">_REGISTERED</span>
+</span><span data-line="237">    <span class="k">if</span> <span class="n">_REGISTERED</span><span class="p">:</span>
+</span><span data-line="238">        <span class="k">return</span>
+</span><span data-line="239">    <span class="kn">from</span><span class="w"> </span><span class="nn">lacing</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_body_schema</span>
+</span><span data-line="240">
+</span><span data-line="241">    <span class="c1"># register_body_schema overwrites idempotently; the _REGISTERED guard keeps</span>
+</span><span data-line="242">    <span class="c1"># this a once-per-process call, and a real error (bad URI/type) surfaces.</span>
+</span><span data-line="243">    <span class="n">register_body_schema</span><span class="p">(</span><span class="n">SELECTION_SCHEMA_URI</span><span class="p">,</span> <span class="n">SelectionBody</span><span class="p">)</span>
+</span><span data-line="244">    <span class="n">_REGISTERED</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span data-line="245">
+</span><span data-line="246">
+</span><span data-line="247"><span class="k">def</span><span class="w"> </span><span class="nf">_ensure_store</span><span class="p">(</span><span class="n">store</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+</span><span data-line="248">    <span class="n">_ensure_registered</span><span class="p">()</span>
+</span><span data-line="249">    <span class="kn">from</span><span class="w"> </span><span class="nn">lacing</span><span class="w"> </span><span class="kn">import</span> <span class="n">MemoryStore</span><span class="p">,</span> <span class="n">Tier</span>
+</span><span data-line="250">
+</span><span data-line="251">    <span class="k">if</span> <span class="n">store</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="252">        <span class="n">store</span> <span class="o">=</span> <span class="n">MemoryStore</span><span class="p">()</span>
+</span><span data-line="253">    <span class="k">if</span> <span class="n">store</span><span class="o">.</span><span class="n">get_tier</span><span class="p">(</span><span class="n">SELECTIONS_TIER</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="254">        <span class="n">store</span><span class="o">.</span><span class="n">add_tier</span><span class="p">(</span><span class="n">Tier</span><span class="p">(</span><span class="n">SELECTIONS_TIER</span><span class="p">))</span>
+</span><span data-line="255">    <span class="k">return</span> <span class="n">store</span>
+</span><span data-line="256">
+</span><span data-line="257">
+</span><span data-line="258"><span class="k">def</span><span class="w"> </span><span class="nf">_add_selection</span><span class="p">(</span>
+</span><span data-line="259">    <span class="n">store</span><span class="p">,</span>
+</span><span data-line="260">    <span class="n">beat_index</span><span class="p">,</span>
+</span><span data-line="261">    <span class="n">body</span><span class="p">:</span> <span class="n">SelectionBody</span><span class="p">,</span>
+</span><span data-line="262">    <span class="o">*</span><span class="p">,</span>
+</span><span data-line="263">    <span class="n">actor</span><span class="p">,</span>
+</span><span data-line="264">    <span class="n">activity</span><span class="p">,</span>
+</span><span data-line="265">    <span class="n">was_derived_from</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span data-line="266">    <span class="n">at_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span data-line="267"><span class="p">):</span>
+</span><span data-line="268">    <span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">uuid4</span>
+</span><span data-line="269">
+</span><span data-line="270">    <span class="kn">from</span><span class="w"> </span><span class="nn">lacing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Annotation</span><span class="p">,</span> <span class="n">NodeRef</span><span class="p">,</span> <span class="n">Provenance</span><span class="p">,</span> <span class="n">RationalTime</span><span class="p">,</span> <span class="n">TimeInterval</span>
+</span><span data-line="271">
+</span><span data-line="272">    <span class="n">when</span> <span class="o">=</span> <span class="n">at_time</span> <span class="k">if</span> <span class="n">at_time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">RationalTime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+</span><span data-line="273">    <span class="n">interval</span> <span class="o">=</span> <span class="n">TimeInterval</span><span class="p">(</span>
+</span><span data-line="274">        <span class="n">RationalTime</span><span class="p">(</span><span class="n">beat_index</span><span class="p">,</span> <span class="n">rate</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">RationalTime</span><span class="p">(</span><span class="n">beat_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">rate</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span><span data-line="275">    <span class="p">)</span>
+</span><span data-line="276">    <span class="n">ann</span> <span class="o">=</span> <span class="n">Annotation</span><span class="p">(</span>
+</span><span data-line="277">        <span class="nb">id</span><span class="o">=</span><span class="n">uuid4</span><span class="p">(),</span>
+</span><span data-line="278">        <span class="n">tier</span><span class="o">=</span><span class="n">SELECTIONS_TIER</span><span class="p">,</span>
+</span><span data-line="279">        <span class="n">reference</span><span class="o">=</span><span class="n">NodeRef</span><span class="p">(</span><span class="n">scene_path</span><span class="o">=</span><span class="sa">f</span><span class="s2">"beat/</span><span class="si">{</span><span class="n">beat_index</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">),</span>
+</span><span data-line="280">        <span class="n">body</span><span class="o">=</span><span class="n">body</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(),</span>
+</span><span data-line="281">        <span class="n">body_schema_uri</span><span class="o">=</span><span class="n">SELECTION_SCHEMA_URI</span><span class="p">,</span>
+</span><span data-line="282">        <span class="n">provenance</span><span class="o">=</span><span class="n">Provenance</span><span class="p">(</span>
+</span><span data-line="283">            <span class="n">was_generated_by</span><span class="o">=</span><span class="n">actor</span><span class="p">,</span>
+</span><span data-line="284">            <span class="n">was_attributed_to</span><span class="o">=</span><span class="n">actor</span><span class="p">,</span>
+</span><span data-line="285">            <span class="n">was_derived_from</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">was_derived_from</span> <span class="ow">or</span> <span class="p">[]),</span>
+</span><span data-line="286">            <span class="n">generated_at_time</span><span class="o">=</span><span class="n">when</span><span class="p">,</span>
+</span><span data-line="287">            <span class="n">activity</span><span class="o">=</span><span class="n">activity</span><span class="p">,</span>
+</span><span data-line="288">        <span class="p">),</span>
+</span><span data-line="289">    <span class="p">)</span>
+</span><span data-line="290">    <span class="n">store</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ann</span><span class="p">)</span>
+</span><span data-line="291">    <span class="k">return</span> <span class="n">ann</span>
+</span><span data-line="292">
+</span><span data-line="293">
+</span><span data-line="294"><span class="k">def</span><span class="w"> </span><span class="nf">_latest_annotation</span><span class="p">(</span><span class="n">store</span><span class="p">,</span> <span class="n">beat_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+</span><span data-line="295">    <span class="c1"># by_tier yields in append (insertion) order; tie-break a timestamp draw</span>
+</span><span data-line="296">    <span class="c1"># toward the later-inserted annotation, so resolve_selection and</span>
+</span><span data-line="297">    <span class="c1"># resolved_selections agree on "the latest override wins".</span>
+</span><span data-line="298">    <span class="n">anns</span> <span class="o">=</span> <span class="p">[</span>
+</span><span data-line="299">        <span class="n">a</span>
+</span><span data-line="300">        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">store</span><span class="o">.</span><span class="n">by_tier</span><span class="p">(</span><span class="n">SELECTIONS_TIER</span><span class="p">)</span>
+</span><span data-line="301">        <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"beat_index"</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">==</span> <span class="n">beat_index</span>
+</span><span data-line="302">    <span class="p">]</span>
+</span><span data-line="303">    <span class="k">if</span> <span class="ow">not</span> <span class="n">anns</span><span class="p">:</span>
+</span><span data-line="304">        <span class="k">return</span> <span class="kc">None</span>
+</span><span data-line="305">    <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="n">anns</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="p">(</span><span class="n">_gen_seconds</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]))[</span><span class="mi">1</span><span class="p">]</span>
+</span><span data-line="306">
+</span><span data-line="307">
+</span><span data-line="308"><span class="k">def</span><span class="w"> </span><span class="nf">_gen_seconds</span><span class="p">(</span><span class="n">ann</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span data-line="309">    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">ann</span><span class="o">.</span><span class="n">provenance</span><span class="o">.</span><span class="n">generated_at_time</span><span class="o">.</span><span class="n">to_seconds</span><span class="p">())</span>
+</span><span data-line="310">
+</span><span data-line="311">
+</span><span data-line="312"><span class="k">def</span><span class="w"> </span><span class="nf">_candidate_ref</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="s2">"MediaResult | None"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"_CandidateRef | None"</span><span class="p">:</span>
+</span><span data-line="313"><span class="w">    </span><span class="sd">"""Project a result onto the stored reference — identity + rights.</span>
+</span><span data-line="314">
+</span><span data-line="315"><span class="sd">    The rights fields are copied by iterating ``MEDIA_RIGHTS_FIELDS`` rather than</span>
+</span><span data-line="316"><span class="sd">    being listed again here, so the projection cannot fall behind the SSOT</span>
+</span><span data-line="317"><span class="sd">    silently; ``tests/test_persistence.py`` asserts the model declares every one</span>
+</span><span data-line="318"><span class="sd">    of them. An image has no video flags, so those are stored as ``None``.</span>
+</span><span data-line="319"><span class="sd">    """</span>
+</span><span data-line="320">    <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="321">        <span class="k">return</span> <span class="kc">None</span>
+</span><span data-line="322">    <span class="k">return</span> <span class="n">_CandidateRef</span><span class="p">(</span>
+</span><span data-line="323">        <span class="n">provider</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">provider</span><span class="p">,</span>
+</span><span data-line="324">        <span class="nb">id</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+</span><span data-line="325">        <span class="n">url</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
+</span><span data-line="326">        <span class="n">score</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">score</span><span class="p">,</span>
+</span><span data-line="327">        <span class="n">media_type</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="s2">"media_type"</span><span class="p">,</span> <span class="s2">"image"</span><span class="p">),</span>
+</span><span data-line="328">        <span class="o">**</span><span class="p">{</span><span class="n">field</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">MEDIA_RIGHTS_FIELDS</span><span class="p">},</span>
+</span><span data-line="329">    <span class="p">)</span>
+</span><span data-line="330">
+</span><span data-line="331">
+</span><span data-line="332"><span class="k">def</span><span class="w"> </span><span class="nf">_beat_text</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">beat_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="333">    <span class="n">beats</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="s2">"beats"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]</span>
+</span><span data-line="334">    <span class="k">return</span> <span class="n">beats</span><span class="p">[</span><span class="n">beat_index</span><span class="p">]</span> <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">beat_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">beats</span><span class="p">)</span> <span class="k">else</span> <span class="s2">""</span>
 </span></pre></div>
         </article><button class="back-to-top" type="button">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -507,7 +518,7 @@ data-aria-dark="Switch to auto color mode">
     </div>
   </div>
 </footer>
-      <script src="../../_static/documentation_options.js?v=056c92e6"></script>
+      <script src="../../_static/documentation_options.js?v=a11416ff"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>

@@ -30,6 +30,8 @@ See `misc/docs/design/illustration_design.md` for the full design.
 
 | [`search`](#illustration.search)(query, \*[, n, source, orientation, ...])   | Search for up to `n` images matching `query` from one or more sources.                                                                |
 |-----------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
+| [`parse_media_result`](#illustration.parse_media_result)(obj)                            | Validate a dict (or pass through a model) into the right result type.                                                                 |
+| [`require_image`](#illustration.require_image)(obj, \*[, where, strict])            | Return `obj` if it is an [`ImageResult`](#illustration.ImageResult), else raise `TypeError`.                        |
 | [`license_allowlist`](#illustration.license_allowlist)(results, \*[, allow])            | Keep only results whose license is on the allowlist (R3's license gate).                                                              |
 | [`check_attributions`](#illustration.check_attributions)(results)                        | Return the results whose `attribution` does not visibly name a licence.                                                               |
 | [`normalize_license`](#illustration.normalize_license)(value)                           | Fold a provider's licence spelling onto one canonical, comparable code.                                                               |
@@ -88,6 +90,10 @@ See `misc/docs/design/illustration_design.md` for the full design.
 
 | [`ImageResult`](#illustration.ImageResult)(\*\*data)                     | One normalized image hit from any provider.                                  |
 |--------------------------------------------------------------------------------------------|------------------------------------------------------------------------------|
+| [`VideoResult`](#illustration.VideoResult)(\*\*data)                     | One normalized video hit from any provider.                                  |
+| [`MediaResult`](#illustration.MediaResult)(\*\*data)                     | What every normalized hit from any provider carries, whatever the media.     |
+| [`Rendition`](#illustration.Rendition)(\*\*data)                       | One playable encoding of a video, as a provider offers it.                   |
+| [`TimeSpan`](#illustration.TimeSpan)(\*\*data)                        | A span of a media file, in seconds.                                          |
 | [`RetrievalSource`](#illustration.RetrievalSource)(\*[, session])            | Abstract base for a pure image-search provider.                              |
 | [`SourceInfo`](#illustration.SourceInfo)(name[, description, ...])      | Static, human-facing metadata about a source (for discovery + the gate).     |
 | [`SourcesView`](#illustration.SourcesView)()                             | A live `Mapping` over the registry with dict- *and* attribute-access.        |
@@ -240,22 +246,20 @@ Base class for every error raised by [`illustration`](#module-illustration).
 
 ### *class* illustration.ImageResult(\*\*data)
 
-Bases: `BaseModel`
+Bases: [`MediaResult`](illustration.schema.md#illustration.schema.MediaResult)
 
 One normalized image hit from any provider.
 
 The first eight fields plus `cacheable` are the cross-provider minimum the
 design guarantees; the rest are populated when a provider supplies them.
 
+#### *property* media_type *: [Literal](https://docs.python.org/3/library/typing.html#typing.Literal)['image']*
+
+Always `"image"`; deliberately not a serialized field (see [`MediaResult`](#illustration.MediaResult)).
+
 #### model_config *: [ClassVar](https://docs.python.org/3/library/typing.html#typing.ClassVar)[ConfigDict]* *= {}*
 
 Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
-
-#### to_search_hit()
-
-Adapt to an `ir.SearchHit` for Layer-2 cross-provider fusion.
-
-Imported lazily so `import illustration` never requires `ir`.
 
 ### *class* illustration.InspectReport(\*\*data)
 
@@ -276,6 +280,34 @@ One iteration of the loop — the run-log R2 requires for observability.
 #### model_config *: [ClassVar](https://docs.python.org/3/library/typing.html#typing.ClassVar)[ConfigDict]* *= {}*
 
 Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
+
+### *class* illustration.MediaResult(\*\*data)
+
+Bases: `BaseModel`
+
+What every normalized hit from any provider carries, whatever the media.
+
+A base, not a result: instantiate [`ImageResult`](#illustration.ImageResult) or
+[`VideoResult`](#illustration.VideoResult). Neither subclasses the other, on purpose — code typed
+on images (the `burns` render hook, `sequence`’s pHash dedupe) must not
+silently accept a video; see [`require_image()`](#illustration.require_image).
+
+`media_type` tells them apart: `"image"` or `"video"`. It is a real
+serialized field on [`VideoResult`](#illustration.VideoResult) only. [`ImageResult`](#illustration.ImageResult) reports
+`"image"` through a read-only property and does not serialize it, so the
+image contract (dumps, JSON Schema, stored selections, parity fixtures) is
+byte-for-byte what it was; a payload with no tag *is* an image
+([`parse_media_result()`](#illustration.parse_media_result)).
+
+#### model_config *: [ClassVar](https://docs.python.org/3/library/typing.html#typing.ClassVar)[ConfigDict]* *= {}*
+
+Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
+
+#### to_search_hit()
+
+Adapt to an `ir.SearchHit` for Layer-2 cross-provider fusion.
+
+Imported lazily so `import illustration` never requires `ir`.
 
 ### *exception* illustration.MissingCredentialError(provider, , env_var=None, console_url=None)
 
@@ -316,6 +348,16 @@ A provider’s HTTP API returned an error or an unusable response.
 Bases: [`ProviderError`](illustration.errors.md#illustration.errors.ProviderError)
 
 A provider returned HTTP 429 (rate limit exceeded).
+
+### *class* illustration.Rendition(\*\*data)
+
+Bases: `BaseModel`
+
+One playable encoding of a video, as a provider offers it.
+
+#### model_config *: [ClassVar](https://docs.python.org/3/library/typing.html#typing.ClassVar)[ConfigDict]* *= {}*
+
+Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
 
 ### *exception* illustration.RerankDependencyError(missing=None)
 
@@ -504,11 +546,41 @@ Attribute access (`sources.openverse`) is a convenience; dict access
 for a source whose name collides with a `Mapping` method (`get`,
 `keys`, `values`, …).
 
+### *class* illustration.TimeSpan(\*\*data)
+
+Bases: `BaseModel`
+
+A span of a media file, in seconds.
+
+Maps onto an OTIO `TimeRange`, a schema.org `Clip` and a media-fragment
+`#t=start,end`.
+
+#### model_config *: [ClassVar](https://docs.python.org/3/library/typing.html#typing.ClassVar)[ConfigDict]* *= {}*
+
+Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
+
 ### *exception* illustration.UnknownSourceError(name, known=None)
 
 Bases: [`IllustrationError`](illustration.errors.md#illustration.errors.IllustrationError), [`KeyError`](https://docs.python.org/3/builtins/exceptions.html#KeyError)
 
 A source name was requested that is not in the registry.
+
+### *class* illustration.VideoResult(\*\*data)
+
+Bases: [`MediaResult`](illustration.schema.md#illustration.schema.MediaResult)
+
+One normalized video hit from any provider.
+
+Carries the [`MediaResult`](#illustration.MediaResult) fields plus what is specific to footage.
+`url` stays the best *progressive* rendition at search time, so a reader
+of `.url` keeps working; `renditions` lists every encoding on offer.
+
+The four `VIDEO_RIGHTS_FIELDS` are optional; `None` means \*not
+recorded\*.
+
+#### model_config *: [ClassVar](https://docs.python.org/3/library/typing.html#typing.ClassVar)[ConfigDict]* *= {}*
+
+Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
 
 ### illustration.blur_check(, min_variance=100.0)
 
@@ -563,7 +635,7 @@ name, and it should already have been dropped by `license_allowlist` if
 that matters to the caller.
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`ImageResult`](illustration.schema.md#illustration.schema.ImageResult)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`MediaResult`](illustration.schema.md#illustration.schema.MediaResult)]
 
 ```pycon
 >>> a = ImageResult(provider="p", id="1", url="u", license="by-sa", attribution="Jane Doe")
@@ -919,7 +991,7 @@ and without ever dropping an `nc`/`nd` restriction. Results with no
 `license` are dropped (unknown == not allowed).
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`ImageResult`](illustration.schema.md#illustration.schema.ImageResult)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`MediaResult`](illustration.schema.md#illustration.schema.MediaResult)]
 
 ```pycon
 >>> a = ImageResult(provider="p", id="1", url="u", license="cc0")
@@ -1044,6 +1116,20 @@ The installed package version, or `'0+unknown'` if not installed.
 True
 ```
 
+### illustration.parse_media_result(obj)
+
+Validate a dict (or pass through a model) into the right result type.
+
+* **Return type:**
+  [`ImageResult`](illustration.schema.md#illustration.schema.ImageResult) | [`VideoResult`](illustration.schema.md#illustration.schema.VideoResult)
+
+```pycon
+>>> parse_media_result({"provider": "p", "id": "1", "url": "u"}).media_type
+'image'
+>>> parse_media_result({"provider": "p", "id": "1", "url": "u", "media_type": "video"}).media_type
+'video'
+```
+
 ### illustration.persist_sequence(result, , store=None, actor='agent:illustration-curate', activity='infer', at_time=None)
 
 Persist a [`SequenceResult`](illustration.sequence.md#illustration.sequence.SequenceResult) as lacing annotations.
@@ -1145,6 +1231,28 @@ Returns whatever `render` returns (the output path for the default).
 
 * **Return type:**
   [`Any`](https://docs.python.org/3/library/typing.html#typing.Any)
+
+### illustration.require_image(obj, , where='this function', strict=True)
+
+Return `obj` if it is an [`ImageResult`](#illustration.ImageResult), else raise `TypeError`.
+
+`strict=False` refuses only other [`MediaResult`](#illustration.MediaResult) kinds (a video) and
+lets a duck-typed stand-in through, for call sites that always took those.
+
+The guard for image-only code paths. A [`VideoResult`](#illustration.VideoResult) is not an
+[`ImageResult`](#illustration.ImageResult) by design, but duck-typed code that reads `.url` would
+take one without complaint and fetch a movie as a picture; this makes that
+loud.
+
+* **Return type:**
+  [`ImageResult`](illustration.schema.md#illustration.schema.ImageResult)
+
+```pycon
+>>> require_image(VideoResult(provider="p", id="1", url="u"), where="render")
+Traceback (most recent call last):
+...
+TypeError: render expects an ImageResult, got VideoResult
+```
 
 ### illustration.requires_credentials(provider)
 

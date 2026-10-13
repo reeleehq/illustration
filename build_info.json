@@ -1,36 +1,36 @@
 {
   "schema_version": 1,
-  "built_at": "2026-10-13T03:04:24Z",
+  "built_at": "2026-10-13T03:11:47Z",
   "package": {
     "name": "illustration",
-    "version": "0.0.20",
+    "version": "0.0.21",
     "display_name": "illustration",
     "source": "pyproject.toml"
   },
   "git": {
     "available": true,
-    "commit": "b8d2bba94b36e75c00e7e1e0960963f8e20689da",
-    "short_commit": "b8d2bba",
+    "commit": "cd0e840a45516cd23b8e784d101aa76c980f4bbb",
+    "short_commit": "cd0e840",
     "branch": "main",
     "tags": [],
     "dirty": false,
     "remote_url": "https://github.com/reeleehq/illustration",
-    "commit_url": "https://github.com/reeleehq/illustration/commit/b8d2bba94b36e75c00e7e1e0960963f8e20689da",
+    "commit_url": "https://github.com/reeleehq/illustration/commit/cd0e840a45516cd23b8e784d101aa76c980f4bbb",
     "error": null
   },
   "ci": {
     "provider": "github",
     "repository": "reeleehq/illustration",
-    "sha": "b8d2bba94b36e75c00e7e1e0960963f8e20689da",
+    "sha": "cd0e840a45516cd23b8e784d101aa76c980f4bbb",
     "sha_in_history": true,
     "ref": "refs/heads/main",
     "ref_name": "main",
-    "run_id": "38339820350",
-    "run_url": "https://github.com/reeleehq/illustration/actions/runs/38339820350",
+    "run_id": "38340418864",
+    "run_url": "https://github.com/reeleehq/illustration/actions/runs/38340418864",
     "server_url": "https://github.com"
   },
   "tools": {
-    "epythet": "0.2.12",
+    "epythet": "0.2.13",
     "sphinx": "9.1.0",
     "docutils": "0.22.4",
     "python": "3.12.15"
@@ -56,20 +56,18 @@
   },
   "site": {
     "modules_documented": 26,
-    "objects_documented": 384
+    "objects_documented": 410
   },
   "pypi": {
     "checked": true,
     "latest": "0.0.21",
-    "relation": "behind",
+    "relation": "same",
     "error": null
   },
-  "reproduce": "git clone https://github.com/reeleehq/illustration && cd illustration\ngit checkout b8d2bba94b36e75c00e7e1e0960963f8e20689da\npip install \"epythet==0.2.12\"\nepythet quickstart . --ignore tests/ scrap/ examples/",
+  "reproduce": "git clone https://github.com/reeleehq/illustration && cd illustration\ngit checkout cd0e840a45516cd23b8e784d101aa76c980f4bbb\npip install \"epythet==0.2.13\"\nepythet quickstart . --ignore tests/ scrap/ examples/",
   "warnings": [],
   "alignment": {
-    "aligned": false,
-    "notes": [
-      "The documented version (0.0.20) is behind the latest release on PyPI (0.0.21): `pip install illustration` gives newer code than these docs describe."
-    ]
+    "aligned": true,
+    "notes": []
   }
 }
