@@ -27,7 +27,7 @@ from __future__ import annotations
 
 from typing import Any, Callable, Sequence
 
-from illustration.schema import RIGHTS_FIELDS, ImageResult
+from illustration.schema import RIGHTS_FIELDS, ImageResult, MediaResult, require_image
 
 __all__ = [
     "render_sequence_video",
@@ -171,8 +171,18 @@ def _chosen_images(selections: Any) -> "list[ImageResult | None]":
     sel = getattr(selections, "selection", selections)
     chosen = getattr(sel, "chosen", None)
     if chosen is not None:
-        return list(chosen)
-    return [_as_image(x) for x in selections]
+        return [_checked(x) for x in chosen]
+    return [_checked(_as_image(x)) for x in selections]
+
+
+def _checked(x: Any) -> "ImageResult | None":
+    """Pass an image (or an empty beat) through; refuse anything else loudly.
+
+    A ``VideoResult`` is not an ``ImageResult`` by design, and the renderer here
+    stills images with Ken-Burns motion — handing it a movie must fail, not be
+    fetched as a picture.
+    """
+    return x if x is None else require_image(x, where="the render hook", strict=False)
 
 
 def _beats_text(selections: Any) -> list[str]:
@@ -181,7 +191,7 @@ def _beats_text(selections: Any) -> list[str]:
 
 
 def _as_image(x: Any) -> "ImageResult | None":
-    if x is None or isinstance(x, ImageResult):
+    if x is None or isinstance(x, MediaResult):
         return x
     return getattr(x, "chosen", None)  # a BeatSelection
 

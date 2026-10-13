@@ -45,7 +45,7 @@ storyboard.
 
 | Module | Owns | Heavy deps |
 |---|---|---|
-| `schema` | `ImageResult` (Pydantic v2, the SSOT), `RIGHTS_FIELDS`, `license_allowlist`, `to_search_hit` | pure |
+| `schema` | `MediaResult` base, `ImageResult` + `VideoResult` (Pydantic v2, the SSOT), `RIGHTS_FIELDS` / `VIDEO_RIGHTS_FIELDS` / `MEDIA_RIGHTS_FIELDS`, `license_allowlist`, `to_search_hit` | pure |
 | `licensing` | `normalize_license` — one canonical code from four provider vocabularies | pure |
 | `base` | `RetrievalSource` ABC + `SourceInfo`; paging, HTTP, error translation | `requests` (lazy) |
 | `providers/` | `openverse`, `wikimedia`, `pexels`, `pixabay` adapters | — |
@@ -115,6 +115,12 @@ its defining constraint, not a footnote.
   the subset check, which matters because `_CandidateRef` deliberately does
   *not* set `extra="forbid"` (that is what lets an old build read a newer body)
   and so would **ignore** an undeclared key rather than raise.
+
+## Video results
+
+`VideoResult` is a sibling of `ImageResult` under a shared `MediaResult` base, **not** a subclass: anything typed on images (the `burns` hook in `video`, `sequence`'s pHash) must not silently accept a video, and `schema.require_image` / `video._checked` make that loud. The tag is `media_type`; it is a serialized field on `VideoResult` only, and `ImageResult` exposes `"image"` through a read-only property, so the image contract (dumps, JSON Schema, parity fixtures, stored selections) did not change. `parse_media_result` is the callable-discriminator union: a payload without the tag is an image. `schema/media-result.schema.json` carries `oneOf` + the discriminator mapping; the TS twin still generates from `image-result.schema.json` alone.
+
+The four video rights flags (`editorial_only`, `has_model_release`, `has_property_release`, `audio_policy`) are `VIDEO_RIGHTS_FIELDS`, **beside** `RIGHTS_FIELDS`, not inside it: `RIGHTS_FIELDS` is what every image has and is projected wholesale onto `walkthru.AssetRights`. Persistence stores `MEDIA_RIGHTS_FIELDS` (both), `_CandidateRef` declares all eleven plus `media_type`, `None` = not recorded. The same literal pins guard it in `tests/test_persistence.py`.
 
 ## Adding a provider (open-closed)
 

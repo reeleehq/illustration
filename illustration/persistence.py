@@ -44,11 +44,11 @@ Behind the optional ``[persist]`` extra (``lacing``); imported lazily so base
 
 from __future__ import annotations
 
-from typing import Any, Sequence
+from typing import Any, Literal, Sequence
 
 from pydantic import BaseModel, Field
 
-from illustration.schema import RIGHTS_FIELDS, ImageResult
+from illustration.schema import MEDIA_RIGHTS_FIELDS, RIGHTS_FIELDS, ImageResult, MediaResult
 
 __all__ = [
     "persist_sequence",
@@ -89,6 +89,9 @@ class _CandidateRef(BaseModel):
     id: str
     url: str
     score: "float | None" = None
+    #: Which kind of media this is. Absent in a body written before video
+    #: existed, which is therefore an image.
+    media_type: Literal["image", "video"] = "image"
     # --- the rights record (names pinned to ImageResult) ---
     license: "str | None" = None
     license_url: "str | None" = None
@@ -97,6 +100,12 @@ class _CandidateRef(BaseModel):
     author: "str | None" = None
     author_url: "str | None" = None
     cacheable: "bool | None" = None
+    # --- the video half of the rights record (VIDEO_RIGHTS_FIELDS) ---
+    # `None` = not recorded: always so for an image.
+    editorial_only: "bool | None" = None
+    has_model_release: "bool | None" = None
+    has_property_release: "bool | None" = None
+    audio_policy: "str | None" = None
 
 
 class SelectionBody(BaseModel):
@@ -300,12 +309,13 @@ def _gen_seconds(ann) -> float:
     return float(ann.provenance.generated_at_time.to_seconds())
 
 
-def _candidate_ref(result: "ImageResult | None") -> "_CandidateRef | None":
-    """Project an :class:`ImageResult` onto the stored reference — identity + rights.
+def _candidate_ref(result: "MediaResult | None") -> "_CandidateRef | None":
+    """Project a result onto the stored reference — identity + rights.
 
-    The rights fields are copied by iterating ``RIGHTS_FIELDS`` rather than being
-    listed again here, so the projection cannot fall behind the SSOT silently;
-    ``tests/test_persistence.py`` asserts the model declares every one of them.
+    The rights fields are copied by iterating ``MEDIA_RIGHTS_FIELDS`` rather than
+    being listed again here, so the projection cannot fall behind the SSOT
+    silently; ``tests/test_persistence.py`` asserts the model declares every one
+    of them. An image has no video flags, so those are stored as ``None``.
     """
     if result is None:
         return None
@@ -314,7 +324,8 @@ def _candidate_ref(result: "ImageResult | None") -> "_CandidateRef | None":
         id=result.id,
         url=result.url,
         score=result.score,
-        **{field: getattr(result, field) for field in RIGHTS_FIELDS},
+        media_type=getattr(result, "media_type", "image"),
+        **{field: getattr(result, field, None) for field in MEDIA_RIGHTS_FIELDS},
     )
 
 

@@ -45,7 +45,7 @@ from typing import Any, Callable, Sequence
 
 from pydantic import BaseModel, Field
 
-from illustration.schema import ImageResult
+from illustration.schema import ImageResult, require_image
 
 __all__ = [
     "select_sequence",
@@ -144,6 +144,9 @@ def select_sequence(
     sequence that spends four beats on them is the failure this guards. When
     given, it replaces the pHash test entirely — it strictly subsumes it.
     """
+    for candidates in per_beat_candidates:  # before any fetch, hash or embed
+        for candidate in candidates:
+            require_image(candidate, where="select_sequence", strict=False)
     rel_fn = relevance if relevance is not None else _default_relevance
     embed_fn = embed if embed is not None else _default_embed
     hash_fn = hasher if hasher is not None else make_phash_hasher()

@@ -173,3 +173,30 @@ class TestToWalkthruDocument:
         assert rights is not None
         for field in RIGHTS_FIELDS:
             assert getattr(rights, field) == getattr(source, field), field
+
+
+class TestVideoNotAcceptedAsImage:
+    def test_a_video_cannot_be_passed_where_the_render_hook_expects_an_image(self):
+        from illustration.schema import VideoResult
+        from illustration.video import _chosen_images
+
+        v = VideoResult(provider="p", id="v", url="https://x/v.mp4")
+        with pytest.raises(TypeError, match="render hook expects an ImageResult"):
+            _chosen_images([v])  # a plain list
+        # the typed containers refuse it at construction ...
+        with pytest.raises(ValueError):
+            BeatSelection(beat_index=0, chosen=v)
+        # ... and a container that dodged validation is still caught here
+        sneaked = SequenceSelection(selections=[BeatSelection.model_construct(beat_index=0, chosen=v)])
+        with pytest.raises(TypeError, match="render hook expects an ImageResult"):
+            _chosen_images(sneaked)
+
+    def test_render_sequence_video_refuses_a_video_before_any_work(self):
+        from illustration.schema import VideoResult
+        from illustration.video import render_sequence_video
+
+        v = VideoResult(provider="p", id="v", url="https://x/v.mp4")
+        with pytest.raises(TypeError, match="ImageResult"):
+            render_sequence_video(
+                [v], saveas="f.mp4", image_loader=lambda img: "PIL", render=lambda *a, **k: "x"
+            )
