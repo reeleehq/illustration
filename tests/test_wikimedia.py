@@ -231,3 +231,13 @@ def test_thumbnail_at_width_leaves_an_original_url_alone():
 
     url = "https://upload.wikimedia.org/wikipedia/commons/a/ab/X.jpg"
     assert thumbnail_at_width(url, 1280) == url
+
+
+def test_thumbnail_at_width_handles_tiff_and_ignores_a_nonpositive_width():
+    from illustration.providers.wikimedia import thumbnail_at_width
+
+    base = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/X.tif"
+    assert thumbnail_at_width(f"{base}/lossy-page1-320px-X.tif.jpg", 1280) == (
+        f"{base}/lossy-page1-1280px-X.tif.jpg"
+    )
+    assert thumbnail_at_width(f"{base}/320px-X.tif.jpg", 0) == f"{base}/320px-X.tif.jpg"

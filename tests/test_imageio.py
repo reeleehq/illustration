@@ -84,3 +84,16 @@ def test_image_for_result_width_never_upscales_or_touches_other_hosts(monkeypatc
     image_for_result(small, width=1280)
     image_for_result(other, width=1280)
     assert asked == [_THUMB, "https://e.org/320px-a.jpg"]
+
+
+def test_memoized_loader_width_resizes_commons_urls_and_falls_back():
+    calls = []
+
+    def fake_fetch(url):
+        calls.append(url)
+        return None if "1280px" in url else f"img:{url}"
+
+    load = memoized_image_loader(fetch=fake_fetch, width=1280)
+    r = ImageResult(provider="wikimedia", id="1", url="u", thumbnail_url=_THUMB, width=4000)
+    assert load(r) == f"img:{_THUMB}"
+    assert calls == [_THUMB.replace("320px", "1280px"), _THUMB]

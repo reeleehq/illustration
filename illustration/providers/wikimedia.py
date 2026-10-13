@@ -49,8 +49,8 @@ _SCALED_IMAGE_LIMIT = 50
 
 
 _UPLOAD_HOST = "upload.wikimedia.org"
-# The last path segment of a thumbnail URL: `[page1-]320px-Name.jpg`.
-_THUMB_SEGMENT_RE = re.compile(r"^((?:page\d+-)?)\d+(px-.+)$")
+# The last path segment of a thumbnail URL: `[lossy-][page1-]320px-Name.jpg`.
+_THUMB_SEGMENT_RE = re.compile(r"^((?:(?:lossy|lossless)-)?(?:page\d+-)?)\d+(px-.+)$")
 
 
 def thumbnail_at_width(
@@ -72,7 +72,7 @@ def thumbnail_at_width(
     >>> thumbnail_at_width("https://example.org/a.jpg", 1280)
     'https://example.org/a.jpg'
     """
-    if not url or urlsplit(url).netloc != _UPLOAD_HOST or "/thumb/" not in url:
+    if not url or width < 1 or urlsplit(url).netloc != _UPLOAD_HOST or "/thumb/" not in url:
         return url
     if original_width is not None and width > original_width:
         return url

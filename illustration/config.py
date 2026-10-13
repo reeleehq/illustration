@@ -51,6 +51,7 @@ PROJECT_URL = "https://github.com/reeleehq/illustration"
 #: Environment variable holding an operator's own contact (an email or URL) for
 #: the User-Agent. Wikimedia's policy asks every client for a way to reach its
 #: operator, and throttles clients that give none; set this in deployments.
+#: Note the User-Agent is shared, so every provider sees this contact too.
 CONTACT_ENV_VAR = "ILLUSTRATION_CONTACT"
 
 #: Width (px) of the Wikimedia thumbnail bucket used when fetching bytes for
@@ -176,6 +177,9 @@ def user_agent(*, contact: "str | None" = None) -> str:
     'illustration/... (https://github.com/reeleehq/illustration; ops@example.org) ...'
     """
     operator = contact or os.environ.get(CONTACT_ENV_VAR)
+    # A control character (a stray newline in an env var) makes `requests`
+    # refuse the header, which would fail every provider and every image fetch.
+    operator = " ".join(operator.split()) if operator else operator
     contacts = "; ".join(filter(None, (PROJECT_URL, operator)))
     return f"illustration/{package_version()} ({contacts}) {_http_library_token()}"
 

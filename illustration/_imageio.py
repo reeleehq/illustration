@@ -128,14 +128,19 @@ def image_for_result(
 
 
 def memoized_image_loader(
-    *, field: str = DFLT_IMAGE_FIELD, fetch: "Callable | None" = None
+    *,
+    field: str = DFLT_IMAGE_FIELD,
+    fetch: "Callable | None" = None,
+    width: "int | None" = None,
 ) -> "Callable[[ImageResult], Any]":
     """A per-call, cache-once image loader for one curation/prefilter pass.
 
     Returns ``load(result) -> PIL image | None`` that fetches each distinct image
     URL at most once (in-memory LRU keyed by URL). ``fetch`` overrides the fetch
     function (a test double avoids the network entirely). The cache is local to
-    the returned closure, so it's discarded when the pass ends.
+    the returned closure, so it's discarded when the pass ends. ``width`` asks
+    for a right-sized Commons render, as in :func:`image_for_result` (off by
+    default: relevance scoring and CV pre-filters are happy with the thumbnail).
     """
     _fetch = fetch if fetch is not None else fetch_image
 
@@ -145,6 +150,14 @@ def memoized_image_loader(
 
     def load(result: ImageResult):
         url = getattr(result, field, None) or result.url
-        return _load(url) if url else None
+        if not url:
+            return None
+        if width is not None:
+            from illustration.providers.wikimedia import thumbnail_at_width
+
+            sized = thumbnail_at_width(url, width, original_width=result.width)
+            if sized != url:
+                return _load(sized) or _load(url)
+        return _load(url)
 
     return load

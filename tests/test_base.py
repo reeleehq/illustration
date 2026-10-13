@@ -209,3 +209,10 @@ def test_user_agent_contact_argument_beats_env_var(monkeypatch):
     assert "env@example.org" in user_agent()
     assert "arg@example.org" in user_agent(contact="arg@example.org")
     assert "env@example.org" not in user_agent(contact="arg@example.org")
+
+
+def test_user_agent_contact_cannot_carry_a_control_character(monkeypatch):
+    from illustration.config import CONTACT_ENV_VAR, user_agent
+
+    monkeypatch.setenv(CONTACT_ENV_VAR, "x@y.org\r\nX-Evil: 1")
+    assert not any(c in user_agent() for c in "\r\n")
