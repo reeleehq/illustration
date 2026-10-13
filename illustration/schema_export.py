@@ -13,6 +13,11 @@ What lands in ``<out_dir>``:
 
 - ``image-result.schema.json`` — :class:`~illustration.schema.ImageResult` as
   JSON Schema (the codegen input for the Zod type).
+- ``media-result.schema.json`` — the discriminated union of
+  :class:`~illustration.schema.ImageResult` and
+  :class:`~illustration.schema.VideoResult` (``oneOf`` plus a ``media_type``
+  discriminator mapping). ``image-result.schema.json`` stays the image contract
+  on its own, and is what the TS twin generates from.
 - ``sources.json`` — one record per registered source: endpoint, parameter
   names, paging caps, fixed params, auth style, canonical→native parameter
   names, and its :class:`~illustration.base.SourceInfo`.
@@ -55,7 +60,11 @@ from illustration.licensing import (
     normalize_license,
 )
 from illustration.registry import get_source, list_sources
-from illustration.schema import RIGHTS_FIELDS, ImageResult
+from illustration.schema import (
+    _MEDIA_ADAPTER,
+    RIGHTS_FIELDS,
+    ImageResult,
+)
 
 __all__ = [
     "export_schema",
@@ -155,6 +164,7 @@ def export_schema(
 
     written = [
         _write(out / "image-result.schema.json", ImageResult.model_json_schema()),
+        _write(out / "media-result.schema.json", _media_result_schema()),
         _write(out / "sources.json", [_source_record(get_source(n)) for n in names]),
         _write(out / "constants.json", _constants()),
     ]
@@ -170,6 +180,34 @@ def export_schema(
             )
         )
     return written
+
+
+def _media_result_schema() -> dict:
+    """The ``ImageResult | VideoResult`` union as JSON Schema, with its discriminator.
+
+    Pydantic's callable discriminator emits a bare ``oneOf``; the mapping is
+    added here so a generator (Zod, OpenAPI tooling) can pick the branch from
+    ``media_type``. A payload without the tag is an image, so the image branch
+    declares ``media_type`` as an optional property defaulting to ``"image"``.
+    """
+    schema = _MEDIA_ADAPTER.json_schema()
+    defs = schema["$defs"]
+    defs["ImageResult"]["properties"]["media_type"] = {
+        "const": "image",
+        "default": "image",
+        "type": "string",
+    }
+    return {
+        "title": "MediaResult",
+        **schema,
+        "discriminator": {
+            "propertyName": "media_type",
+            "mapping": {
+                "image": "#/$defs/ImageResult",
+                "video": "#/$defs/VideoResult",
+            },
+        },
+    }
 
 
 def _resolve_out_dir(out_dir: "str | Path | None") -> Path:

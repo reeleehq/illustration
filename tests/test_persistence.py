@@ -17,7 +17,13 @@ from illustration.persistence import (  # noqa: E402
     resolve_selection,
     resolved_selections,
 )
-from illustration.schema import RIGHTS_FIELDS, ImageResult  # noqa: E402
+from illustration.schema import (  # noqa: E402
+    MEDIA_RIGHTS_FIELDS,
+    RIGHTS_FIELDS,
+    VIDEO_RIGHTS_FIELDS,
+    ImageResult,
+    VideoResult,
+)
 from illustration.sequence import BeatSelection, SequenceResult, SequenceSelection  # noqa: E402
 
 
@@ -319,3 +325,92 @@ def test_unlicensed_result_records_absence_rather_than_inventing_a_licence():
     assert (
         selected["cacheable"] is False
     )  # ImageResult's own default, carried faithfully
+
+
+# --- video (#32): the same three-hop guard, for the video half ----------------
+
+#: The video-only rights flags, pinned as a literal for the reason
+#: ``EXPECTED_RIGHTS_FIELDS`` is. They sit in ``VIDEO_RIGHTS_FIELDS`` beside
+#: ``RIGHTS_FIELDS`` (not inside it: ``RIGHTS_FIELDS`` is what every *image*
+#: has), and persistence stores ``MEDIA_RIGHTS_FIELDS`` = both.
+EXPECTED_VIDEO_RIGHTS_FIELDS = {
+    "editorial_only",
+    "has_model_release",
+    "has_property_release",
+    "audio_policy",
+}
+
+#: Every field :class:`VideoResult` declares, classified once by a human.
+EXPECTED_VIDEO_RESULT_FIELDS = EXPECTED_IMAGE_RESULT_FIELDS | {
+    "media_type",
+    "duration_s",
+    "fps",
+    "has_audio",
+    "renditions",
+    "poster_url",
+    "preview_frames",
+    "moment",
+} | EXPECTED_VIDEO_RIGHTS_FIELDS
+
+
+def test_video_rights_fields_tuple_matches_its_literal_pin():
+    assert set(VIDEO_RIGHTS_FIELDS) == EXPECTED_VIDEO_RIGHTS_FIELDS
+    assert set(MEDIA_RIGHTS_FIELDS) == EXPECTED_RIGHTS_FIELDS | EXPECTED_VIDEO_RIGHTS_FIELDS
+    assert len(MEDIA_RIGHTS_FIELDS) == len(set(MEDIA_RIGHTS_FIELDS))
+
+
+def test_video_result_gained_no_unclassified_field():
+    actual = set(VideoResult.model_fields)
+    assert actual == EXPECTED_VIDEO_RESULT_FIELDS, (
+        f"VideoResult changed (+{sorted(actual - EXPECTED_VIDEO_RESULT_FIELDS)}, "
+        f"-{sorted(EXPECTED_VIDEO_RESULT_FIELDS - actual)}). Classify each new field: "
+        "if it answers 'may we ship this?', add it to VIDEO_RIGHTS_FIELDS *and* "
+        "persistence._CandidateRef *and* EXPECTED_VIDEO_RIGHTS_FIELDS."
+    )
+
+
+def test_every_media_rights_field_is_declared_where_it_is_stored_and_read():
+    assert not [f for f in VIDEO_RIGHTS_FIELDS if f not in VideoResult.model_fields]
+    assert not [f for f in MEDIA_RIGHTS_FIELDS if f not in _CandidateRef.model_fields]
+
+
+def _video_result():
+    return VideoResult(
+        provider="pexels",
+        id="v9",
+        url="https://x/v.mp4",
+        score=0.5,
+        license="pexels",
+        license_url="https://x/license",
+        attribution="Jo / Pexels",
+        source_page_url="https://x/page",
+        author="Jo",
+        author_url="https://x/jo",
+        cacheable=False,
+        editorial_only=True,
+        has_model_release=False,
+        has_property_release=None,
+        audio_policy="no-music",
+    )
+
+
+def test_a_persisted_video_keeps_its_whole_rights_record_and_its_tag():
+    # a sequence's containers are image-typed; a video selection is a director override
+    store = persist_sequence(_licensed_sequence(), at_time=RationalTime(1, 1))
+    record_override(store, 0, _video_result(), at_time=RationalTime(2, 1))
+    selected = resolve_selection(store, 0)["selected"]
+    source = _video_result()
+    for field in MEDIA_RIGHTS_FIELDS:
+        assert selected[field] == getattr(source, field), field
+    assert selected["media_type"] == "video"
+
+
+def test_an_image_selection_records_no_video_flags_and_an_old_body_still_loads():
+    store = persist_sequence(_licensed_sequence(), at_time=RationalTime(1, 1))
+    selected = resolve_selection(store, 0)["selected"]
+    assert selected["media_type"] == "image"
+    assert all(selected[f] is None for f in VIDEO_RIGHTS_FIELDS)
+    # a body written before video existed has neither the tag nor the flags
+    old = {"provider": "p", "id": "1", "url": "u"}
+    ref = _CandidateRef.model_validate(old)
+    assert ref.media_type == "image" and ref.editorial_only is None

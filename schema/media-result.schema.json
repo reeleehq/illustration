@@ -1,0 +1,732 @@
+{
+  "$defs": {
+    "ImageResult": {
+      "description": "One normalized image hit from any provider.\n\nThe first eight fields plus ``cacheable`` are the cross-provider minimum the\ndesign guarantees; the rest are populated when a provider supplies them.",
+      "properties": {
+        "attribution": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Ready-to-render attribution sentence.",
+          "title": "Attribution"
+        },
+        "author": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Author"
+        },
+        "author_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Author Url"
+        },
+        "avg_color": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Dominant-color hint where available.",
+          "title": "Avg Color"
+        },
+        "cacheable": {
+          "default": false,
+          "description": "May the bytes be downloaded/cached to our server?",
+          "title": "Cacheable",
+          "type": "boolean"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Alt text / longer description.",
+          "title": "Description"
+        },
+        "height": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Height"
+        },
+        "id": {
+          "description": "Provider-native identifier.",
+          "title": "Id",
+          "type": "string"
+        },
+        "license": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "License code or name (e.g. 'by-sa').",
+          "title": "License"
+        },
+        "license_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "License Url"
+        },
+        "media_type": {
+          "const": "image",
+          "default": "image",
+          "type": "string"
+        },
+        "provider": {
+          "description": "Source/provider name, e.g. 'openverse'.",
+          "title": "Provider",
+          "type": "string"
+        },
+        "query": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Canonical query that produced this hit.",
+          "title": "Query"
+        },
+        "raw": {
+          "additionalProperties": true,
+          "default": {},
+          "description": "Untranslated provider payload.",
+          "title": "Raw",
+          "type": "object"
+        },
+        "score": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Reserved for Layer-2 rerank; None at Layer 1.",
+          "title": "Score"
+        },
+        "source_page_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Page Url"
+        },
+        "tags": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Tags",
+          "type": "array"
+        },
+        "thumbnail_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Thumbnail Url"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Title"
+        },
+        "url": {
+          "description": "Full-resolution image URL.",
+          "title": "Url",
+          "type": "string"
+        },
+        "width": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Width"
+        }
+      },
+      "required": [
+        "provider",
+        "id",
+        "url"
+      ],
+      "title": "ImageResult",
+      "type": "object"
+    },
+    "Rendition": {
+      "description": "One playable encoding of a video, as a provider offers it.",
+      "properties": {
+        "expires_at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ISO-8601 expiry of a signed URL, when it has one.",
+          "title": "Expires At"
+        },
+        "fps": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Fps"
+        },
+        "height": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Height"
+        },
+        "mime_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mime Type"
+        },
+        "quality_label": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The provider's own label, e.g. 'hd' or '4k'.",
+          "title": "Quality Label"
+        },
+        "size_bytes": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Size Bytes"
+        },
+        "url": {
+          "title": "Url",
+          "type": "string"
+        },
+        "video_codec": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Video Codec"
+        },
+        "width": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Width"
+        }
+      },
+      "required": [
+        "url"
+      ],
+      "title": "Rendition",
+      "type": "object"
+    },
+    "TimeSpan": {
+      "description": "A span of a media file, in seconds.\n\nMaps onto an OTIO ``TimeRange``, a schema.org ``Clip`` and a media-fragment\n``#t=start,end``.",
+      "properties": {
+        "end": {
+          "title": "End",
+          "type": "number"
+        },
+        "start": {
+          "title": "Start",
+          "type": "number"
+        }
+      },
+      "required": [
+        "start",
+        "end"
+      ],
+      "title": "TimeSpan",
+      "type": "object"
+    },
+    "VideoResult": {
+      "description": "One normalized video hit from any provider.\n\nCarries the :class:`MediaResult` fields plus what is specific to footage.\n``url`` stays the best *progressive* rendition at search time, so a reader\nof ``.url`` keeps working; ``renditions`` lists every encoding on offer.\n\nThe four :data:`VIDEO_RIGHTS_FIELDS` are optional; ``None`` means *not\nrecorded*.",
+      "properties": {
+        "attribution": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Ready-to-render attribution sentence.",
+          "title": "Attribution"
+        },
+        "audio_policy": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What the soundtrack may be used for, as the provider words it.",
+          "title": "Audio Policy"
+        },
+        "author": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Author"
+        },
+        "author_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Author Url"
+        },
+        "avg_color": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Dominant-color hint where available.",
+          "title": "Avg Color"
+        },
+        "cacheable": {
+          "default": false,
+          "description": "May the bytes be downloaded/cached to our server?",
+          "title": "Cacheable",
+          "type": "boolean"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Alt text / longer description.",
+          "title": "Description"
+        },
+        "duration_s": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Duration S"
+        },
+        "editorial_only": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Editorial use only (no commercial/advertising use).",
+          "title": "Editorial Only"
+        },
+        "fps": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Fps"
+        },
+        "has_audio": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Has Audio"
+        },
+        "has_model_release": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Has Model Release"
+        },
+        "has_property_release": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Has Property Release"
+        },
+        "height": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Height"
+        },
+        "id": {
+          "description": "Provider-native identifier.",
+          "title": "Id",
+          "type": "string"
+        },
+        "license": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "License code or name (e.g. 'by-sa').",
+          "title": "License"
+        },
+        "license_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "License Url"
+        },
+        "media_type": {
+          "const": "video",
+          "default": "video",
+          "title": "Media Type",
+          "type": "string"
+        },
+        "moment": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TimeSpan"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The span that matched the query, when the provider says."
+        },
+        "poster_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Poster Url"
+        },
+        "preview_frames": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Preview Frames",
+          "type": "array"
+        },
+        "provider": {
+          "description": "Source/provider name, e.g. 'openverse'.",
+          "title": "Provider",
+          "type": "string"
+        },
+        "query": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Canonical query that produced this hit.",
+          "title": "Query"
+        },
+        "raw": {
+          "additionalProperties": true,
+          "default": {},
+          "description": "Untranslated provider payload.",
+          "title": "Raw",
+          "type": "object"
+        },
+        "renditions": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/Rendition"
+          },
+          "title": "Renditions",
+          "type": "array"
+        },
+        "score": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Reserved for Layer-2 rerank; None at Layer 1.",
+          "title": "Score"
+        },
+        "source_page_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Page Url"
+        },
+        "tags": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Tags",
+          "type": "array"
+        },
+        "thumbnail_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Thumbnail Url"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Title"
+        },
+        "url": {
+          "description": "The best progressive rendition at search time.",
+          "title": "Url",
+          "type": "string"
+        },
+        "width": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Width"
+        }
+      },
+      "required": [
+        "provider",
+        "id",
+        "url"
+      ],
+      "title": "VideoResult",
+      "type": "object"
+    }
+  },
+  "discriminator": {
+    "mapping": {
+      "image": "#/$defs/ImageResult",
+      "video": "#/$defs/VideoResult"
+    },
+    "propertyName": "media_type"
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/ImageResult"
+    },
+    {
+      "$ref": "#/$defs/VideoResult"
+    }
+  ],
+  "title": "MediaResult"
+}

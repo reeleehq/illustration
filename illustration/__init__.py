@@ -134,10 +134,18 @@ from illustration.registry import (
 )
 from illustration.licensing import display_license, normalize_license
 from illustration.schema import (
+    MEDIA_RIGHTS_FIELDS,
     RIGHTS_FIELDS,
+    VIDEO_RIGHTS_FIELDS,
     ImageResult,
+    MediaResult,
+    Rendition,
+    TimeSpan,
+    VideoResult,
     check_attributions,
     license_allowlist,
+    parse_media_result,
+    require_image,
     to_search_hit,
 )
 from illustration.translation import make_param_translator
@@ -152,7 +160,15 @@ __all__ = [
     "search",
     # schema + helpers
     "ImageResult",
+    "VideoResult",
+    "MediaResult",
+    "Rendition",
+    "TimeSpan",
+    "parse_media_result",
+    "require_image",
     "RIGHTS_FIELDS",
+    "VIDEO_RIGHTS_FIELDS",
+    "MEDIA_RIGHTS_FIELDS",
     "license_allowlist",
     "check_attributions",
     "normalize_license",
