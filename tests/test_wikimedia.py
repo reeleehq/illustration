@@ -241,3 +241,15 @@ def test_thumbnail_at_width_handles_tiff_and_ignores_a_nonpositive_width():
         f"{base}/lossy-page1-1280px-X.tif.jpg"
     )
     assert thumbnail_at_width(f"{base}/320px-X.tif.jpg", 0) == f"{base}/320px-X.tif.jpg"
+
+
+@pytest.mark.parametrize(
+    "raw", ["via Wikimedia Commons", "  via Wikimedia Commons.", "/ via wikimedia"]
+)
+def test_an_attribution_of_only_via_commons_still_credits_the_author(raw):
+    """CC BY needs the author: wording with nothing before "via Wikimedia Commons"
+    must not become " / CC BY-SA 4.0, via Wikimedia Commons" (sprint review)."""
+    from illustration.providers.wikimedia import _attribution
+
+    credit = _attribution(raw, "Alice", "CC BY-SA 4.0")
+    assert credit == "Alice / CC BY-SA 4.0, via Wikimedia Commons"
