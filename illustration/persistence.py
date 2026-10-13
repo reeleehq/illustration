@@ -48,7 +48,12 @@ from typing import Any, Literal, Sequence
 
 from pydantic import BaseModel, Field
 
-from illustration.schema import MEDIA_RIGHTS_FIELDS, RIGHTS_FIELDS, ImageResult, MediaResult
+from illustration.schema import (
+    MEDIA_RIGHTS_FIELDS,
+    RIGHTS_FIELDS,
+    ImageResult,
+    MediaResult,
+)
 
 __all__ = [
     "persist_sequence",

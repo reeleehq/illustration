@@ -419,7 +419,9 @@ def group_duplicates(
     signature could not be computed is never grouped, so a fetch failure loses a
     duplicate rather than silently merging two different pictures.
     """
-    results = [require_image(r, where="group_duplicates", strict=False) for r in results]
+    results = [
+        require_image(r, where="group_duplicates", strict=False) for r in results
+    ]
     if len(results) < 2:
         return [DuplicateGroup(members=(r,)) for r in results]
 

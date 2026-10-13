@@ -200,7 +200,9 @@ class TimeSpan(BaseModel):
     @model_validator(mode="after")
     def _ordered(self) -> "TimeSpan":
         if self.end < self.start:
-            raise ValueError(f"TimeSpan end ({self.end}) is before start ({self.start})")
+            raise ValueError(
+                f"TimeSpan end ({self.end}) is before start ({self.start})"
+            )
         return self
 
 
@@ -228,7 +230,8 @@ class VideoResult(MediaResult):
         default_factory=list, json_schema_extra={"default": []}
     )
     moment: TimeSpan | None = Field(
-        default=None, description="The span that matched the query, when the provider says."
+        default=None,
+        description="The span that matched the query, when the provider says.",
     )
     # --- video rights record (VIDEO_RIGHTS_FIELDS) ---
     editorial_only: bool | None = Field(
@@ -237,13 +240,18 @@ class VideoResult(MediaResult):
     has_model_release: bool | None = None
     has_property_release: bool | None = None
     audio_policy: str | None = Field(
-        default=None, description="What the soundtrack may be used for, as the provider words it."
+        default=None,
+        description="What the soundtrack may be used for, as the provider words it.",
     )
 
 
 def _media_type_of(value: Any) -> str:
     """The union's callable discriminator: the tag, or ``"image"`` when absent."""
-    tag = value.get("media_type") if isinstance(value, Mapping) else getattr(value, "media_type", None)
+    tag = (
+        value.get("media_type")
+        if isinstance(value, Mapping)
+        else getattr(value, "media_type", None)
+    )
     return tag or "image"
 
 
@@ -292,7 +300,6 @@ def require_image(
     if not isinstance(obj, ImageResult) and (strict or isinstance(obj, MediaResult)):
         raise TypeError(f"{where} expects an ImageResult, got {type(obj).__name__}")
     return obj
-
 
 
 def to_search_hit(result: "MediaResult"):
@@ -409,7 +416,9 @@ def check_attributions(results: Iterable["MediaResult"]) -> list["MediaResult"]:
     ]
 
 
-def _coerce_results(items: Iterable[Mapping[str, Any]]) -> list[ImageResult | VideoResult]:
+def _coerce_results(
+    items: Iterable[Mapping[str, Any]],
+) -> list[ImageResult | VideoResult]:
     """Validate a sequence of dicts back into results (cache reads).
 
     Through the media union, so a cached video comes back a video — with its
