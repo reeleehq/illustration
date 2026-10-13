@@ -110,6 +110,7 @@ data-aria-dark="Switch to auto color mode">
     </button>
     <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
 <li><a class="reference internal" href="#illustration.providers.wikimedia.WikimediaSource"><code class="docutils literal notranslate"><span class="pre">WikimediaSource</span></code></a><ul>
+<li><a class="reference internal" href="#illustration.providers.wikimedia.WikimediaSource.api_user_agent"><code class="docutils literal notranslate"><span class="pre">WikimediaSource.api_user_agent</span></code></a></li>
 <li><a class="reference internal" href="#illustration.providers.wikimedia.WikimediaSource.endpoint"><code class="docutils literal notranslate"><span class="pre">WikimediaSource.endpoint</span></code></a></li>
 <li><a class="reference internal" href="#illustration.providers.wikimedia.WikimediaSource.fixed_params"><code class="docutils literal notranslate"><span class="pre">WikimediaSource.fixed_params</span></code></a></li>
 <li><a class="reference internal" href="#illustration.providers.wikimedia.WikimediaSource.info"><code class="docutils literal notranslate"><span class="pre">WikimediaSource.info</span></code></a></li>
@@ -118,6 +119,7 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#illustration.providers.wikimedia.WikimediaSource.query_param"><code class="docutils literal notranslate"><span class="pre">WikimediaSource.query_param</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#illustration.providers.wikimedia.thumbnail_at_width"><code class="docutils literal notranslate"><span class="pre">thumbnail_at_width()</span></code></a></li>
 </ul>
 </div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
   </aside>
@@ -181,6 +183,16 @@ with the first <code class="docutils literal notranslate"><span class="pre">href
 non-images (PDF/audio/video) which are dropped during normalization by MIME.</p>
 <p>It supports <strong>none</strong> of the canonical search-time filters (orientation/size/
 safe/license_type/color/content_type) — they degrade gracefully.</p>
+<p class="rubric">Functions</p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#illustration.providers.wikimedia.thumbnail_at_width" title="illustration.providers.wikimedia.thumbnail_at_width"><code class="xref py py-obj docutils literal notranslate"><span class="pre">thumbnail_at_width</span></code></a>(url, width, *[, ...])</p></td>
+<td><p>Rewrite a Commons thumbnail URL to render at <code class="docutils literal notranslate"><span class="pre">width</span></code> px.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 <p class="rubric">Classes</p>
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
@@ -199,6 +211,15 @@ safe/license_type/color/content_type) — they degrade gracefully.</p>
 <dl class="field-list simple">
 </dl>
 <dl class="py attribute">
+<dt class="sig sig-object py" id="illustration.providers.wikimedia.WikimediaSource.api_user_agent">
+<span class="sig-name descname"><span class="pre">api_user_agent</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></span><a class="headerlink" href="#illustration.providers.wikimedia.WikimediaSource.api_user_agent" title="Link to this definition">#</a></dt>
+<dd><p>Whether this API asks for (and its CORS preflight accepts) an
+<code class="docutils literal notranslate"><span class="pre">Api-User-Agent</span></code> header. A browser cannot set <code class="docutils literal notranslate"><span class="pre">User-Agent</span></code>, and an
+extra non-simple header makes it preflight, which a source that does not
+list the header refuses; so the TS twin sends it to flagged sources only.</p>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="illustration.providers.wikimedia.WikimediaSource.endpoint">
 <span class="sig-name descname"><span class="pre">endpoint</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'https://commons.wikimedia.org/w/api.php'</span></span><a class="headerlink" href="#illustration.providers.wikimedia.WikimediaSource.endpoint" title="Link to this definition">#</a></dt>
 <dd><p>Search endpoint URL. Required.</p>
@@ -206,7 +227,7 @@ safe/license_type/color/content_type) — they degrade gracefully.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="illustration.providers.wikimedia.WikimediaSource.fixed_params">
-<span class="sig-name descname"><span class="pre">fixed_params</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Mapping" title="(in Python v3.15)"><span class="pre">Mapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'action':</span> <span class="pre">'query',</span> <span class="pre">'format':</span> <span class="pre">'json',</span> <span class="pre">'formatversion':</span> <span class="pre">'2',</span> <span class="pre">'generator':</span> <span class="pre">'search',</span> <span class="pre">'gsrnamespace':</span> <span class="pre">'6',</span> <span class="pre">'iiprop':</span> <span class="pre">'url|extmetadata|size|mime|user',</span> <span class="pre">'iiurlwidth':</span> <span class="pre">'320',</span> <span class="pre">'prop':</span> <span class="pre">'imageinfo'}</span></span><a class="headerlink" href="#illustration.providers.wikimedia.WikimediaSource.fixed_params" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">fixed_params</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Mapping" title="(in Python v3.15)"><span class="pre">Mapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'action':</span> <span class="pre">'query',</span> <span class="pre">'format':</span> <span class="pre">'json',</span> <span class="pre">'formatversion':</span> <span class="pre">'2',</span> <span class="pre">'generator':</span> <span class="pre">'search',</span> <span class="pre">'gsrnamespace':</span> <span class="pre">'6',</span> <span class="pre">'iiprop':</span> <span class="pre">'url|extmetadata|size|mime|user',</span> <span class="pre">'iiurlwidth':</span> <span class="pre">'320',</span> <span class="pre">'origin':</span> <span class="pre">'*',</span> <span class="pre">'prop':</span> <span class="pre">'imageinfo'}</span></span><a class="headerlink" href="#illustration.providers.wikimedia.WikimediaSource.fixed_params" title="Link to this definition">#</a></dt>
 <dd><p>Constant native params sent on every request (e.g. an API mode/format).</p>
 </dd></dl>
 
@@ -234,6 +255,31 @@ safe/license_type/color/content_type) — they degrade gracefully.</p>
 <dd><p>Native name of the free-text query parameter.</p>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="illustration.providers.wikimedia.thumbnail_at_width">
+<span class="sig-prename descclassname"><span class="pre">illustration.providers.wikimedia.</span></span><span class="sig-name descname"><span class="pre">thumbnail_at_width</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/providers/wikimedia.html#thumbnail_at_width"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.providers.wikimedia.thumbnail_at_width" title="Link to this definition">#</a></dt>
+<dd><p>Rewrite a Commons thumbnail URL to render at <code class="docutils literal notranslate"><span class="pre">width</span></code> px.</p>
+<p>Fetching the 15 MB original just to downscale it is the slow path, and
+<code class="docutils literal notranslate"><span class="pre">upload.wikimedia.org</span></code> serves arbitrary widths of any thumbnail URL. Only
+URLs already in <code class="docutils literal notranslate"><span class="pre">/thumb/</span></code> form on the upload host are touched (anything
+else comes back unchanged), and a <code class="docutils literal notranslate"><span class="pre">width</span></code> above <code class="docutils literal notranslate"><span class="pre">original_width</span></code> is left
+alone because the service answers 400 to an upscale.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> | <a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="s2">"https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/X.jpg/320px-X.jpg"</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="n">thumbnail_at_width</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="mi">1280</span><span class="p">)</span>
+</span><span data-line="3"><span class="go">'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/X.jpg/1280px-X.jpg'</span>
+</span><span data-line="4"><span class="gp">&gt;&gt;&gt; </span><span class="n">thumbnail_at_width</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="mi">1280</span><span class="p">,</span> <span class="n">original_width</span><span class="o">=</span><span class="mi">900</span><span class="p">)</span> <span class="o">==</span> <span class="n">u</span>
+</span><span data-line="5"><span class="go">True</span>
+</span><span data-line="6"><span class="gp">&gt;&gt;&gt; </span><span class="n">thumbnail_at_width</span><span class="p">(</span><span class="s2">"https://example.org/a.jpg"</span><span class="p">,</span> <span class="mi">1280</span><span class="p">)</span>
+</span><span data-line="7"><span class="go">'https://example.org/a.jpg'</span>
+</span></pre></div>
+</div>
 </dd></dl>
 
 </section>
@@ -278,7 +324,7 @@ safe/license_type/color/content_type) — they degrade gracefully.</p>
     </div>
   </div>
 </footer>
-      <script src="../_static/documentation_options.js?v=2fd7553c"></script>
+      <script src="../_static/documentation_options.js?v=056c92e6"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>

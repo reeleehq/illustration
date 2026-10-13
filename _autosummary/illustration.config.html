@@ -109,6 +109,7 @@ data-aria-dark="Switch to auto color mode">
       <i class="i-lucide close"></i>
     </button>
     <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#illustration.config.CONTACT_ENV_VAR"><code class="docutils literal notranslate"><span class="pre">CONTACT_ENV_VAR</span></code></a></li>
 <li><a class="reference internal" href="#illustration.config.DFLT_DEDUPE"><code class="docutils literal notranslate"><span class="pre">DFLT_DEDUPE</span></code></a></li>
 <li><a class="reference internal" href="#illustration.config.DFLT_DEDUPE_STRATEGY"><code class="docutils literal notranslate"><span class="pre">DFLT_DEDUPE_STRATEGY</span></code></a></li>
 <li><a class="reference internal" href="#illustration.config.DFLT_LICENSE_ALLOWLIST"><code class="docutils literal notranslate"><span class="pre">DFLT_LICENSE_ALLOWLIST</span></code></a></li>
@@ -116,7 +117,9 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#illustration.config.DFLT_SOURCES"><code class="docutils literal notranslate"><span class="pre">DFLT_SOURCES</span></code></a></li>
 <li><a class="reference internal" href="#illustration.config.HTTP_TIMEOUT"><code class="docutils literal notranslate"><span class="pre">HTTP_TIMEOUT</span></code></a></li>
 <li><a class="reference internal" href="#illustration.config.MAX_PAGES"><code class="docutils literal notranslate"><span class="pre">MAX_PAGES</span></code></a></li>
+<li><a class="reference internal" href="#illustration.config.PROJECT_URL"><code class="docutils literal notranslate"><span class="pre">PROJECT_URL</span></code></a></li>
 <li><a class="reference internal" href="#illustration.config.SEARCH_CACHE_SCHEMA"><code class="docutils literal notranslate"><span class="pre">SEARCH_CACHE_SCHEMA</span></code></a></li>
+<li><a class="reference internal" href="#illustration.config.WIKIMEDIA_FETCH_WIDTH"><code class="docutils literal notranslate"><span class="pre">WIKIMEDIA_FETCH_WIDTH</span></code></a></li>
 <li><a class="reference internal" href="#illustration.config.cache_dir"><code class="docutils literal notranslate"><span class="pre">cache_dir()</span></code></a></li>
 <li><a class="reference internal" href="#illustration.config.config_dir"><code class="docutils literal notranslate"><span class="pre">config_dir()</span></code></a></li>
 <li><a class="reference internal" href="#illustration.config.data_dir"><code class="docutils literal notranslate"><span class="pre">data_dir()</span></code></a></li>
@@ -200,28 +203,37 @@ idiom:</p>
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#illustration.config.DFLT_N" title="illustration.config.DFLT_N"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DFLT_N</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#illustration.config.PROJECT_URL" title="illustration.config.PROJECT_URL"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PROJECT_URL</span></code></a></p></td>
+<td><p>Where this project lives; the contact URL in the default User-Agent.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#illustration.config.CONTACT_ENV_VAR" title="illustration.config.CONTACT_ENV_VAR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CONTACT_ENV_VAR</span></code></a></p></td>
+<td><p>Environment variable holding an operator's own contact (an email or URL) for the User-Agent.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#illustration.config.WIKIMEDIA_FETCH_WIDTH" title="illustration.config.WIKIMEDIA_FETCH_WIDTH"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WIKIMEDIA_FETCH_WIDTH</span></code></a></p></td>
+<td><p>Width (px) of the Wikimedia thumbnail bucket used when fetching bytes for real work.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#illustration.config.DFLT_N" title="illustration.config.DFLT_N"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DFLT_N</span></code></a></p></td>
 <td><p>Default number of results requested <em>per source</em>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#illustration.config.DFLT_DEDUPE" title="illustration.config.DFLT_DEDUPE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DFLT_DEDUPE</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#illustration.config.DFLT_DEDUPE" title="illustration.config.DFLT_DEDUPE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DFLT_DEDUPE</span></code></a></p></td>
 <td><p>Collapse same-subject duplicates in <code class="docutils literal notranslate"><span class="pre">search()</span></code>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#illustration.config.DFLT_DEDUPE_STRATEGY" title="illustration.config.DFLT_DEDUPE_STRATEGY"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DFLT_DEDUPE_STRATEGY</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#illustration.config.DFLT_DEDUPE_STRATEGY" title="illustration.config.DFLT_DEDUPE_STRATEGY"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DFLT_DEDUPE_STRATEGY</span></code></a></p></td>
 <td><p>the largest reproduction.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#illustration.config.DFLT_SOURCES" title="illustration.config.DFLT_SOURCES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DFLT_SOURCES</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#illustration.config.DFLT_SOURCES" title="illustration.config.DFLT_SOURCES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DFLT_SOURCES</span></code></a></p></td>
 <td><p>Default source set used when <code class="docutils literal notranslate"><span class="pre">search(...,</span> <span class="pre">source=None)</span></code>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#illustration.config.DFLT_LICENSE_ALLOWLIST" title="illustration.config.DFLT_LICENSE_ALLOWLIST"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DFLT_LICENSE_ALLOWLIST</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#illustration.config.DFLT_LICENSE_ALLOWLIST" title="illustration.config.DFLT_LICENSE_ALLOWLIST"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DFLT_LICENSE_ALLOWLIST</span></code></a></p></td>
 <td><p>Conservative default license allowlist for the (opt-in) license gate.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#illustration.config.HTTP_TIMEOUT" title="illustration.config.HTTP_TIMEOUT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HTTP_TIMEOUT</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#illustration.config.HTTP_TIMEOUT" title="illustration.config.HTTP_TIMEOUT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HTTP_TIMEOUT</span></code></a></p></td>
 <td><p>HTTP request timeout, seconds.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#illustration.config.MAX_PAGES" title="illustration.config.MAX_PAGES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MAX_PAGES</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#illustration.config.MAX_PAGES" title="illustration.config.MAX_PAGES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MAX_PAGES</span></code></a></p></td>
 <td><p>Hard safety cap on how many pages a single <code class="docutils literal notranslate"><span class="pre">search</span></code> will fetch, so an unbounded <code class="docutils literal notranslate"><span class="pre">n</span></code> (or a misbehaving provider) can never loop forever.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#illustration.config.SEARCH_CACHE_SCHEMA" title="illustration.config.SEARCH_CACHE_SCHEMA"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SEARCH_CACHE_SCHEMA</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#illustration.config.SEARCH_CACHE_SCHEMA" title="illustration.config.SEARCH_CACHE_SCHEMA"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SEARCH_CACHE_SCHEMA</span></code></a></p></td>
 <td><p>Version token folded into every cache key, so a result-schema change invalidates the cache <em>structurally</em> (a new key) rather than by deletion.</p></td>
 </tr>
 </tbody>
@@ -243,12 +255,21 @@ idiom:</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#illustration.config.package_version" title="illustration.config.package_version"><code class="xref py py-obj docutils literal notranslate"><span class="pre">package_version</span></code></a>()</p></td>
 <td><p>The installed package version, or <code class="docutils literal notranslate"><span class="pre">'0+unknown'</span></code> if not installed.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#illustration.config.user_agent" title="illustration.config.user_agent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">user_agent</span></code></a>()</p></td>
-<td><p>A descriptive User-Agent string (some providers throttle default UAs).</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#illustration.config.user_agent" title="illustration.config.user_agent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">user_agent</span></code></a>(*[, contact])</p></td>
+<td><p>A policy-compliant User-Agent: <code class="docutils literal notranslate"><span class="pre">name/version</span> <span class="pre">(contact)</span> <span class="pre">library/version</span></code>.</p></td>
 </tr>
 </tbody>
 </table>
 </div>
+<dl class="py data">
+<dt class="sig sig-object py" id="illustration.config.CONTACT_ENV_VAR">
+<span class="sig-prename descclassname"><span class="pre">illustration.config.</span></span><span class="sig-name descname"><span class="pre">CONTACT_ENV_VAR</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ILLUSTRATION_CONTACT'</span></span><a class="headerlink" href="#illustration.config.CONTACT_ENV_VAR" title="Link to this definition">#</a></dt>
+<dd><p>Environment variable holding an operator’s own contact (an email or URL) for
+the User-Agent. Wikimedia’s policy asks every client for a way to reach its
+operator, and throttles clients that give none; set this in deployments.
+Note the User-Agent is shared, so every provider sees this contact too.</p>
+</dd></dl>
+
 <dl class="py data">
 <dt class="sig sig-object py" id="illustration.config.DFLT_DEDUPE">
 <span class="sig-prename descclassname"><span class="pre">illustration.config.</span></span><span class="sig-name descname"><span class="pre">DFLT_DEDUPE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'auto'</span></span><a class="headerlink" href="#illustration.config.DFLT_DEDUPE" title="Link to this definition">#</a></dt>
@@ -314,10 +335,23 @@ unbounded <code class="docutils literal notranslate"><span class="pre">n</span><
 </dd></dl>
 
 <dl class="py data">
+<dt class="sig sig-object py" id="illustration.config.PROJECT_URL">
+<span class="sig-prename descclassname"><span class="pre">illustration.config.</span></span><span class="sig-name descname"><span class="pre">PROJECT_URL</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'https://github.com/reeleehq/illustration'</span></span><a class="headerlink" href="#illustration.config.PROJECT_URL" title="Link to this definition">#</a></dt>
+<dd><p>Where this project lives; the contact URL in the default User-Agent.</p>
+</dd></dl>
+
+<dl class="py data">
 <dt class="sig sig-object py" id="illustration.config.SEARCH_CACHE_SCHEMA">
 <span class="sig-prename descclassname"><span class="pre">illustration.config.</span></span><span class="sig-name descname"><span class="pre">SEARCH_CACHE_SCHEMA</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'illustration.search/v2'</span></span><a class="headerlink" href="#illustration.config.SEARCH_CACHE_SCHEMA" title="Link to this definition">#</a></dt>
 <dd><p>Version token folded into every cache key, so a result-schema change
 invalidates the cache <em>structurally</em> (a new key) rather than by deletion.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="illustration.config.WIKIMEDIA_FETCH_WIDTH">
+<span class="sig-prename descclassname"><span class="pre">illustration.config.</span></span><span class="sig-name descname"><span class="pre">WIKIMEDIA_FETCH_WIDTH</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1280</span></span><a class="headerlink" href="#illustration.config.WIKIMEDIA_FETCH_WIDTH" title="Link to this definition">#</a></dt>
+<dd><p>Width (px) of the Wikimedia thumbnail bucket used when fetching bytes for
+real work. 1280 and 1024 are reliable buckets; 1600 answers 400 for many files.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -370,8 +404,13 @@ invalidates the cache <em>structurally</em> (a new key) rather than by deletion.
 
 <dl class="py function">
 <dt class="sig sig-object py" id="illustration.config.user_agent">
-<span class="sig-prename descclassname"><span class="pre">illustration.config.</span></span><span class="sig-name descname"><span class="pre">user_agent</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/config.html#user_agent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.config.user_agent" title="Link to this definition">#</a></dt>
-<dd><p>A descriptive User-Agent string (some providers throttle default UAs).</p>
+<span class="sig-prename descclassname"><span class="pre">illustration.config.</span></span><span class="sig-name descname"><span class="pre">user_agent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">contact</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/config.html#user_agent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.config.user_agent" title="Link to this definition">#</a></dt>
+<dd><p>A policy-compliant User-Agent: <code class="docutils literal notranslate"><span class="pre">name/version</span> <span class="pre">(contact)</span> <span class="pre">library/version</span></code>.</p>
+<p>That is the shape Wikimedia’s User-Agent policy documents, and
+<code class="docutils literal notranslate"><span class="pre">upload.wikimedia.org</span></code> throttles anything vaguer, in a way that looks
+exactly like a rate limit. The contact is <code class="docutils literal notranslate"><span class="pre">contact</span></code>, else the
+<a class="reference internal" href="#illustration.config.CONTACT_ENV_VAR" title="illustration.config.CONTACT_ENV_VAR"><code class="xref py py-data docutils literal notranslate"><span class="pre">CONTACT_ENV_VAR</span></code></a> environment variable (an operator’s own email or
+URL), else the project URL.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
@@ -379,6 +418,8 @@ invalidates the cache <em>structurally</em> (a new key) rather than by deletion.
 </dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">user_agent</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'illustration/'</span><span class="p">)</span>
 </span><span data-line="2"><span class="go">True</span>
+</span><span data-line="3"><span class="gp">&gt;&gt;&gt; </span><span class="n">user_agent</span><span class="p">(</span><span class="n">contact</span><span class="o">=</span><span class="s1">'ops@example.org'</span><span class="p">)</span>
+</span><span data-line="4"><span class="go">'illustration/... (https://github.com/reeleehq/illustration; ops@example.org) ...'</span>
 </span></pre></div>
 </div>
 </dd></dl>
@@ -425,7 +466,7 @@ invalidates the cache <em>structurally</em> (a new key) rather than by deletion.
     </div>
   </div>
 </footer>
-      <script src="../_static/documentation_options.js?v=2fd7553c"></script>
+      <script src="../_static/documentation_options.js?v=056c92e6"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>

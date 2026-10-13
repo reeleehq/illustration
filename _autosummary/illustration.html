@@ -166,6 +166,7 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#illustration.RateLimitError"><code class="docutils literal notranslate"><span class="pre">RateLimitError</span></code></a></li>
 <li><a class="reference internal" href="#illustration.RerankDependencyError"><code class="docutils literal notranslate"><span class="pre">RerankDependencyError</span></code></a></li>
 <li><a class="reference internal" href="#illustration.RetrievalSource"><code class="docutils literal notranslate"><span class="pre">RetrievalSource</span></code></a><ul>
+<li><a class="reference internal" href="#illustration.RetrievalSource.api_user_agent"><code class="docutils literal notranslate"><span class="pre">RetrievalSource.api_user_agent</span></code></a></li>
 <li><a class="reference internal" href="#illustration.RetrievalSource.endpoint"><code class="docutils literal notranslate"><span class="pre">RetrievalSource.endpoint</span></code></a></li>
 <li><a class="reference internal" href="#illustration.RetrievalSource.fixed_params"><code class="docutils literal notranslate"><span class="pre">RetrievalSource.fixed_params</span></code></a></li>
 <li><a class="reference internal" href="#illustration.RetrievalSource.info"><code class="docutils literal notranslate"><span class="pre">RetrievalSource.info</span></code></a></li>
@@ -872,6 +873,15 @@ that skips rather than fails on a malformed item. Override a hook, not the
 template, so a provider can never silently lose those guarantees.</p>
 <dl class="field-list simple">
 </dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illustration.RetrievalSource.api_user_agent">
+<span class="sig-name descname"><span class="pre">api_user_agent</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></span><a class="headerlink" href="#illustration.RetrievalSource.api_user_agent" title="Link to this definition">#</a></dt>
+<dd><p>Whether this API asks for (and its CORS preflight accepts) an
+<code class="docutils literal notranslate"><span class="pre">Api-User-Agent</span></code> header. A browser cannot set <code class="docutils literal notranslate"><span class="pre">User-Agent</span></code>, and an
+extra non-simple header makes it preflight, which a source that does not
+list the header refuses; so the TS twin sends it to flagged sources only.</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="illustration.RetrievalSource.endpoint">
 <span class="sig-name descname"><span class="pre">endpoint</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></span><a class="headerlink" href="#illustration.RetrievalSource.endpoint" title="Link to this definition">#</a></dt>
@@ -2243,7 +2253,7 @@ through). Bindings nest: an inner block overlays the outer.</p>
     </div>
   </div>
 </footer>
-      <script src="../_static/documentation_options.js?v=2fd7553c"></script>
+      <script src="../_static/documentation_options.js?v=056c92e6"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>

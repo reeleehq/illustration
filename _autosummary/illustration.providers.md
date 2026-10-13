@@ -148,11 +148,18 @@ Bases: [`RetrievalSource`](illustration.base.md#illustration.base.RetrievalSourc
 
 Pure-search adapter for Wikimedia Commons (MediaWiki Action API).
 
+#### api_user_agent *: [bool](https://docs.python.org/3/builtins/functions.html#bool)* *= True*
+
+Whether this API asks for (and its CORS preflight accepts) an
+`Api-User-Agent` header. A browser cannot set `User-Agent`, and an
+extra non-simple header makes it preflight, which a source that does not
+list the header refuses; so the TS twin sends it to flagged sources only.
+
 #### endpoint *: [str](https://docs.python.org/3/builtins/stdtypes.html#str)* *= 'https://commons.wikimedia.org/w/api.php'*
 
 Search endpoint URL. Required.
 
-#### fixed_params *: [Mapping](https://docs.python.org/3/library/typing.html#typing.Mapping)[[str](https://docs.python.org/3/builtins/stdtypes.html#str), [Any](https://docs.python.org/3/library/typing.html#typing.Any)]* *= {'action': 'query', 'format': 'json', 'formatversion': '2', 'generator': 'search', 'gsrnamespace': '6', 'iiprop': 'url|extmetadata|size|mime|user', 'iiurlwidth': '320', 'prop': 'imageinfo'}*
+#### fixed_params *: [Mapping](https://docs.python.org/3/library/typing.html#typing.Mapping)[[str](https://docs.python.org/3/builtins/stdtypes.html#str), [Any](https://docs.python.org/3/library/typing.html#typing.Any)]* *= {'action': 'query', 'format': 'json', 'formatversion': '2', 'generator': 'search', 'gsrnamespace': '6', 'iiprop': 'url|extmetadata|size|mime|user', 'iiurlwidth': '320', 'origin': '\*', 'prop': 'imageinfo'}*
 
 Constant native params sent on every request (e.g. an API mode/format).
 

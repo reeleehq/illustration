@@ -20,8 +20,11 @@ idiom:
 
 ### Module Attributes
 
-| [`DFLT_N`](#illustration.config.DFLT_N)                 | Default number of results requested *per source*.                                                                                              |
+| [`PROJECT_URL`](#illustration.config.PROJECT_URL)            | Where this project lives; the contact URL in the default User-Agent.                                                                           |
 |-------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------|
+| [`CONTACT_ENV_VAR`](#illustration.config.CONTACT_ENV_VAR)        | Environment variable holding an operator's own contact (an email or URL) for the User-Agent.                                                   |
+| [`WIKIMEDIA_FETCH_WIDTH`](#illustration.config.WIKIMEDIA_FETCH_WIDTH)  | Width (px) of the Wikimedia thumbnail bucket used when fetching bytes for real work.                                                           |
+| [`DFLT_N`](#illustration.config.DFLT_N)                 | Default number of results requested *per source*.                                                                                              |
 | [`DFLT_DEDUPE`](#illustration.config.DFLT_DEDUPE)            | Collapse same-subject duplicates in `search()`.                                                                                                |
 | [`DFLT_DEDUPE_STRATEGY`](#illustration.config.DFLT_DEDUPE_STRATEGY)   | the largest reproduction.                                                                                                                      |
 | [`DFLT_SOURCES`](#illustration.config.DFLT_SOURCES)           | Default source set used when `search(..., source=None)`.                                                                                       |
@@ -32,12 +35,19 @@ idiom:
 
 ### Functions
 
-| [`config_dir`](#illustration.config.config_dir)(\*[, ensure])   | Directory for durable configuration (e.g. registered sources).         |
-|-----------------------------------------------------------------------------|------------------------------------------------------------------------|
-| [`data_dir`](#illustration.config.data_dir)(\*[, ensure])     | Directory for durable data.                                            |
-| [`cache_dir`](#illustration.config.cache_dir)(\*[, ensure])    | Directory for regenerable caches (the default search-result store).    |
-| [`package_version`](#illustration.config.package_version)()          | The installed package version, or `'0+unknown'` if not installed.      |
-| [`user_agent`](#illustration.config.user_agent)()               | A descriptive User-Agent string (some providers throttle default UAs). |
+| [`config_dir`](#illustration.config.config_dir)(\*[, ensure])   | Directory for durable configuration (e.g. registered sources).           |
+|-----------------------------------------------------------------------------|--------------------------------------------------------------------------|
+| [`data_dir`](#illustration.config.data_dir)(\*[, ensure])     | Directory for durable data.                                              |
+| [`cache_dir`](#illustration.config.cache_dir)(\*[, ensure])    | Directory for regenerable caches (the default search-result store).      |
+| [`package_version`](#illustration.config.package_version)()          | The installed package version, or `'0+unknown'` if not installed.        |
+| [`user_agent`](#illustration.config.user_agent)(\*[, contact])  | A policy-compliant User-Agent: `name/version (contact) library/version`. |
+
+### illustration.config.CONTACT_ENV_VAR *= 'ILLUSTRATION_CONTACT'*
+
+Environment variable holding an operator’s own contact (an email or URL) for
+the User-Agent. Wikimedia’s policy asks every client for a way to reach its
+operator, and throttles clients that give none; set this in deployments.
+Note the User-Agent is shared, so every provider sees this contact too.
 
 ### illustration.config.DFLT_DEDUPE *= 'auto'*
 
@@ -88,10 +98,19 @@ HTTP request timeout, seconds.
 Hard safety cap on how many pages a single `search` will fetch, so an
 unbounded `n` (or a misbehaving provider) can never loop forever.
 
+### illustration.config.PROJECT_URL *= 'https://github.com/reeleehq/illustration'*
+
+Where this project lives; the contact URL in the default User-Agent.
+
 ### illustration.config.SEARCH_CACHE_SCHEMA *= 'illustration.search/v2'*
 
 Version token folded into every cache key, so a result-schema change
 invalidates the cache *structurally* (a new key) rather than by deletion.
+
+### illustration.config.WIKIMEDIA_FETCH_WIDTH *= 1280*
+
+Width (px) of the Wikimedia thumbnail bucket used when fetching bytes for
+real work. 1280 and 1024 are reliable buckets; 1600 answers 400 for many files.
 
 ### illustration.config.cache_dir(, ensure=False)
 
@@ -126,9 +145,15 @@ The installed package version, or `'0+unknown'` if not installed.
 True
 ```
 
-### illustration.config.user_agent()
+### illustration.config.user_agent(, contact=None)
 
-A descriptive User-Agent string (some providers throttle default UAs).
+A policy-compliant User-Agent: `name/version (contact) library/version`.
+
+That is the shape Wikimedia’s User-Agent policy documents, and
+`upload.wikimedia.org` throttles anything vaguer, in a way that looks
+exactly like a rate limit. The contact is `contact`, else the
+[`CONTACT_ENV_VAR`](#illustration.config.CONTACT_ENV_VAR) environment variable (an operator’s own email or
+URL), else the project URL.
 
 * **Return type:**
   [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
@@ -136,4 +161,6 @@ A descriptive User-Agent string (some providers throttle default UAs).
 ```pycon
 >>> user_agent().startswith('illustration/')
 True
+>>> user_agent(contact='ops@example.org')
+'illustration/... (https://github.com/reeleehq/illustration; ops@example.org) ...'
 ```

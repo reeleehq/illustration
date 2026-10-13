@@ -171,142 +171,183 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="30">    <span class="s2">"cache_dir"</span><span class="p">,</span>
 </span><span data-line="31">    <span class="s2">"package_version"</span><span class="p">,</span>
 </span><span data-line="32">    <span class="s2">"user_agent"</span><span class="p">,</span>
-</span><span data-line="33">    <span class="s2">"DFLT_DEDUPE"</span><span class="p">,</span>
-</span><span data-line="34">    <span class="s2">"DFLT_DEDUPE_STRATEGY"</span><span class="p">,</span>
-</span><span data-line="35">    <span class="s2">"DFLT_N"</span><span class="p">,</span>
-</span><span data-line="36">    <span class="s2">"DFLT_SOURCES"</span><span class="p">,</span>
-</span><span data-line="37">    <span class="s2">"DFLT_LICENSE_ALLOWLIST"</span><span class="p">,</span>
-</span><span data-line="38">    <span class="s2">"HTTP_TIMEOUT"</span><span class="p">,</span>
-</span><span data-line="39">    <span class="s2">"MAX_PAGES"</span><span class="p">,</span>
-</span><span data-line="40">    <span class="s2">"SEARCH_CACHE_SCHEMA"</span><span class="p">,</span>
-</span><span data-line="41"><span class="p">]</span>
-</span><span data-line="42">
-</span><span data-line="43"><span class="c1"># --- Defaults (no magic numbers anywhere else) ------------------------------</span>
-</span><span data-line="44">
-</span><span data-line="45"><span class="c1">#: Default number of results requested *per source*.</span>
-</span><span data-line="46"><span class="n">DFLT_N</span> <span class="o">=</span> <span class="mi">10</span>
+</span><span data-line="33">    <span class="s2">"CONTACT_ENV_VAR"</span><span class="p">,</span>
+</span><span data-line="34">    <span class="s2">"PROJECT_URL"</span><span class="p">,</span>
+</span><span data-line="35">    <span class="s2">"WIKIMEDIA_FETCH_WIDTH"</span><span class="p">,</span>
+</span><span data-line="36">    <span class="s2">"DFLT_DEDUPE"</span><span class="p">,</span>
+</span><span data-line="37">    <span class="s2">"DFLT_DEDUPE_STRATEGY"</span><span class="p">,</span>
+</span><span data-line="38">    <span class="s2">"DFLT_N"</span><span class="p">,</span>
+</span><span data-line="39">    <span class="s2">"DFLT_SOURCES"</span><span class="p">,</span>
+</span><span data-line="40">    <span class="s2">"DFLT_LICENSE_ALLOWLIST"</span><span class="p">,</span>
+</span><span data-line="41">    <span class="s2">"HTTP_TIMEOUT"</span><span class="p">,</span>
+</span><span data-line="42">    <span class="s2">"MAX_PAGES"</span><span class="p">,</span>
+</span><span data-line="43">    <span class="s2">"SEARCH_CACHE_SCHEMA"</span><span class="p">,</span>
+</span><span data-line="44"><span class="p">]</span>
+</span><span data-line="45">
+</span><span data-line="46"><span class="c1"># --- Defaults (no magic numbers anywhere else) ------------------------------</span>
 </span><span data-line="47">
-</span><span data-line="48"><span class="c1">#: Collapse same-subject duplicates in ``search()``. A search for one person</span>
-</span><span data-line="49"><span class="c1">#: routinely returns several reproductions of the same portrait, and a consumer</span>
-</span><span data-line="50"><span class="c1">#: asking for N images wants N *subjects*, not N files.</span>
-</span><span data-line="51"><span class="c1">#:</span>
-</span><span data-line="52"><span class="c1">#: The default is ``"auto"``, not ``True``, and the distinction is the whole</span>
-</span><span data-line="53"><span class="c1">#: design: telling two engravings of one sitter apart requires *looking at the</span>
-</span><span data-line="54"><span class="c1">#: pixels*, which a bare ``search()`` deliberately never does — it is a metadata</span>
-</span><span data-line="55"><span class="c1">#: call with an offline contract. So dedup rides along with image work already</span>
-</span><span data-line="56"><span class="c1">#: being paid for: ``"auto"`` means "dedupe when this call fetches images anyway"</span>
-</span><span data-line="57"><span class="c1">#: (i.e. when reranking). Pass ``dedupe=True`` to force it and accept the</span>
-</span><span data-line="58"><span class="c1">#: fetches, or ``False`` to switch it off. The curation layer, which always</span>
-</span><span data-line="59"><span class="c1">#: fetches, dedupes unconditionally.</span>
-</span><span data-line="60"><span class="n">DFLT_DEDUPE</span> <span class="o">=</span> <span class="s2">"auto"</span>
-</span><span data-line="61">
-</span><span data-line="62"><span class="c1">#: What to keep from each duplicate group: the largest reproduction.</span>
-</span><span data-line="63"><span class="n">DFLT_DEDUPE_STRATEGY</span> <span class="o">=</span> <span class="s2">"best"</span>
-</span><span data-line="64">
-</span><span data-line="65"><span class="c1">#: Default source set used when ``search(..., source=None)``. Openverse first</span>
-</span><span data-line="66"><span class="c1">#: because it needs no API key (works out of the box).</span>
-</span><span data-line="67"><span class="n">DFLT_SOURCES</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"openverse"</span><span class="p">,)</span>
-</span><span data-line="68">
-</span><span data-line="69"><span class="c1">#: Conservative default license allowlist for the (opt-in) license gate.</span>
-</span><span data-line="70"><span class="c1">#: CC0 / public-domain / CC-BY / CC-BY-SA are commercial-safe (BY-SA imposes</span>
-</span><span data-line="71"><span class="c1">#: share-alike — flagged, not rejected). NC/ND and unknowns are excluded.</span>
-</span><span data-line="72"><span class="c1">#: Entries are compared *after* :func:`illustration.licensing.normalize_license`</span>
-</span><span data-line="73"><span class="c1">#: runs over both sides, so a provider's own spelling (``cc-by-sa-4.0``,</span>
-</span><span data-line="74"><span class="c1">#: ``Pixabay License``) matches the canonical code written here.</span>
-</span><span data-line="75"><span class="n">DFLT_LICENSE_ALLOWLIST</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span>
-</span><span data-line="76">    <span class="p">{</span><span class="s2">"cc0"</span><span class="p">,</span> <span class="s2">"pdm"</span><span class="p">,</span> <span class="s2">"by"</span><span class="p">,</span> <span class="s2">"by-sa"</span><span class="p">,</span> <span class="s2">"pexels-license"</span><span class="p">,</span> <span class="s2">"pixabay-license"</span><span class="p">}</span>
-</span><span data-line="77"><span class="p">)</span>
-</span><span data-line="78">
-</span><span data-line="79"><span class="c1">#: HTTP request timeout, seconds.</span>
-</span><span data-line="80"><span class="n">HTTP_TIMEOUT</span> <span class="o">=</span> <span class="mi">30</span>
-</span><span data-line="81">
-</span><span data-line="82"><span class="c1">#: Hard safety cap on how many pages a single ``search`` will fetch, so an</span>
-</span><span data-line="83"><span class="c1">#: unbounded ``n`` (or a misbehaving provider) can never loop forever.</span>
-</span><span data-line="84"><span class="n">MAX_PAGES</span> <span class="o">=</span> <span class="mi">25</span>
-</span><span data-line="85">
-</span><span data-line="86"><span class="c1">#: Version token folded into every cache key, so a result-schema change</span>
-</span><span data-line="87"><span class="c1">#: invalidates the cache *structurally* (a new key) rather than by deletion.</span>
-</span><span data-line="88"><span class="n">SEARCH_CACHE_SCHEMA</span> <span class="o">=</span> <span class="s2">"illustration.search/v2"</span>  <span class="c1"># v2: Wikimedia credits name the licence (#48)</span>
-</span><span data-line="89">
-</span><span data-line="90">
-</span><span data-line="91"><span class="c1"># --- Directories ------------------------------------------------------------</span>
-</span><span data-line="92">
-</span><span data-line="93">
-</span><span data-line="94"><span class="k">def</span><span class="w"> </span><span class="nf">_base_dir</span><span class="p">(</span><span class="n">env_var</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">xdg_var</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">home_subpath</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
-</span><span data-line="95"><span class="w">    </span><span class="sd">"""Resolve a base dir: explicit env var &gt; XDG var &gt; ``~`` fallback."""</span>
-</span><span data-line="96">    <span class="n">explicit</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">env_var</span><span class="p">)</span>
-</span><span data-line="97">    <span class="k">if</span> <span class="n">explicit</span><span class="p">:</span>
-</span><span data-line="98">        <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="n">explicit</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span>
-</span><span data-line="99">    <span class="n">xdg</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">xdg_var</span><span class="p">)</span>
-</span><span data-line="100">    <span class="k">if</span> <span class="n">xdg</span><span class="p">:</span>
-</span><span data-line="101">        <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="n">xdg</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span> <span class="o">/</span> <span class="s2">"illustration"</span>
-</span><span data-line="102">    <span class="k">return</span> <span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()</span> <span class="o">/</span> <span class="n">home_subpath</span> <span class="o">/</span> <span class="s2">"illustration"</span>
-</span><span data-line="103">
-</span><span data-line="104">
-<div class="viewcode-block" id="config_dir">
-<a class="viewcode-back" href="../../_autosummary/illustration.config.html#illustration.config_dir">[docs]</a>
-</span><span data-line="105"><span class="k">def</span><span class="w"> </span><span class="nf">config_dir</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">ensure</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
-</span><span data-line="106"><span class="w">    </span><span class="sd">"""Directory for durable configuration (e.g. registered sources)."""</span>
-</span><span data-line="107">    <span class="k">return</span> <span class="n">_ensure</span><span class="p">(</span>
-</span><span data-line="108">        <span class="n">_base_dir</span><span class="p">(</span><span class="s2">"ILLUSTRATION_CONFIG_DIR"</span><span class="p">,</span> <span class="s2">"XDG_CONFIG_HOME"</span><span class="p">,</span> <span class="s2">".config"</span><span class="p">),</span> <span class="n">ensure</span>
-</span><span data-line="109">    <span class="p">)</span></div>
-
+</span><span data-line="48"><span class="c1">#: Where this project lives; the contact URL in the default User-Agent.</span>
+</span><span data-line="49"><span class="n">PROJECT_URL</span> <span class="o">=</span> <span class="s2">"https://github.com/reeleehq/illustration"</span>
+</span><span data-line="50">
+</span><span data-line="51"><span class="c1">#: Environment variable holding an operator's own contact (an email or URL) for</span>
+</span><span data-line="52"><span class="c1">#: the User-Agent. Wikimedia's policy asks every client for a way to reach its</span>
+</span><span data-line="53"><span class="c1">#: operator, and throttles clients that give none; set this in deployments.</span>
+</span><span data-line="54"><span class="c1">#: Note the User-Agent is shared, so every provider sees this contact too.</span>
+</span><span data-line="55"><span class="n">CONTACT_ENV_VAR</span> <span class="o">=</span> <span class="s2">"ILLUSTRATION_CONTACT"</span>
+</span><span data-line="56">
+</span><span data-line="57"><span class="c1">#: Width (px) of the Wikimedia thumbnail bucket used when fetching bytes for</span>
+</span><span data-line="58"><span class="c1">#: real work. 1280 and 1024 are reliable buckets; 1600 answers 400 for many files.</span>
+</span><span data-line="59"><span class="n">WIKIMEDIA_FETCH_WIDTH</span> <span class="o">=</span> <span class="mi">1280</span>
+</span><span data-line="60">
+</span><span data-line="61"><span class="c1">#: Default number of results requested *per source*.</span>
+</span><span data-line="62"><span class="n">DFLT_N</span> <span class="o">=</span> <span class="mi">10</span>
+</span><span data-line="63">
+</span><span data-line="64"><span class="c1">#: Collapse same-subject duplicates in ``search()``. A search for one person</span>
+</span><span data-line="65"><span class="c1">#: routinely returns several reproductions of the same portrait, and a consumer</span>
+</span><span data-line="66"><span class="c1">#: asking for N images wants N *subjects*, not N files.</span>
+</span><span data-line="67"><span class="c1">#:</span>
+</span><span data-line="68"><span class="c1">#: The default is ``"auto"``, not ``True``, and the distinction is the whole</span>
+</span><span data-line="69"><span class="c1">#: design: telling two engravings of one sitter apart requires *looking at the</span>
+</span><span data-line="70"><span class="c1">#: pixels*, which a bare ``search()`` deliberately never does — it is a metadata</span>
+</span><span data-line="71"><span class="c1">#: call with an offline contract. So dedup rides along with image work already</span>
+</span><span data-line="72"><span class="c1">#: being paid for: ``"auto"`` means "dedupe when this call fetches images anyway"</span>
+</span><span data-line="73"><span class="c1">#: (i.e. when reranking). Pass ``dedupe=True`` to force it and accept the</span>
+</span><span data-line="74"><span class="c1">#: fetches, or ``False`` to switch it off. The curation layer, which always</span>
+</span><span data-line="75"><span class="c1">#: fetches, dedupes unconditionally.</span>
+</span><span data-line="76"><span class="n">DFLT_DEDUPE</span> <span class="o">=</span> <span class="s2">"auto"</span>
+</span><span data-line="77">
+</span><span data-line="78"><span class="c1">#: What to keep from each duplicate group: the largest reproduction.</span>
+</span><span data-line="79"><span class="n">DFLT_DEDUPE_STRATEGY</span> <span class="o">=</span> <span class="s2">"best"</span>
+</span><span data-line="80">
+</span><span data-line="81"><span class="c1">#: Default source set used when ``search(..., source=None)``. Openverse first</span>
+</span><span data-line="82"><span class="c1">#: because it needs no API key (works out of the box).</span>
+</span><span data-line="83"><span class="n">DFLT_SOURCES</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"openverse"</span><span class="p">,)</span>
+</span><span data-line="84">
+</span><span data-line="85"><span class="c1">#: Conservative default license allowlist for the (opt-in) license gate.</span>
+</span><span data-line="86"><span class="c1">#: CC0 / public-domain / CC-BY / CC-BY-SA are commercial-safe (BY-SA imposes</span>
+</span><span data-line="87"><span class="c1">#: share-alike — flagged, not rejected). NC/ND and unknowns are excluded.</span>
+</span><span data-line="88"><span class="c1">#: Entries are compared *after* :func:`illustration.licensing.normalize_license`</span>
+</span><span data-line="89"><span class="c1">#: runs over both sides, so a provider's own spelling (``cc-by-sa-4.0``,</span>
+</span><span data-line="90"><span class="c1">#: ``Pixabay License``) matches the canonical code written here.</span>
+</span><span data-line="91"><span class="n">DFLT_LICENSE_ALLOWLIST</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span>
+</span><span data-line="92">    <span class="p">{</span><span class="s2">"cc0"</span><span class="p">,</span> <span class="s2">"pdm"</span><span class="p">,</span> <span class="s2">"by"</span><span class="p">,</span> <span class="s2">"by-sa"</span><span class="p">,</span> <span class="s2">"pexels-license"</span><span class="p">,</span> <span class="s2">"pixabay-license"</span><span class="p">}</span>
+</span><span data-line="93"><span class="p">)</span>
+</span><span data-line="94">
+</span><span data-line="95"><span class="c1">#: HTTP request timeout, seconds.</span>
+</span><span data-line="96"><span class="n">HTTP_TIMEOUT</span> <span class="o">=</span> <span class="mi">30</span>
+</span><span data-line="97">
+</span><span data-line="98"><span class="c1">#: Hard safety cap on how many pages a single ``search`` will fetch, so an</span>
+</span><span data-line="99"><span class="c1">#: unbounded ``n`` (or a misbehaving provider) can never loop forever.</span>
+</span><span data-line="100"><span class="n">MAX_PAGES</span> <span class="o">=</span> <span class="mi">25</span>
+</span><span data-line="101">
+</span><span data-line="102"><span class="c1">#: Version token folded into every cache key, so a result-schema change</span>
+</span><span data-line="103"><span class="c1">#: invalidates the cache *structurally* (a new key) rather than by deletion.</span>
+</span><span data-line="104"><span class="n">SEARCH_CACHE_SCHEMA</span> <span class="o">=</span> <span class="p">(</span>
+</span><span data-line="105">    <span class="s2">"illustration.search/v2"</span>  <span class="c1"># v2: Wikimedia credits name the licence (#48)</span>
+</span><span data-line="106"><span class="p">)</span>
+</span><span data-line="107">
+</span><span data-line="108">
+</span><span data-line="109"><span class="c1"># --- Directories ------------------------------------------------------------</span>
 </span><span data-line="110">
 </span><span data-line="111">
+</span><span data-line="112"><span class="k">def</span><span class="w"> </span><span class="nf">_base_dir</span><span class="p">(</span><span class="n">env_var</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">xdg_var</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">home_subpath</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+</span><span data-line="113"><span class="w">    </span><span class="sd">"""Resolve a base dir: explicit env var &gt; XDG var &gt; ``~`` fallback."""</span>
+</span><span data-line="114">    <span class="n">explicit</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">env_var</span><span class="p">)</span>
+</span><span data-line="115">    <span class="k">if</span> <span class="n">explicit</span><span class="p">:</span>
+</span><span data-line="116">        <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="n">explicit</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span>
+</span><span data-line="117">    <span class="n">xdg</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">xdg_var</span><span class="p">)</span>
+</span><span data-line="118">    <span class="k">if</span> <span class="n">xdg</span><span class="p">:</span>
+</span><span data-line="119">        <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="n">xdg</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span> <span class="o">/</span> <span class="s2">"illustration"</span>
+</span><span data-line="120">    <span class="k">return</span> <span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()</span> <span class="o">/</span> <span class="n">home_subpath</span> <span class="o">/</span> <span class="s2">"illustration"</span>
+</span><span data-line="121">
+</span><span data-line="122">
+<div class="viewcode-block" id="config_dir">
+<a class="viewcode-back" href="../../_autosummary/illustration.config.html#illustration.config_dir">[docs]</a>
+</span><span data-line="123"><span class="k">def</span><span class="w"> </span><span class="nf">config_dir</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">ensure</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+</span><span data-line="124"><span class="w">    </span><span class="sd">"""Directory for durable configuration (e.g. registered sources)."""</span>
+</span><span data-line="125">    <span class="k">return</span> <span class="n">_ensure</span><span class="p">(</span>
+</span><span data-line="126">        <span class="n">_base_dir</span><span class="p">(</span><span class="s2">"ILLUSTRATION_CONFIG_DIR"</span><span class="p">,</span> <span class="s2">"XDG_CONFIG_HOME"</span><span class="p">,</span> <span class="s2">".config"</span><span class="p">),</span> <span class="n">ensure</span>
+</span><span data-line="127">    <span class="p">)</span></div>
+
+</span><span data-line="128">
+</span><span data-line="129">
 <div class="viewcode-block" id="data_dir">
 <a class="viewcode-back" href="../../_autosummary/illustration.config.html#illustration.data_dir">[docs]</a>
-</span><span data-line="112"><span class="k">def</span><span class="w"> </span><span class="nf">data_dir</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">ensure</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
-</span><span data-line="113"><span class="w">    </span><span class="sd">"""Directory for durable data."""</span>
-</span><span data-line="114">    <span class="k">return</span> <span class="n">_ensure</span><span class="p">(</span>
-</span><span data-line="115">        <span class="n">_base_dir</span><span class="p">(</span><span class="s2">"ILLUSTRATION_DATA_DIR"</span><span class="p">,</span> <span class="s2">"XDG_DATA_HOME"</span><span class="p">,</span> <span class="s2">".local/share"</span><span class="p">),</span> <span class="n">ensure</span>
-</span><span data-line="116">    <span class="p">)</span></div>
+</span><span data-line="130"><span class="k">def</span><span class="w"> </span><span class="nf">data_dir</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">ensure</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+</span><span data-line="131"><span class="w">    </span><span class="sd">"""Directory for durable data."""</span>
+</span><span data-line="132">    <span class="k">return</span> <span class="n">_ensure</span><span class="p">(</span>
+</span><span data-line="133">        <span class="n">_base_dir</span><span class="p">(</span><span class="s2">"ILLUSTRATION_DATA_DIR"</span><span class="p">,</span> <span class="s2">"XDG_DATA_HOME"</span><span class="p">,</span> <span class="s2">".local/share"</span><span class="p">),</span> <span class="n">ensure</span>
+</span><span data-line="134">    <span class="p">)</span></div>
 
-</span><span data-line="117">
-</span><span data-line="118">
+</span><span data-line="135">
+</span><span data-line="136">
 <div class="viewcode-block" id="cache_dir">
 <a class="viewcode-back" href="../../_autosummary/illustration.config.html#illustration.cache_dir">[docs]</a>
-</span><span data-line="119"><span class="k">def</span><span class="w"> </span><span class="nf">cache_dir</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">ensure</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
-</span><span data-line="120"><span class="w">    </span><span class="sd">"""Directory for regenerable caches (the default search-result store)."""</span>
-</span><span data-line="121">    <span class="k">return</span> <span class="n">_ensure</span><span class="p">(</span>
-</span><span data-line="122">        <span class="n">_base_dir</span><span class="p">(</span><span class="s2">"ILLUSTRATION_CACHE_DIR"</span><span class="p">,</span> <span class="s2">"XDG_CACHE_HOME"</span><span class="p">,</span> <span class="s2">".cache"</span><span class="p">),</span> <span class="n">ensure</span>
-</span><span data-line="123">    <span class="p">)</span></div>
+</span><span data-line="137"><span class="k">def</span><span class="w"> </span><span class="nf">cache_dir</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">ensure</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+</span><span data-line="138"><span class="w">    </span><span class="sd">"""Directory for regenerable caches (the default search-result store)."""</span>
+</span><span data-line="139">    <span class="k">return</span> <span class="n">_ensure</span><span class="p">(</span>
+</span><span data-line="140">        <span class="n">_base_dir</span><span class="p">(</span><span class="s2">"ILLUSTRATION_CACHE_DIR"</span><span class="p">,</span> <span class="s2">"XDG_CACHE_HOME"</span><span class="p">,</span> <span class="s2">".cache"</span><span class="p">),</span> <span class="n">ensure</span>
+</span><span data-line="141">    <span class="p">)</span></div>
 
-</span><span data-line="124">
-</span><span data-line="125">
-</span><span data-line="126"><span class="k">def</span><span class="w"> </span><span class="nf">_ensure</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">ensure</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
-</span><span data-line="127">    <span class="k">if</span> <span class="n">ensure</span><span class="p">:</span>
-</span><span data-line="128">        <span class="n">path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span data-line="129">    <span class="k">return</span> <span class="n">path</span>
-</span><span data-line="130">
-</span><span data-line="131">
-</span><span data-line="132"><span class="c1"># --- Identity ---------------------------------------------------------------</span>
-</span><span data-line="133">
-</span><span data-line="134">
+</span><span data-line="142">
+</span><span data-line="143">
+</span><span data-line="144"><span class="k">def</span><span class="w"> </span><span class="nf">_ensure</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">ensure</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+</span><span data-line="145">    <span class="k">if</span> <span class="n">ensure</span><span class="p">:</span>
+</span><span data-line="146">        <span class="n">path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="147">    <span class="k">return</span> <span class="n">path</span>
+</span><span data-line="148">
+</span><span data-line="149">
+</span><span data-line="150"><span class="c1"># --- Identity ---------------------------------------------------------------</span>
+</span><span data-line="151">
+</span><span data-line="152">
 <div class="viewcode-block" id="package_version">
 <a class="viewcode-back" href="../../_autosummary/illustration.config.html#illustration.package_version">[docs]</a>
-</span><span data-line="135"><span class="k">def</span><span class="w"> </span><span class="nf">package_version</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span data-line="136"><span class="w">    </span><span class="sd">"""The installed package version, or ``'0+unknown'`` if not installed.</span>
-</span><span data-line="137">
-</span><span data-line="138"><span class="sd">    &gt;&gt;&gt; isinstance(package_version(), str)</span>
-</span><span data-line="139"><span class="sd">    True</span>
-</span><span data-line="140"><span class="sd">    """</span>
-</span><span data-line="141">    <span class="k">try</span><span class="p">:</span>
-</span><span data-line="142">        <span class="k">return</span> <span class="n">version</span><span class="p">(</span><span class="s2">"illustration"</span><span class="p">)</span>
-</span><span data-line="143">    <span class="k">except</span> <span class="n">PackageNotFoundError</span><span class="p">:</span>
-</span><span data-line="144">        <span class="k">return</span> <span class="s2">"0+unknown"</span></div>
+</span><span data-line="153"><span class="k">def</span><span class="w"> </span><span class="nf">package_version</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="154"><span class="w">    </span><span class="sd">"""The installed package version, or ``'0+unknown'`` if not installed.</span>
+</span><span data-line="155">
+</span><span data-line="156"><span class="sd">    &gt;&gt;&gt; isinstance(package_version(), str)</span>
+</span><span data-line="157"><span class="sd">    True</span>
+</span><span data-line="158"><span class="sd">    """</span>
+</span><span data-line="159">    <span class="k">try</span><span class="p">:</span>
+</span><span data-line="160">        <span class="k">return</span> <span class="n">version</span><span class="p">(</span><span class="s2">"illustration"</span><span class="p">)</span>
+</span><span data-line="161">    <span class="k">except</span> <span class="n">PackageNotFoundError</span><span class="p">:</span>
+</span><span data-line="162">        <span class="k">return</span> <span class="s2">"0+unknown"</span></div>
 
-</span><span data-line="145">
-</span><span data-line="146">
+</span><span data-line="163">
+</span><span data-line="164">
 <div class="viewcode-block" id="user_agent">
 <a class="viewcode-back" href="../../_autosummary/illustration.config.html#illustration.user_agent">[docs]</a>
-</span><span data-line="147"><span class="k">def</span><span class="w"> </span><span class="nf">user_agent</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span data-line="148"><span class="w">    </span><span class="sd">"""A descriptive User-Agent string (some providers throttle default UAs).</span>
-</span><span data-line="149">
-</span><span data-line="150"><span class="sd">    &gt;&gt;&gt; user_agent().startswith('illustration/')</span>
-</span><span data-line="151"><span class="sd">    True</span>
-</span><span data-line="152"><span class="sd">    """</span>
-</span><span data-line="153">    <span class="k">return</span> <span class="sa">f</span><span class="s2">"illustration/</span><span class="si">{</span><span class="n">package_version</span><span class="p">()</span><span class="si">}</span><span class="s2"> (+https://github.com/thorwhalen/illustration)"</span></div>
+</span><span data-line="165"><span class="k">def</span><span class="w"> </span><span class="nf">user_agent</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">contact</span><span class="p">:</span> <span class="s2">"str | None"</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="166"><span class="w">    </span><span class="sd">"""A policy-compliant User-Agent: ``name/version (contact) library/version``.</span>
+</span><span data-line="167">
+</span><span data-line="168"><span class="sd">    That is the shape Wikimedia's User-Agent policy documents, and</span>
+</span><span data-line="169"><span class="sd">    ``upload.wikimedia.org`` throttles anything vaguer, in a way that looks</span>
+</span><span data-line="170"><span class="sd">    exactly like a rate limit. The contact is ``contact``, else the</span>
+</span><span data-line="171"><span class="sd">    :data:`CONTACT_ENV_VAR` environment variable (an operator's own email or</span>
+</span><span data-line="172"><span class="sd">    URL), else the project URL.</span>
+</span><span data-line="173">
+</span><span data-line="174"><span class="sd">    &gt;&gt;&gt; user_agent().startswith('illustration/')</span>
+</span><span data-line="175"><span class="sd">    True</span>
+</span><span data-line="176"><span class="sd">    &gt;&gt;&gt; user_agent(contact='ops@example.org')       # doctest: +ELLIPSIS</span>
+</span><span data-line="177"><span class="sd">    'illustration/... (https://github.com/reeleehq/illustration; ops@example.org) ...'</span>
+</span><span data-line="178"><span class="sd">    """</span>
+</span><span data-line="179">    <span class="n">operator</span> <span class="o">=</span> <span class="n">contact</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">CONTACT_ENV_VAR</span><span class="p">)</span>
+</span><span data-line="180">    <span class="c1"># A control character (a stray newline in an env var) makes `requests`</span>
+</span><span data-line="181">    <span class="c1"># refuse the header, which would fail every provider and every image fetch.</span>
+</span><span data-line="182">    <span class="n">operator</span> <span class="o">=</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="k">if</span> <span class="n">operator</span> <span class="k">else</span> <span class="n">operator</span>
+</span><span data-line="183">    <span class="n">contacts</span> <span class="o">=</span> <span class="s2">"; "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="p">(</span><span class="n">PROJECT_URL</span><span class="p">,</span> <span class="n">operator</span><span class="p">)))</span>
+</span><span data-line="184">    <span class="k">return</span> <span class="sa">f</span><span class="s2">"illustration/</span><span class="si">{</span><span class="n">package_version</span><span class="p">()</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">contacts</span><span class="si">}</span><span class="s2">) </span><span class="si">{</span><span class="n">_http_library_token</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span></div>
 
+</span><span data-line="185">
+</span><span data-line="186">
+</span><span data-line="187"><span class="k">def</span><span class="w"> </span><span class="nf">_http_library_token</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="188"><span class="w">    </span><span class="sd">"""``python-requests/&lt;version&gt;``, the library token the policy asks for."""</span>
+</span><span data-line="189">    <span class="k">try</span><span class="p">:</span>
+</span><span data-line="190">        <span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+</span><span data-line="191">
+</span><span data-line="192">        <span class="k">return</span> <span class="sa">f</span><span class="s2">"python-requests/</span><span class="si">{</span><span class="n">requests</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">"</span>
+</span><span data-line="193">    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>  <span class="c1"># requests is lazy and optional at import time</span>
+</span><span data-line="194">        <span class="k">return</span> <span class="s2">"python-urllib"</span>
 </span></pre></div>
         </article><button class="back-to-top" type="button">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -334,7 +375,7 @@ data-aria-dark="Switch to auto color mode">
     </div>
   </div>
 </footer>
-      <script src="../../_static/documentation_options.js?v=2fd7553c"></script>
+      <script src="../../_static/documentation_options.js?v=056c92e6"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>

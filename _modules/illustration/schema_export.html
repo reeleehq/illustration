@@ -343,119 +343,120 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="199">        <span class="s2">"max_per_page"</span><span class="p">:</span> <span class="n">src</span><span class="o">.</span><span class="n">max_per_page</span><span class="p">,</span>
 </span><span data-line="200">        <span class="s2">"min_per_page"</span><span class="p">:</span> <span class="n">src</span><span class="o">.</span><span class="n">min_per_page</span><span class="p">,</span>
 </span><span data-line="201">        <span class="s2">"fixed_params"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">src</span><span class="o">.</span><span class="n">fixed_params</span><span class="p">),</span>
-</span><span data-line="202">        <span class="s2">"auth"</span><span class="p">:</span> <span class="n">_auth_record</span><span class="p">(</span><span class="n">src</span><span class="p">),</span>
-</span><span data-line="203">        <span class="s2">"params"</span><span class="p">:</span> <span class="p">{</span>
-</span><span data-line="204">            <span class="n">name</span><span class="p">:</span> <span class="n">_param_record</span><span class="p">(</span><span class="n">src</span><span class="o">.</span><span class="n">param_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">))</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">_CANONICAL_PARAMS</span>
-</span><span data-line="205">        <span class="p">},</span>
-</span><span data-line="206">        <span class="s2">"info"</span><span class="p">:</span> <span class="n">src</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span>
-</span><span data-line="207">        <span class="s2">"env_var"</span><span class="p">:</span> <span class="n">PROVIDER_ENV_VARS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">src</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
-</span><span data-line="208">        <span class="s2">"console_url"</span><span class="p">:</span> <span class="n">PROVIDER_CONSOLE_URLS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">src</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
-</span><span data-line="209">    <span class="p">}</span>
-</span><span data-line="210">
+</span><span data-line="202">        <span class="s2">"api_user_agent"</span><span class="p">:</span> <span class="n">src</span><span class="o">.</span><span class="n">api_user_agent</span><span class="p">,</span>
+</span><span data-line="203">        <span class="s2">"auth"</span><span class="p">:</span> <span class="n">_auth_record</span><span class="p">(</span><span class="n">src</span><span class="p">),</span>
+</span><span data-line="204">        <span class="s2">"params"</span><span class="p">:</span> <span class="p">{</span>
+</span><span data-line="205">            <span class="n">name</span><span class="p">:</span> <span class="n">_param_record</span><span class="p">(</span><span class="n">src</span><span class="o">.</span><span class="n">param_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">))</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">_CANONICAL_PARAMS</span>
+</span><span data-line="206">        <span class="p">},</span>
+</span><span data-line="207">        <span class="s2">"info"</span><span class="p">:</span> <span class="n">src</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span>
+</span><span data-line="208">        <span class="s2">"env_var"</span><span class="p">:</span> <span class="n">PROVIDER_ENV_VARS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">src</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
+</span><span data-line="209">        <span class="s2">"console_url"</span><span class="p">:</span> <span class="n">PROVIDER_CONSOLE_URLS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">src</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
+</span><span data-line="210">    <span class="p">}</span>
 </span><span data-line="211">
-</span><span data-line="212"><span class="k">def</span><span class="w"> </span><span class="nf">_auth_record</span><span class="p">(</span><span class="n">src</span><span class="p">:</span> <span class="n">RetrievalSource</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-</span><span data-line="213"><span class="w">    </span><span class="sd">"""How the key travels, derived from the hooks rather than declared twice."""</span>
-</span><span data-line="214">    <span class="n">probe</span> <span class="o">=</span> <span class="s2">"PROBE-KEY"</span>
-</span><span data-line="215">    <span class="n">headers</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">_auth_headers</span><span class="p">(</span><span class="n">probe</span><span class="p">)</span>
-</span><span data-line="216">    <span class="n">params</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">_auth_params</span><span class="p">(</span><span class="n">probe</span><span class="p">)</span>
-</span><span data-line="217">    <span class="k">if</span> <span class="n">headers</span><span class="p">:</span>
-</span><span data-line="218">        <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">),</span> <span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">headers</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-</span><span data-line="219">        <span class="k">return</span> <span class="p">{</span><span class="s2">"kind"</span><span class="p">:</span> <span class="s2">"header"</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s2">"format"</span><span class="p">:</span> <span class="n">value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">probe</span><span class="p">,</span> <span class="s2">"</span><span class="si">{key}</span><span class="s2">"</span><span class="p">)}</span>
-</span><span data-line="220">    <span class="k">if</span> <span class="n">params</span><span class="p">:</span>
-</span><span data-line="221">        <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">),</span> <span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-</span><span data-line="222">        <span class="k">return</span> <span class="p">{</span>
-</span><span data-line="223">            <span class="s2">"kind"</span><span class="p">:</span> <span class="s2">"query"</span><span class="p">,</span>
-</span><span data-line="224">            <span class="s2">"name"</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
-</span><span data-line="225">            <span class="s2">"format"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">probe</span><span class="p">,</span> <span class="s2">"</span><span class="si">{key}</span><span class="s2">"</span><span class="p">),</span>
-</span><span data-line="226">        <span class="p">}</span>
-</span><span data-line="227">    <span class="k">return</span> <span class="p">{</span><span class="s2">"kind"</span><span class="p">:</span> <span class="s2">"none"</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"format"</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
-</span><span data-line="228">
+</span><span data-line="212">
+</span><span data-line="213"><span class="k">def</span><span class="w"> </span><span class="nf">_auth_record</span><span class="p">(</span><span class="n">src</span><span class="p">:</span> <span class="n">RetrievalSource</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+</span><span data-line="214"><span class="w">    </span><span class="sd">"""How the key travels, derived from the hooks rather than declared twice."""</span>
+</span><span data-line="215">    <span class="n">probe</span> <span class="o">=</span> <span class="s2">"PROBE-KEY"</span>
+</span><span data-line="216">    <span class="n">headers</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">_auth_headers</span><span class="p">(</span><span class="n">probe</span><span class="p">)</span>
+</span><span data-line="217">    <span class="n">params</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">_auth_params</span><span class="p">(</span><span class="n">probe</span><span class="p">)</span>
+</span><span data-line="218">    <span class="k">if</span> <span class="n">headers</span><span class="p">:</span>
+</span><span data-line="219">        <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">),</span> <span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">headers</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+</span><span data-line="220">        <span class="k">return</span> <span class="p">{</span><span class="s2">"kind"</span><span class="p">:</span> <span class="s2">"header"</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s2">"format"</span><span class="p">:</span> <span class="n">value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">probe</span><span class="p">,</span> <span class="s2">"</span><span class="si">{key}</span><span class="s2">"</span><span class="p">)}</span>
+</span><span data-line="221">    <span class="k">if</span> <span class="n">params</span><span class="p">:</span>
+</span><span data-line="222">        <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">),</span> <span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+</span><span data-line="223">        <span class="k">return</span> <span class="p">{</span>
+</span><span data-line="224">            <span class="s2">"kind"</span><span class="p">:</span> <span class="s2">"query"</span><span class="p">,</span>
+</span><span data-line="225">            <span class="s2">"name"</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+</span><span data-line="226">            <span class="s2">"format"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">probe</span><span class="p">,</span> <span class="s2">"</span><span class="si">{key}</span><span class="s2">"</span><span class="p">),</span>
+</span><span data-line="227">        <span class="p">}</span>
+</span><span data-line="228">    <span class="k">return</span> <span class="p">{</span><span class="s2">"kind"</span><span class="p">:</span> <span class="s2">"none"</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"format"</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
 </span><span data-line="229">
-</span><span data-line="230"><span class="k">def</span><span class="w"> </span><span class="nf">_param_record</span><span class="p">(</span><span class="n">spec</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"dict | None"</span><span class="p">:</span>
-</span><span data-line="231"><span class="w">    </span><span class="sd">"""A canonical parameter's native name and guard; ``None`` when unsupported.</span>
-</span><span data-line="232">
-</span><span data-line="233"><span class="sd">    ``coerce`` is a function and cannot be exported; the fixture's request</span>
-</span><span data-line="234"><span class="sd">    cases are what pin its behaviour on the other side.</span>
-</span><span data-line="235"><span class="sd">    """</span>
-</span><span data-line="236">    <span class="k">if</span> <span class="n">spec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="237">        <span class="k">return</span> <span class="kc">None</span>
-</span><span data-line="238">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-</span><span data-line="239">        <span class="k">return</span> <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="n">spec</span><span class="p">,</span> <span class="s2">"choices"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"coerce"</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
-</span><span data-line="240">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">):</span>
-</span><span data-line="241">        <span class="n">choices</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"choices"</span><span class="p">)</span>
-</span><span data-line="242">        <span class="k">return</span> <span class="p">{</span>
-</span><span data-line="243">            <span class="s2">"name"</span><span class="p">:</span> <span class="n">spec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"name"</span><span class="p">),</span>
-</span><span data-line="244">            <span class="s2">"choices"</span><span class="p">:</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">choices</span><span class="p">)</span> <span class="k">if</span> <span class="n">choices</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="245">            <span class="s2">"coerce"</span><span class="p">:</span> <span class="nb">callable</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"coerce"</span><span class="p">)),</span>
-</span><span data-line="246">        <span class="p">}</span>
-</span><span data-line="247">    <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">spec</span><span class="p">):</span>
-</span><span data-line="248">        <span class="k">return</span> <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"choices"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"coerce"</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
-</span><span data-line="249">    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"unexportable param_map spec: </span><span class="si">{</span><span class="n">spec</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
-</span><span data-line="250">
+</span><span data-line="230">
+</span><span data-line="231"><span class="k">def</span><span class="w"> </span><span class="nf">_param_record</span><span class="p">(</span><span class="n">spec</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"dict | None"</span><span class="p">:</span>
+</span><span data-line="232"><span class="w">    </span><span class="sd">"""A canonical parameter's native name and guard; ``None`` when unsupported.</span>
+</span><span data-line="233">
+</span><span data-line="234"><span class="sd">    ``coerce`` is a function and cannot be exported; the fixture's request</span>
+</span><span data-line="235"><span class="sd">    cases are what pin its behaviour on the other side.</span>
+</span><span data-line="236"><span class="sd">    """</span>
+</span><span data-line="237">    <span class="k">if</span> <span class="n">spec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="238">        <span class="k">return</span> <span class="kc">None</span>
+</span><span data-line="239">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+</span><span data-line="240">        <span class="k">return</span> <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="n">spec</span><span class="p">,</span> <span class="s2">"choices"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"coerce"</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+</span><span data-line="241">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">):</span>
+</span><span data-line="242">        <span class="n">choices</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"choices"</span><span class="p">)</span>
+</span><span data-line="243">        <span class="k">return</span> <span class="p">{</span>
+</span><span data-line="244">            <span class="s2">"name"</span><span class="p">:</span> <span class="n">spec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"name"</span><span class="p">),</span>
+</span><span data-line="245">            <span class="s2">"choices"</span><span class="p">:</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">choices</span><span class="p">)</span> <span class="k">if</span> <span class="n">choices</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="246">            <span class="s2">"coerce"</span><span class="p">:</span> <span class="nb">callable</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"coerce"</span><span class="p">)),</span>
+</span><span data-line="247">        <span class="p">}</span>
+</span><span data-line="248">    <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">spec</span><span class="p">):</span>
+</span><span data-line="249">        <span class="k">return</span> <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"choices"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"coerce"</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+</span><span data-line="250">    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"unexportable param_map spec: </span><span class="si">{</span><span class="n">spec</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
 </span><span data-line="251">
-</span><span data-line="252"><span class="k">def</span><span class="w"> </span><span class="nf">_constants</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-</span><span data-line="253">    <span class="k">return</span> <span class="p">{</span>
-</span><span data-line="254">        <span class="s2">"rights_fields"</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">RIGHTS_FIELDS</span><span class="p">),</span>
-</span><span data-line="255">        <span class="s2">"canonical_params"</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">_CANONICAL_PARAMS</span><span class="p">),</span>
-</span><span data-line="256">        <span class="s2">"license_aliases"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">LICENSE_ALIASES</span><span class="p">),</span>
-</span><span data-line="257">        <span class="s2">"restriction_tokens"</span><span class="p">:</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">RESTRICTION_TOKENS</span><span class="p">),</span>
-</span><span data-line="258">        <span class="s2">"default_license_allowlist"</span><span class="p">:</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">DFLT_LICENSE_ALLOWLIST</span><span class="p">),</span>
-</span><span data-line="259">        <span class="s2">"defaults"</span><span class="p">:</span> <span class="p">{</span>
-</span><span data-line="260">            <span class="s2">"n"</span><span class="p">:</span> <span class="n">DFLT_N</span><span class="p">,</span>
-</span><span data-line="261">            <span class="s2">"sources"</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">DFLT_SOURCES</span><span class="p">),</span>
-</span><span data-line="262">            <span class="s2">"max_pages"</span><span class="p">:</span> <span class="n">MAX_PAGES</span><span class="p">,</span>
-</span><span data-line="263">            <span class="s2">"http_timeout_s"</span><span class="p">:</span> <span class="n">HTTP_TIMEOUT</span><span class="p">,</span>
-</span><span data-line="264">        <span class="p">},</span>
-</span><span data-line="265">        <span class="s2">"provider_env_vars"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">PROVIDER_ENV_VARS</span><span class="p">),</span>
-</span><span data-line="266">        <span class="s2">"provider_console_urls"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">PROVIDER_CONSOLE_URLS</span><span class="p">),</span>
-</span><span data-line="267">        <span class="s2">"license_normalization_cases"</span><span class="p">:</span> <span class="p">[</span>
-</span><span data-line="268">            <span class="p">{</span><span class="s2">"input"</span><span class="p">:</span> <span class="n">value</span><span class="p">,</span> <span class="s2">"output"</span><span class="p">:</span> <span class="n">normalize_license</span><span class="p">(</span><span class="n">value</span><span class="p">)}</span>
-</span><span data-line="269">            <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">LICENSE_CASES</span>
-</span><span data-line="270">        <span class="p">],</span>
-</span><span data-line="271">    <span class="p">}</span>
-</span><span data-line="272">
+</span><span data-line="252">
+</span><span data-line="253"><span class="k">def</span><span class="w"> </span><span class="nf">_constants</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+</span><span data-line="254">    <span class="k">return</span> <span class="p">{</span>
+</span><span data-line="255">        <span class="s2">"rights_fields"</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">RIGHTS_FIELDS</span><span class="p">),</span>
+</span><span data-line="256">        <span class="s2">"canonical_params"</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">_CANONICAL_PARAMS</span><span class="p">),</span>
+</span><span data-line="257">        <span class="s2">"license_aliases"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">LICENSE_ALIASES</span><span class="p">),</span>
+</span><span data-line="258">        <span class="s2">"restriction_tokens"</span><span class="p">:</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">RESTRICTION_TOKENS</span><span class="p">),</span>
+</span><span data-line="259">        <span class="s2">"default_license_allowlist"</span><span class="p">:</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">DFLT_LICENSE_ALLOWLIST</span><span class="p">),</span>
+</span><span data-line="260">        <span class="s2">"defaults"</span><span class="p">:</span> <span class="p">{</span>
+</span><span data-line="261">            <span class="s2">"n"</span><span class="p">:</span> <span class="n">DFLT_N</span><span class="p">,</span>
+</span><span data-line="262">            <span class="s2">"sources"</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">DFLT_SOURCES</span><span class="p">),</span>
+</span><span data-line="263">            <span class="s2">"max_pages"</span><span class="p">:</span> <span class="n">MAX_PAGES</span><span class="p">,</span>
+</span><span data-line="264">            <span class="s2">"http_timeout_s"</span><span class="p">:</span> <span class="n">HTTP_TIMEOUT</span><span class="p">,</span>
+</span><span data-line="265">        <span class="p">},</span>
+</span><span data-line="266">        <span class="s2">"provider_env_vars"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">PROVIDER_ENV_VARS</span><span class="p">),</span>
+</span><span data-line="267">        <span class="s2">"provider_console_urls"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">PROVIDER_CONSOLE_URLS</span><span class="p">),</span>
+</span><span data-line="268">        <span class="s2">"license_normalization_cases"</span><span class="p">:</span> <span class="p">[</span>
+</span><span data-line="269">            <span class="p">{</span><span class="s2">"input"</span><span class="p">:</span> <span class="n">value</span><span class="p">,</span> <span class="s2">"output"</span><span class="p">:</span> <span class="n">normalize_license</span><span class="p">(</span><span class="n">value</span><span class="p">)}</span>
+</span><span data-line="270">            <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">LICENSE_CASES</span>
+</span><span data-line="271">        <span class="p">],</span>
+</span><span data-line="272">    <span class="p">}</span>
 </span><span data-line="273">
-</span><span data-line="274"><span class="k">def</span><span class="w"> </span><span class="nf">_fixture_record</span><span class="p">(</span><span class="n">src</span><span class="p">:</span> <span class="n">RetrievalSource</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-</span><span data-line="275"><span class="w">    </span><span class="sd">"""What this package makes of a canned payload and of each request case."""</span>
-</span><span data-line="276">    <span class="n">expected</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span data-line="277">    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">src</span><span class="o">.</span><span class="n">_items</span><span class="p">(</span><span class="n">payload</span><span class="p">):</span>
-</span><span data-line="278">        <span class="n">result</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">_safe_normalize</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">FIXTURE_QUERY</span><span class="p">)</span>
-</span><span data-line="279">        <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="280">            <span class="n">expected</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">"json"</span><span class="p">))</span>
-</span><span data-line="281">    <span class="n">requests</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span data-line="282">    <span class="k">for</span> <span class="n">case</span> <span class="ow">in</span> <span class="n">CANONICAL_REQUEST_CASES</span><span class="p">:</span>
-</span><span data-line="283">        <span class="n">native</span><span class="p">,</span> <span class="n">dropped</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">_translate</span><span class="p">(</span><span class="n">case</span><span class="p">)</span>
-</span><span data-line="284">        <span class="n">requests</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">"canonical"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">case</span><span class="p">),</span> <span class="s2">"native"</span><span class="p">:</span> <span class="n">native</span><span class="p">,</span> <span class="s2">"dropped"</span><span class="p">:</span> <span class="n">dropped</span><span class="p">})</span>
-</span><span data-line="285">    <span class="k">return</span> <span class="p">{</span>
-</span><span data-line="286">        <span class="s2">"query"</span><span class="p">:</span> <span class="n">FIXTURE_QUERY</span><span class="p">,</span>
-</span><span data-line="287">        <span class="s2">"expected"</span><span class="p">:</span> <span class="n">expected</span><span class="p">,</span>
-</span><span data-line="288">        <span class="s2">"requests"</span><span class="p">:</span> <span class="n">requests</span><span class="p">,</span>
-</span><span data-line="289">        <span class="s2">"query_params"</span><span class="p">:</span> <span class="p">[</span>
-</span><span data-line="290">            <span class="p">{</span>
-</span><span data-line="291">                <span class="s2">"query"</span><span class="p">:</span> <span class="n">query</span><span class="p">,</span>
-</span><span data-line="292">                <span class="s2">"page"</span><span class="p">:</span> <span class="n">page</span><span class="p">,</span>
-</span><span data-line="293">                <span class="s2">"per_page"</span><span class="p">:</span> <span class="n">per_page</span><span class="p">,</span>
-</span><span data-line="294">                <span class="s2">"params"</span><span class="p">:</span> <span class="n">src</span><span class="o">.</span><span class="n">_query_params</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="n">page</span><span class="p">,</span> <span class="n">per_page</span><span class="o">=</span><span class="n">per_page</span><span class="p">),</span>
-</span><span data-line="295">            <span class="p">}</span>
-</span><span data-line="296">            <span class="k">for</span> <span class="n">query</span><span class="p">,</span> <span class="n">page</span><span class="p">,</span> <span class="n">per_page</span> <span class="ow">in</span> <span class="n">QUERY_CASES</span>
-</span><span data-line="297">        <span class="p">],</span>
-</span><span data-line="298">        <span class="s2">"per_page"</span><span class="p">:</span> <span class="p">[</span>
-</span><span data-line="299">            <span class="p">{</span><span class="s2">"n"</span><span class="p">:</span> <span class="n">n</span><span class="p">,</span> <span class="s2">"per_page"</span><span class="p">:</span> <span class="n">per_page_for</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">n</span><span class="p">)}</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">PER_PAGE_CASES</span>
-</span><span data-line="300">        <span class="p">],</span>
-</span><span data-line="301">    <span class="p">}</span>
-</span><span data-line="302">
+</span><span data-line="274">
+</span><span data-line="275"><span class="k">def</span><span class="w"> </span><span class="nf">_fixture_record</span><span class="p">(</span><span class="n">src</span><span class="p">:</span> <span class="n">RetrievalSource</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+</span><span data-line="276"><span class="w">    </span><span class="sd">"""What this package makes of a canned payload and of each request case."""</span>
+</span><span data-line="277">    <span class="n">expected</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="278">    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">src</span><span class="o">.</span><span class="n">_items</span><span class="p">(</span><span class="n">payload</span><span class="p">):</span>
+</span><span data-line="279">        <span class="n">result</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">_safe_normalize</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">FIXTURE_QUERY</span><span class="p">)</span>
+</span><span data-line="280">        <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="281">            <span class="n">expected</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">"json"</span><span class="p">))</span>
+</span><span data-line="282">    <span class="n">requests</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="283">    <span class="k">for</span> <span class="n">case</span> <span class="ow">in</span> <span class="n">CANONICAL_REQUEST_CASES</span><span class="p">:</span>
+</span><span data-line="284">        <span class="n">native</span><span class="p">,</span> <span class="n">dropped</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">_translate</span><span class="p">(</span><span class="n">case</span><span class="p">)</span>
+</span><span data-line="285">        <span class="n">requests</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">"canonical"</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">case</span><span class="p">),</span> <span class="s2">"native"</span><span class="p">:</span> <span class="n">native</span><span class="p">,</span> <span class="s2">"dropped"</span><span class="p">:</span> <span class="n">dropped</span><span class="p">})</span>
+</span><span data-line="286">    <span class="k">return</span> <span class="p">{</span>
+</span><span data-line="287">        <span class="s2">"query"</span><span class="p">:</span> <span class="n">FIXTURE_QUERY</span><span class="p">,</span>
+</span><span data-line="288">        <span class="s2">"expected"</span><span class="p">:</span> <span class="n">expected</span><span class="p">,</span>
+</span><span data-line="289">        <span class="s2">"requests"</span><span class="p">:</span> <span class="n">requests</span><span class="p">,</span>
+</span><span data-line="290">        <span class="s2">"query_params"</span><span class="p">:</span> <span class="p">[</span>
+</span><span data-line="291">            <span class="p">{</span>
+</span><span data-line="292">                <span class="s2">"query"</span><span class="p">:</span> <span class="n">query</span><span class="p">,</span>
+</span><span data-line="293">                <span class="s2">"page"</span><span class="p">:</span> <span class="n">page</span><span class="p">,</span>
+</span><span data-line="294">                <span class="s2">"per_page"</span><span class="p">:</span> <span class="n">per_page</span><span class="p">,</span>
+</span><span data-line="295">                <span class="s2">"params"</span><span class="p">:</span> <span class="n">src</span><span class="o">.</span><span class="n">_query_params</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="n">page</span><span class="p">,</span> <span class="n">per_page</span><span class="o">=</span><span class="n">per_page</span><span class="p">),</span>
+</span><span data-line="296">            <span class="p">}</span>
+</span><span data-line="297">            <span class="k">for</span> <span class="n">query</span><span class="p">,</span> <span class="n">page</span><span class="p">,</span> <span class="n">per_page</span> <span class="ow">in</span> <span class="n">QUERY_CASES</span>
+</span><span data-line="298">        <span class="p">],</span>
+</span><span data-line="299">        <span class="s2">"per_page"</span><span class="p">:</span> <span class="p">[</span>
+</span><span data-line="300">            <span class="p">{</span><span class="s2">"n"</span><span class="p">:</span> <span class="n">n</span><span class="p">,</span> <span class="s2">"per_page"</span><span class="p">:</span> <span class="n">per_page_for</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">n</span><span class="p">)}</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">PER_PAGE_CASES</span>
+</span><span data-line="301">        <span class="p">],</span>
+</span><span data-line="302">    <span class="p">}</span>
 </span><span data-line="303">
-</span><span data-line="304"><span class="c1"># --- io -------------------------------------------------------------------------</span>
-</span><span data-line="305">
+</span><span data-line="304">
+</span><span data-line="305"><span class="c1"># --- io -------------------------------------------------------------------------</span>
 </span><span data-line="306">
-</span><span data-line="307"><span class="k">def</span><span class="w"> </span><span class="nf">_write</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
-</span><span data-line="308"><span class="w">    </span><span class="sd">"""Write ``obj`` as deterministic JSON (sorted keys, stable formatting)."""</span>
-</span><span data-line="309">    <span class="n">path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span data-line="310">    <span class="n">path</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span>
-</span><span data-line="311">        <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span>
-</span><span data-line="312">        <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">,</span>
-</span><span data-line="313">    <span class="p">)</span>
-</span><span data-line="314">    <span class="k">return</span> <span class="n">path</span>
+</span><span data-line="307">
+</span><span data-line="308"><span class="k">def</span><span class="w"> </span><span class="nf">_write</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+</span><span data-line="309"><span class="w">    </span><span class="sd">"""Write ``obj`` as deterministic JSON (sorted keys, stable formatting)."""</span>
+</span><span data-line="310">    <span class="n">path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="311">    <span class="n">path</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span>
+</span><span data-line="312">        <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span>
+</span><span data-line="313">        <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">,</span>
+</span><span data-line="314">    <span class="p">)</span>
+</span><span data-line="315">    <span class="k">return</span> <span class="n">path</span>
 </span></pre></div>
         </article><button class="back-to-top" type="button">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -483,7 +484,7 @@ data-aria-dark="Switch to auto color mode">
     </div>
   </div>
 </footer>
-      <script src="../../_static/documentation_options.js?v=2fd7553c"></script>
+      <script src="../../_static/documentation_options.js?v=056c92e6"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>

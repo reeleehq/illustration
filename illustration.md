@@ -1,4 +1,4 @@
-> built 2026-10-12 06:48 UTC from e2cdfd7 (main) · illustration 0.0.19. Details: build_info.json
+> built 2026-10-13 03:04 UTC from b8d2bba (main) · illustration 0.0.20. Details: build_info.json
 
 # index.html.md
 
@@ -505,6 +505,13 @@ translation, pagination (capped by `MAX_PAGES`), and per-item normalization
 that skips rather than fails on a malformed item. Override a hook, not the
 template, so a provider can never silently lose those guarantees.
 
+#### api_user_agent *: [bool](https://docs.python.org/3/builtins/functions.html#bool)* *= False*
+
+Whether this API asks for (and its CORS preflight accepts) an
+`Api-User-Agent` header. A browser cannot set `User-Agent`, and an
+extra non-simple header makes it preflight, which a source that does not
+list the header refuses; so the TS twin sends it to flagged sources only.
+
 #### endpoint *: [str](https://docs.python.org/3/builtins/stdtypes.html#str)* *= ''*
 
 Search endpoint URL. Required.
@@ -754,8 +761,11 @@ idiom:
 
 ### Module Attributes
 
-| [`DFLT_N`](_autosummary/illustration.config.html.md#illustration.config.DFLT_N)                 | Default number of results requested *per source*.                                                                                              |
+| [`PROJECT_URL`](_autosummary/illustration.config.html.md#illustration.config.PROJECT_URL)            | Where this project lives; the contact URL in the default User-Agent.                                                                           |
 |-------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------|
+| [`CONTACT_ENV_VAR`](_autosummary/illustration.config.html.md#illustration.config.CONTACT_ENV_VAR)        | Environment variable holding an operator's own contact (an email or URL) for the User-Agent.                                                   |
+| [`WIKIMEDIA_FETCH_WIDTH`](_autosummary/illustration.config.html.md#illustration.config.WIKIMEDIA_FETCH_WIDTH)  | Width (px) of the Wikimedia thumbnail bucket used when fetching bytes for real work.                                                           |
+| [`DFLT_N`](_autosummary/illustration.config.html.md#illustration.config.DFLT_N)                 | Default number of results requested *per source*.                                                                                              |
 | [`DFLT_DEDUPE`](_autosummary/illustration.config.html.md#illustration.config.DFLT_DEDUPE)            | Collapse same-subject duplicates in `search()`.                                                                                                |
 | [`DFLT_DEDUPE_STRATEGY`](_autosummary/illustration.config.html.md#illustration.config.DFLT_DEDUPE_STRATEGY)   | the largest reproduction.                                                                                                                      |
 | [`DFLT_SOURCES`](_autosummary/illustration.config.html.md#illustration.config.DFLT_SOURCES)           | Default source set used when `search(..., source=None)`.                                                                                       |
@@ -766,12 +776,19 @@ idiom:
 
 ### Functions
 
-| [`config_dir`](_autosummary/illustration.config.html.md#illustration.config.config_dir)(\*[, ensure])   | Directory for durable configuration (e.g. registered sources).         |
-|-----------------------------------------------------------------------------|------------------------------------------------------------------------|
-| [`data_dir`](_autosummary/illustration.config.html.md#illustration.config.data_dir)(\*[, ensure])     | Directory for durable data.                                            |
-| [`cache_dir`](_autosummary/illustration.config.html.md#illustration.config.cache_dir)(\*[, ensure])    | Directory for regenerable caches (the default search-result store).    |
-| [`package_version`](_autosummary/illustration.config.html.md#illustration.config.package_version)()          | The installed package version, or `'0+unknown'` if not installed.      |
-| [`user_agent`](_autosummary/illustration.config.html.md#illustration.config.user_agent)()               | A descriptive User-Agent string (some providers throttle default UAs). |
+| [`config_dir`](_autosummary/illustration.config.html.md#illustration.config.config_dir)(\*[, ensure])   | Directory for durable configuration (e.g. registered sources).           |
+|-----------------------------------------------------------------------------|--------------------------------------------------------------------------|
+| [`data_dir`](_autosummary/illustration.config.html.md#illustration.config.data_dir)(\*[, ensure])     | Directory for durable data.                                              |
+| [`cache_dir`](_autosummary/illustration.config.html.md#illustration.config.cache_dir)(\*[, ensure])    | Directory for regenerable caches (the default search-result store).      |
+| [`package_version`](_autosummary/illustration.config.html.md#illustration.config.package_version)()          | The installed package version, or `'0+unknown'` if not installed.        |
+| [`user_agent`](_autosummary/illustration.config.html.md#illustration.config.user_agent)(\*[, contact])  | A policy-compliant User-Agent: `name/version (contact) library/version`. |
+
+### illustration.config.CONTACT_ENV_VAR *= 'ILLUSTRATION_CONTACT'*
+
+Environment variable holding an operator’s own contact (an email or URL) for
+the User-Agent. Wikimedia’s policy asks every client for a way to reach its
+operator, and throttles clients that give none; set this in deployments.
+Note the User-Agent is shared, so every provider sees this contact too.
 
 ### illustration.config.DFLT_DEDUPE *= 'auto'*
 
@@ -822,10 +839,19 @@ HTTP request timeout, seconds.
 Hard safety cap on how many pages a single `search` will fetch, so an
 unbounded `n` (or a misbehaving provider) can never loop forever.
 
+### illustration.config.PROJECT_URL *= 'https://github.com/reeleehq/illustration'*
+
+Where this project lives; the contact URL in the default User-Agent.
+
 ### illustration.config.SEARCH_CACHE_SCHEMA *= 'illustration.search/v2'*
 
 Version token folded into every cache key, so a result-schema change
 invalidates the cache *structurally* (a new key) rather than by deletion.
+
+### illustration.config.WIKIMEDIA_FETCH_WIDTH *= 1280*
+
+Width (px) of the Wikimedia thumbnail bucket used when fetching bytes for
+real work. 1280 and 1024 are reliable buckets; 1600 answers 400 for many files.
 
 ### illustration.config.cache_dir(, ensure=False)
 
@@ -860,9 +886,15 @@ The installed package version, or `'0+unknown'` if not installed.
 True
 ```
 
-### illustration.config.user_agent()
+### illustration.config.user_agent(, contact=None)
 
-A descriptive User-Agent string (some providers throttle default UAs).
+A policy-compliant User-Agent: `name/version (contact) library/version`.
+
+That is the shape Wikimedia’s User-Agent policy documents, and
+`upload.wikimedia.org` throttles anything vaguer, in a way that looks
+exactly like a rate limit. The contact is `contact`, else the
+[`CONTACT_ENV_VAR`](_autosummary/illustration.config.html.md#illustration.config.CONTACT_ENV_VAR) environment variable (an operator’s own email or
+URL), else the project URL.
 
 * **Return type:**
   [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
@@ -870,6 +902,8 @@ A descriptive User-Agent string (some providers throttle default UAs).
 ```pycon
 >>> user_agent().startswith('illustration/')
 True
+>>> user_agent(contact='ops@example.org')
+'illustration/... (https://github.com/reeleehq/illustration; ops@example.org) ...'
 ```
 
 
@@ -2171,6 +2205,13 @@ override them\*\*: they enforce credential checks, canonical→native
 translation, pagination (capped by `MAX_PAGES`), and per-item normalization
 that skips rather than fails on a malformed item. Override a hook, not the
 template, so a provider can never silently lose those guarantees.
+
+#### api_user_agent *: [bool](https://docs.python.org/3/builtins/functions.html#bool)* *= False*
+
+Whether this API asks for (and its CORS preflight accepts) an
+`Api-User-Agent` header. A browser cannot set `User-Agent`, and an
+extra non-simple header makes it preflight, which a source that does not
+list the header refuses; so the TS twin sends it to flagged sources only.
 
 #### endpoint *: [str](https://docs.python.org/3/builtins/stdtypes.html#str)* *= ''*
 
@@ -4012,11 +4053,18 @@ Bases: [`RetrievalSource`](_autosummary/illustration.base.html.md#illustration.b
 
 Pure-search adapter for Wikimedia Commons (MediaWiki Action API).
 
+#### api_user_agent *: [bool](https://docs.python.org/3/builtins/functions.html#bool)* *= True*
+
+Whether this API asks for (and its CORS preflight accepts) an
+`Api-User-Agent` header. A browser cannot set `User-Agent`, and an
+extra non-simple header makes it preflight, which a source that does not
+list the header refuses; so the TS twin sends it to flagged sources only.
+
 #### endpoint *: [str](https://docs.python.org/3/builtins/stdtypes.html#str)* *= 'https://commons.wikimedia.org/w/api.php'*
 
 Search endpoint URL. Required.
 
-#### fixed_params *: [Mapping](https://docs.python.org/3/library/typing.html#typing.Mapping)[[str](https://docs.python.org/3/builtins/stdtypes.html#str), [Any](https://docs.python.org/3/library/typing.html#typing.Any)]* *= {'action': 'query', 'format': 'json', 'formatversion': '2', 'generator': 'search', 'gsrnamespace': '6', 'iiprop': 'url|extmetadata|size|mime|user', 'iiurlwidth': '320', 'prop': 'imageinfo'}*
+#### fixed_params *: [Mapping](https://docs.python.org/3/library/typing.html#typing.Mapping)[[str](https://docs.python.org/3/builtins/stdtypes.html#str), [Any](https://docs.python.org/3/library/typing.html#typing.Any)]* *= {'action': 'query', 'format': 'json', 'formatversion': '2', 'generator': 'search', 'gsrnamespace': '6', 'iiprop': 'url|extmetadata|size|mime|user', 'iiurlwidth': '320', 'origin': '\*', 'prop': 'imageinfo'}*
 
 Constant native params sent on every request (e.g. an API mode/format).
 
@@ -4268,6 +4316,11 @@ non-images (PDF/audio/video) which are dropped during normalization by MIME.
 It supports **none** of the canonical search-time filters (orientation/size/
 safe/license_type/color/content_type) — they degrade gracefully.
 
+### Functions
+
+| [`thumbnail_at_width`](_autosummary/illustration.providers.wikimedia.html.md#illustration.providers.wikimedia.thumbnail_at_width)(url, width, \*[, ...])   | Rewrite a Commons thumbnail URL to render at `width` px.   |
+|----------------------------------------------------------------------------------------------|------------------------------------------------------------|
+
 ### Classes
 
 | [`WikimediaSource`](_autosummary/illustration.providers.wikimedia.html.md#illustration.providers.wikimedia.WikimediaSource)(\*[, session])   | Pure-search adapter for Wikimedia Commons (MediaWiki Action API).   |
@@ -4279,11 +4332,18 @@ Bases: [`RetrievalSource`](_autosummary/illustration.base.html.md#illustration.b
 
 Pure-search adapter for Wikimedia Commons (MediaWiki Action API).
 
+#### api_user_agent *: [bool](https://docs.python.org/3/builtins/functions.html#bool)* *= True*
+
+Whether this API asks for (and its CORS preflight accepts) an
+`Api-User-Agent` header. A browser cannot set `User-Agent`, and an
+extra non-simple header makes it preflight, which a source that does not
+list the header refuses; so the TS twin sends it to flagged sources only.
+
 #### endpoint *: [str](https://docs.python.org/3/builtins/stdtypes.html#str)* *= 'https://commons.wikimedia.org/w/api.php'*
 
 Search endpoint URL. Required.
 
-#### fixed_params *: [Mapping](https://docs.python.org/3/library/typing.html#typing.Mapping)[[str](https://docs.python.org/3/builtins/stdtypes.html#str), [Any](https://docs.python.org/3/library/typing.html#typing.Any)]* *= {'action': 'query', 'format': 'json', 'formatversion': '2', 'generator': 'search', 'gsrnamespace': '6', 'iiprop': 'url|extmetadata|size|mime|user', 'iiurlwidth': '320', 'prop': 'imageinfo'}*
+#### fixed_params *: [Mapping](https://docs.python.org/3/library/typing.html#typing.Mapping)[[str](https://docs.python.org/3/builtins/stdtypes.html#str), [Any](https://docs.python.org/3/library/typing.html#typing.Any)]* *= {'action': 'query', 'format': 'json', 'formatversion': '2', 'generator': 'search', 'gsrnamespace': '6', 'iiprop': 'url|extmetadata|size|mime|user', 'iiurlwidth': '320', 'origin': '\*', 'prop': 'imageinfo'}*
 
 Constant native params sent on every request (e.g. an API mode/format).
 
@@ -4302,6 +4362,29 @@ Registry key, e.g. `"openverse"`. Required.
 #### query_param *: [str](https://docs.python.org/3/builtins/stdtypes.html#str)* *= 'gsrsearch'*
 
 Native name of the free-text query parameter.
+
+### illustration.providers.wikimedia.thumbnail_at_width(url, width, , original_width=None)
+
+Rewrite a Commons thumbnail URL to render at `width` px.
+
+Fetching the 15 MB original just to downscale it is the slow path, and
+`upload.wikimedia.org` serves arbitrary widths of any thumbnail URL. Only
+URLs already in `/thumb/` form on the upload host are touched (anything
+else comes back unchanged), and a `width` above `original_width` is left
+alone because the service answers 400 to an upscale.
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
+
+```pycon
+>>> u = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/X.jpg/320px-X.jpg"
+>>> thumbnail_at_width(u, 1280)
+'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/X.jpg/1280px-X.jpg'
+>>> thumbnail_at_width(u, 1280, original_width=900) == u
+True
+>>> thumbnail_at_width("https://example.org/a.jpg", 1280)
+'https://example.org/a.jpg'
+```
 
 
 # _autosummary/illustration.registry.html.md
@@ -5149,16 +5232,18 @@ Beats with no chosen image are skipped. Needs the `[video]` extra.
 
 # About this build
 
-This documentation was built on **2026-10-12 06:48 UTC** from commit <a href="https://github.com/reeleehq/illustration/commit/e2cdfd74c83482614eb3cada97d95f6587df2250"><code>e2cdfd7</code></a> on branch <code>main</code>, for **illustration 0.0.19** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-10-13 03:04 UTC** from commit <a href="https://github.com/reeleehq/illustration/commit/b8d2bba94b36e75c00e7e1e0960963f8e20689da"><code>b8d2bba</code></a> on branch <code>main</code>, for **illustration 0.0.20** (from <code>pyproject.toml</code>).
 
-#### NOTE
-Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
+#### WARNING
+The documentation and the package may be misaligned:
+
+- The documented version (0.0.20) is behind the latest release on PyPI (0.0.21): `pip install illustration` gives newer code than these docs describe.
 
 ## Source
 
 |                     |                                                                                                                                                              |
 |---------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/reeleehq/illustration/commit/e2cdfd74c83482614eb3cada97d95f6587df2250"><code>e2cdfd74c83482614eb3cada97d95f6587df2250</code></a> |
+| Commit              | <a href="https://github.com/reeleehq/illustration/commit/b8d2bba94b36e75c00e7e1e0960963f8e20689da"><code>b8d2bba94b36e75c00e7e1e0960963f8e20689da</code></a> |
 | Branch              | <code>main</code>                                                                                                                                            |
 | Tags at this commit | none                                                                                                                                                         |
 | Working tree        | clean                                                                                                                                                        |
@@ -5169,9 +5254,9 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 |              |                                                                                             |
 |--------------|---------------------------------------------------------------------------------------------|
 | Repository   | <code>reeleehq/illustration</code>                                                          |
-| Run          | <a href="https://github.com/reeleehq/illustration/actions/runs/38214239405">38214239405</a> |
+| Run          | <a href="https://github.com/reeleehq/illustration/actions/runs/38339820350">38339820350</a> |
 | Ref          | <code>refs/heads/main</code>                                                                |
-| Event commit | <code>e2cdfd74c83482614eb3cada97d95f6587df2250</code> (in the history of the built commit)  |
+| Event commit | <code>b8d2bba94b36e75c00e7e1e0960963f8e20689da</code> (in the history of the built commit)  |
 
 ## Tools
 
@@ -5196,13 +5281,13 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/illustration/0.0.19/">0.0.19</a>, the same as the documented version.
+Latest release: <a href="https://pypi.org/project/illustration/0.0.21/">0.0.21</a>, newer than the documented version (0.0.20).
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/reeleehq/illustration && cd illustration
-git checkout e2cdfd74c83482614eb3cada97d95f6587df2250
+git checkout b8d2bba94b36e75c00e7e1e0960963f8e20689da
 pip install "epythet==0.2.12"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```

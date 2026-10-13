@@ -4,6 +4,12 @@ illustration.providers.wikimedia
 .. automodule:: illustration.providers.wikimedia
 
    
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      thumbnail_at_width
+   
    .. rubric:: Classes
 
    .. autosummary::

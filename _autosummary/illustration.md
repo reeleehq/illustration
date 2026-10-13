@@ -339,6 +339,13 @@ translation, pagination (capped by `MAX_PAGES`), and per-item normalization
 that skips rather than fails on a malformed item. Override a hook, not the
 template, so a provider can never silently lose those guarantees.
 
+#### api_user_agent *: [bool](https://docs.python.org/3/builtins/functions.html#bool)* *= False*
+
+Whether this API asks for (and its CORS preflight accepts) an
+`Api-User-Agent` header. A browser cannot set `User-Agent`, and an
+extra non-simple header makes it preflight, which a source that does not
+list the header refuses; so the TS twin sends it to flagged sources only.
+
 #### endpoint *: [str](https://docs.python.org/3/builtins/stdtypes.html#str)* *= ''*
 
 Search endpoint URL. Required.

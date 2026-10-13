@@ -8,6 +8,9 @@ illustration.config
 
    .. autosummary::
    
+      PROJECT_URL
+      CONTACT_ENV_VAR
+      WIKIMEDIA_FETCH_WIDTH
       DFLT_N
       DFLT_DEDUPE
       DFLT_DEDUPE_STRATEGY
