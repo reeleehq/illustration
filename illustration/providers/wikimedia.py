@@ -304,19 +304,22 @@ def _attribution(
       identified, so rendering the bare wording, as the documented contract
       says to, would breach it (illustration#48, decided 2026-10-12).
     - An ``Attribution`` that is just the ``Artist`` name again
-      (illustration#22) is replaced by the composed author + licence credit.
+      (illustration#22), or nothing but "via Wikimedia Commons", is replaced by
+      the composed author + licence credit.
     - With no licence known, the wording is returned as it is: there is
       nothing to append.
     """
     from illustration.licensing import attribution_names_license
 
-    if not raw or (author and _same_text(raw, author)):
+    stem = _VIA_COMMONS_RE.sub("", raw or "").rstrip(" ,;/\u2014\u2013-")
+    if not stem or (author and _same_text(raw, author)):
+        # No wording of the uploader's own beyond "via Wikimedia Commons": a credit
+        # must still name the author (CC BY), so compose it.
         return _build_attribution(author, license_short)
     if not license_short or attribution_names_license(
         raw, license or license_short, license_url=license_url
     ):
         return raw
-    stem = _VIA_COMMONS_RE.sub("", raw).rstrip(" ,;/\u2014\u2013-")
     return f"{stem} / {license_short}, via Wikimedia Commons"
 
 
