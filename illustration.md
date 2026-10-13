@@ -1,4 +1,4 @@
-> built 2026-10-13 03:11 UTC from cd0e840 (main) · illustration 0.0.21. Details: build_info.json
+> built 2026-10-13 08:02 UTC from fe8392e (main) · illustration 0.0.22. Details: build_info.json
 
 # index.html.md
 
@@ -5483,7 +5483,7 @@ Beats with no chosen image are skipped. Needs the `[video]` extra.
 
 # About this build
 
-This documentation was built on **2026-10-13 03:11 UTC** from commit <a href="https://github.com/reeleehq/illustration/commit/cd0e840a45516cd23b8e784d101aa76c980f4bbb"><code>cd0e840</code></a> on branch <code>main</code>, for **illustration 0.0.21** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-10-13 08:02 UTC** from commit <a href="https://github.com/reeleehq/illustration/commit/fe8392ee4e48ad305e8dcb98eea481259dd895e1"><code>fe8392e</code></a> on branch <code>main</code>, for **illustration 0.0.22** (from <code>pyproject.toml</code>).
 
 #### NOTE
 Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
@@ -5492,7 +5492,7 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 |                     |                                                                                                                                                              |
 |---------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/reeleehq/illustration/commit/cd0e840a45516cd23b8e784d101aa76c980f4bbb"><code>cd0e840a45516cd23b8e784d101aa76c980f4bbb</code></a> |
+| Commit              | <a href="https://github.com/reeleehq/illustration/commit/fe8392ee4e48ad305e8dcb98eea481259dd895e1"><code>fe8392ee4e48ad305e8dcb98eea481259dd895e1</code></a> |
 | Branch              | <code>main</code>                                                                                                                                            |
 | Tags at this commit | none                                                                                                                                                         |
 | Working tree        | clean                                                                                                                                                        |
@@ -5503,15 +5503,15 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 |              |                                                                                             |
 |--------------|---------------------------------------------------------------------------------------------|
 | Repository   | <code>reeleehq/illustration</code>                                                          |
-| Run          | <a href="https://github.com/reeleehq/illustration/actions/runs/38340418864">38340418864</a> |
+| Run          | <a href="https://github.com/reeleehq/illustration/actions/runs/38366376797">38366376797</a> |
 | Ref          | <code>refs/heads/main</code>                                                                |
-| Event commit | <code>cd0e840a45516cd23b8e784d101aa76c980f4bbb</code> (in the history of the built commit)  |
+| Event commit | <code>fe8392ee4e48ad305e8dcb98eea481259dd895e1</code> (in the history of the built commit)  |
 
 ## Tools
 
 |          |         |
 |----------|---------|
-| epythet  | 0.2.13  |
+| epythet  | 0.2.15  |
 | Sphinx   | 9.1.0   |
 | docutils | 0.22.4  |
 | Python   | 3.12.15 |
@@ -5530,14 +5530,14 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/illustration/0.0.21/">0.0.21</a>, the same as the documented version.
+Latest release: <a href="https://pypi.org/project/illustration/0.0.22/">0.0.22</a>, the same as the documented version.
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/reeleehq/illustration && cd illustration
-git checkout cd0e840a45516cd23b8e784d101aa76c980f4bbb
-pip install "epythet==0.2.13"
+git checkout fe8392ee4e48ad305e8dcb98eea481259dd895e1
+pip install "epythet==0.2.15"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```
 
