@@ -64,11 +64,11 @@ Search for up to `n` images matching `query` from one or more sources.
   * **color** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – A named color or `#hex` (Pexels, Pixabay).
   * **content_type** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – `photo` | `illustration` | `vector` (Openverse,
     Pixabay; providers map/skip values they don’t support).
-  * **license_allow** (`Union`[[`bool`](https://docs.python.org/3/builtins/functions.html#bool), [`Iterable`](https://docs.python.org/3/library/typing.html#typing.Iterable)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]]) – License gate (R3). `False` (default) = no gate; `True`
+  * **license_allow** ([`Union`](https://docs.python.org/3/library/typing.html#typing.Union)[[`bool`](https://docs.python.org/3/builtins/functions.html#bool), [`Iterable`](https://docs.python.org/3/library/typing.html#typing.Iterable)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]]) – License gate (R3). `False` (default) = no gate; `True`
     = keep only commercial-safe licenses (CC0/PD/BY/BY-SA + Pexels);
     an iterable of license codes = keep only those. Aggregators disclaim
     license accuracy, so gate when commercial use matters.
-  * **dedupe** (`Union`[[`bool`](https://docs.python.org/3/builtins/functions.html#bool), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)]) – Collapse same-subject duplicates (R4), keeping the best image
+  * **dedupe** ([`Union`](https://docs.python.org/3/library/typing.html#typing.Union)[[`bool`](https://docs.python.org/3/builtins/functions.html#bool), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)]) – Collapse same-subject duplicates (R4), keeping the best image
     of each subject. `"auto"` (default) dedupes only when the call
     already fetches images — i.e. when `rerank` is on — so a bare
     metadata search stays offline. `True` forces it and accepts a
@@ -76,7 +76,7 @@ Search for up to `n` images matching `query` from one or more sources.
     name (`"best"` | `"all"` | `"first"`) or a
     `DuplicateGroup -> [ImageResult]` callable chooses what to keep.
     See [`illustration.duplicates`](illustration.duplicates.html.md#module-illustration.duplicates).
-  * **rerank** (`Union`[[`bool`](https://docs.python.org/3/builtins/functions.html#bool), [`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)]) – Local cross-modal precision rerank (R1). `False` (default) =
+  * **rerank** ([`Union`](https://docs.python.org/3/library/typing.html#typing.Union)[[`bool`](https://docs.python.org/3/builtins/functions.html#bool), [`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)]) – Local cross-modal precision rerank (R1). `False` (default) =
     off; `True` = SigLIP-2 (needs the `illustration[rerank]` extra);
     a `(query, results) -> scores` callable = a custom scorer. Applied
     to the assembled results, which it re-scores (populating `.score`)

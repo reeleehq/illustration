@@ -41,12 +41,12 @@ provider-specific field the normalized schema doesn’t name.
 
 ### Classes
 
-| [`MediaResult`](#illustration.schema.MediaResult)(\*\*data)   | What every normalized hit from any provider carries, whatever the media.   |
-|--------------------------------------------------------------------------|----------------------------------------------------------------------------|
-| [`ImageResult`](#illustration.schema.ImageResult)(\*\*data)   | One normalized image hit from any provider.                                |
-| [`VideoResult`](#illustration.schema.VideoResult)(\*\*data)   | One normalized video hit from any provider.                                |
-| [`Rendition`](#illustration.schema.Rendition)(\*\*data)     | One playable encoding of a video, as a provider offers it.                 |
-| [`TimeSpan`](#illustration.schema.TimeSpan)(\*\*data)      | A span of a media file, in seconds.                                        |
+| [`MediaResult`](#illustration.schema.MediaResult)(\*, provider, id, url[, ...])         | What every normalized hit from any provider carries, whatever the media.   |
+|----------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------|
+| [`ImageResult`](#illustration.schema.ImageResult)(\*, provider, id, url[, ...])         | One normalized image hit from any provider.                                |
+| [`VideoResult`](#illustration.schema.VideoResult)(\*, provider, id, url[, ...])         | One normalized video hit from any provider.                                |
+| [`Rendition`](#illustration.schema.Rendition)(\*, url[, mime_type, video_codec, ...]) | One playable encoding of a video, as a provider offers it.                 |
+| [`TimeSpan`](#illustration.schema.TimeSpan)(\*, start, end)                          | A span of a media file, in seconds.                                        |
 
 ### illustration.schema.AnyMediaResult
 
@@ -55,7 +55,7 @@ tag is an image, so every stored selection and cached result still loads.
 
 alias of `Annotated`[`Annotated`[[`ImageResult`](#illustration.schema.ImageResult), `Tag`(tag=image)] | `Annotated`[[`VideoResult`](#illustration.schema.VideoResult), `Tag`(tag=video)], `Discriminator`(discriminator=`_media_type_of`, custom_error_type=[`None`](https://docs.python.org/3/builtins/constants.html#None), custom_error_message=[`None`](https://docs.python.org/3/builtins/constants.html#None), custom_error_context=[`None`](https://docs.python.org/3/builtins/constants.html#None))]
 
-### *class* illustration.schema.ImageResult(\*\*data)
+### *class* illustration.schema.ImageResult(\*, provider, id, url, thumbnail_url=None, width=None, height=None, title=None, description=None, tags=<factory>, license=None, license_url=None, attribution=None, source_page_url=None, author=None, author_url=None, cacheable=False, avg_color=None, query=None, score=None, raw=<factory>)
 
 Bases: [`MediaResult`](#illustration.schema.MediaResult)
 
@@ -81,7 +81,7 @@ persistence stores. For an image the last four are simply never recorded.
 
 The values of the `media_type` tag, in union order.
 
-### *class* illustration.schema.MediaResult(\*\*data)
+### *class* illustration.schema.MediaResult(\*, provider, id, url, thumbnail_url=None, width=None, height=None, title=None, description=None, tags=<factory>, license=None, license_url=None, attribution=None, source_page_url=None, author=None, author_url=None, cacheable=False, avg_color=None, query=None, score=None, raw=<factory>)
 
 Bases: `BaseModel`
 
@@ -122,7 +122,7 @@ unable to answer it.
 * **Type:**
   The **rights record**
 
-### *class* illustration.schema.Rendition(\*\*data)
+### *class* illustration.schema.Rendition(, url, mime_type=None, video_codec=None, width=None, height=None, fps=None, size_bytes=None, quality_label=None, expires_at=None)
 
 Bases: `BaseModel`
 
@@ -132,7 +132,7 @@ One playable encoding of a video, as a provider offers it.
 
 Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
 
-### *class* illustration.schema.TimeSpan(\*\*data)
+### *class* illustration.schema.TimeSpan(, start, end)
 
 Bases: `BaseModel`
 
@@ -155,7 +155,7 @@ has, and it is projected wholesale onto `walkthru.AssetRights` and read off
 every [`ImageResult`](#illustration.schema.ImageResult). All four are optional; `None` means \*not
 recorded\*, which is not the same claim as `False`.
 
-### *class* illustration.schema.VideoResult(\*\*data)
+### *class* illustration.schema.VideoResult(\*, provider, id, url, thumbnail_url=None, width=None, height=None, title=None, description=None, tags=<factory>, license=None, license_url=None, attribution=None, source_page_url=None, author=None, author_url=None, cacheable=False, avg_color=None, query=None, score=None, raw=<factory>, media_type='video', duration_s=None, fps=None, has_audio=None, renditions=<factory>, poster_url=None, preview_frames=<factory>, moment=None, editorial_only=None, has_model_release=None, has_property_release=None, audio_policy=None)
 
 Bases: [`MediaResult`](#illustration.schema.MediaResult)
 
@@ -200,9 +200,6 @@ A result with no `license` at all is not flagged: there is nothing to
 name, and it should already have been dropped by `license_allowlist` if
 that matters to the caller.
 
-* **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`MediaResult`](#illustration.schema.MediaResult)]
-
 ```pycon
 >>> a = ImageResult(provider="p", id="1", url="u", license="by-sa", attribution="Jane Doe")
 >>> b = ImageResult(provider="p", id="2", url="u", license="by-sa",
@@ -211,6 +208,9 @@ that matters to the caller.
 >>> [r.id for r in check_attributions([a, b, c])]
 ['1']
 ```
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`MediaResult`](#illustration.schema.MediaResult)]
 
 ### illustration.schema.license_allowlist(results, , allow=None)
 
@@ -224,9 +224,6 @@ spelling (`cc-by-sa-4.0` from Commons, `Pixabay License`) matches the
 canonical code without the allowlist having to enumerate every dialect —
 and without ever dropping an `nc`/`nd` restriction. Results with no
 `license` are dropped (unknown == not allowed).
-
-* **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`MediaResult`](#illustration.schema.MediaResult)]
 
 ```pycon
 >>> a = ImageResult(provider="p", id="1", url="u", license="cc0")
@@ -248,12 +245,12 @@ Provider dialects pass the same gate:
 ['4', '5']
 ```
 
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`MediaResult`](#illustration.schema.MediaResult)]
+
 ### illustration.schema.parse_media_result(obj)
 
 Validate a dict (or pass through a model) into the right result type.
-
-* **Return type:**
-  [`ImageResult`](#illustration.schema.ImageResult) | [`VideoResult`](#illustration.schema.VideoResult)
 
 ```pycon
 >>> parse_media_result({"provider": "p", "id": "1", "url": "u"}).media_type
@@ -261,6 +258,9 @@ Validate a dict (or pass through a model) into the right result type.
 >>> parse_media_result({"provider": "p", "id": "1", "url": "u", "media_type": "video"}).media_type
 'video'
 ```
+
+* **Return type:**
+  [`ImageResult`](#illustration.schema.ImageResult) | [`VideoResult`](#illustration.schema.VideoResult)
 
 ### illustration.schema.require_image(obj, , where='this function', strict=True)
 
@@ -274,15 +274,15 @@ The guard for image-only code paths. A [`VideoResult`](#illustration.schema.Vide
 take one without complaint and fetch a movie as a picture; this makes that
 loud.
 
-* **Return type:**
-  [`ImageResult`](#illustration.schema.ImageResult)
-
 ```pycon
 >>> require_image(VideoResult(provider="p", id="1", url="u"), where="render")
 Traceback (most recent call last):
 ...
 TypeError: render expects an ImageResult, got VideoResult
 ```
+
+* **Return type:**
+  [`ImageResult`](#illustration.schema.ImageResult)
 
 ### illustration.schema.to_search_hit(result)
 

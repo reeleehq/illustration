@@ -26,8 +26,8 @@ safe/license_type/color/content_type) — they degrade gracefully.
 
 ### Functions
 
-| [`thumbnail_at_width`](#illustration.providers.wikimedia.thumbnail_at_width)(url, width, \*[, ...])   | Rewrite a Commons thumbnail URL to render at `width` px.   |
-|----------------------------------------------------------------------------------------------|------------------------------------------------------------|
+| [`thumbnail_at_width`](#illustration.providers.wikimedia.thumbnail_at_width)(url, width, \*[, ...])   | Rewrite a Commons thumbnail URL to render at least `width` px wide.   |
+|----------------------------------------------------------------------------------------------|-----------------------------------------------------------------------|
 
 ### Classes
 
@@ -73,23 +73,29 @@ Native name of the free-text query parameter.
 
 ### illustration.providers.wikimedia.thumbnail_at_width(url, width, , original_width=None)
 
-Rewrite a Commons thumbnail URL to render at `width` px.
+Rewrite a Commons thumbnail URL to render at least `width` px wide.
 
-Fetching the 15 MB original just to downscale it is the slow path, and
-`upload.wikimedia.org` serves arbitrary widths of any thumbnail URL. Only
+Fetching the 15 MB original just to downscale it is the slow path; the
+thumbnail service is fast, but only at its standard widths
+(`THUMBNAIL_STEPS`): any other width is rejected (HTTP 400/429), so
+`width` is rounded **up** to the next step. When the original is narrower
+than that step (the service also refuses an upscale), the original file’s
+URL is returned for a web image, else the largest step it can serve: never
+the small provider thumbnail, which a pipeline would silently upscale. Only
 URLs already in `/thumb/` form on the upload host are touched (anything
-else comes back unchanged), and a `width` above `original_width` is left
-alone because the service answers 400 to an upscale.
-
-* **Return type:**
-  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
+else comes back unchanged).
 
 ```pycon
 >>> u = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/X.jpg/320px-X.jpg"
 >>> thumbnail_at_width(u, 1280)
 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/X.jpg/1280px-X.jpg'
->>> thumbnail_at_width(u, 1280, original_width=900) == u
-True
+>>> thumbnail_at_width(u, 1600)  # not a standard width: rounded up
+'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/X.jpg/1920px-X.jpg'
+>>> thumbnail_at_width(u, 1280, original_width=900)  # smaller original: the original
+'https://upload.wikimedia.org/wikipedia/commons/a/ab/X.jpg'
 >>> thumbnail_at_width("https://example.org/a.jpg", 1280)
 'https://example.org/a.jpg'
 ```
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)

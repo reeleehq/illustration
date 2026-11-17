@@ -7,6 +7,7 @@
     setColorMode(localStorage._theme||"auto");
   </script><link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d88b86f9" />
     <link rel="stylesheet" type="text/css" href="../_static/shibuya.css?v=2ceb65ce" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx_autodoc_typehints.css?v=057ac668" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link media="print" rel="stylesheet" type="text/css" href="../_static/print.css?v=20ff2c19" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -254,13 +255,13 @@ exactly like M3’s <code class="docutils literal notranslate"><span class="pre"
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#illustration.sequence.SequenceSelection" title="illustration.sequence.SequenceSelection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SequenceSelection</span></code></a>(**data)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#illustration.sequence.SequenceSelection" title="illustration.sequence.SequenceSelection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SequenceSelection</span></code></a>(*[, selections, ...])</p></td>
 <td><p>One image chosen per beat, optimized for the cross-shot objective.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#illustration.sequence.BeatSelection" title="illustration.sequence.BeatSelection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BeatSelection</span></code></a>(**data)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#illustration.sequence.BeatSelection" title="illustration.sequence.BeatSelection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BeatSelection</span></code></a>(*, beat_index, chosen[, ...])</p></td>
 <td><p>The chosen image (and why) for one beat in a sequence.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#illustration.sequence.SequenceResult" title="illustration.sequence.SequenceResult"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SequenceResult</span></code></a>(**data)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#illustration.sequence.SequenceResult" title="illustration.sequence.SequenceResult"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SequenceResult</span></code></a>(*, beats, selection)</p></td>
 <td><p>The result of curating a whole sequence of beats.</p></td>
 </tr>
 </tbody>
@@ -268,7 +269,7 @@ exactly like M3’s <code class="docutils literal notranslate"><span class="pre"
 </div>
 <dl class="py class">
 <dt class="sig sig-object py" id="illustration.sequence.BeatSelection">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">illustration.sequence.</span></span><span class="sig-name descname"><span class="pre">BeatSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/sequence.html#BeatSelection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.sequence.BeatSelection" title="Link to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">illustration.sequence.</span></span><span class="sig-name descname"><span class="pre">BeatSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">beat_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chosen</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relevance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coherence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redundancy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forced_duplicate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_candidates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/sequence.html#BeatSelection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.sequence.BeatSelection" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
 <p>The chosen image (and why) for one beat in a sequence.</p>
 <dl class="field-list simple">
@@ -307,7 +308,7 @@ exactly like M3’s <code class="docutils literal notranslate"><span class="pre"
 
 <dl class="py class">
 <dt class="sig sig-object py" id="illustration.sequence.SequenceResult">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">illustration.sequence.</span></span><span class="sig-name descname"><span class="pre">SequenceResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/sequence.html#SequenceResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.sequence.SequenceResult" title="Link to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">illustration.sequence.</span></span><span class="sig-name descname"><span class="pre">SequenceResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">beats</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selection</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/sequence.html#SequenceResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.sequence.SequenceResult" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
 <p>The result of curating a whole sequence of beats.</p>
 <dl class="field-list simple">
@@ -322,7 +323,7 @@ exactly like M3’s <code class="docutils literal notranslate"><span class="pre"
 
 <dl class="py class">
 <dt class="sig sig-object py" id="illustration.sequence.SequenceSelection">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">illustration.sequence.</span></span><span class="sig-name descname"><span class="pre">SequenceSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/sequence.html#SequenceSelection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.sequence.SequenceSelection" title="Link to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">illustration.sequence.</span></span><span class="sig-name descname"><span class="pre">SequenceSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selections</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objective</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">notes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/sequence.html#SequenceSelection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.sequence.SequenceSelection" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
 <p>One image chosen per beat, optimized for the cross-shot objective.</p>
 <dl class="field-list simple">
@@ -378,7 +379,7 @@ Pillow/NumPy aren’t installed), suitable as <a class="reference internal" href
 <code class="docutils literal notranslate"><span class="pre">hasher</span></code> seam. The fetch is content-deduped within the pass.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.15)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[[<a class="reference internal" href="illustration.schema.html#illustration.schema.ImageResult" title="illustration.schema.ImageResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImageResult</span></code></a>], <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> | <a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.15)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[[<a class="reference internal" href="illustration.schema.html#illustration.schema.ImageResult" title="illustration.schema.ImageResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImageResult</span></code></a>], <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> | <span class="highlight sphinx_autodoc_typehints-value"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="kc"><span class="pre">None</span></span></code></a></span>]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -466,7 +467,7 @@ given, it replaces the pHash test entirely — it strictly subsumes it.</p>
     </div>
   </div>
 </footer>
-      <script src="../_static/documentation_options.js?v=96ec9c95"></script>
+      <script src="../_static/documentation_options.js?v=3294188c"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>

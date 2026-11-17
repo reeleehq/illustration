@@ -137,13 +137,13 @@ Directory for durable data.
 
 The installed package version, or `'0+unknown'` if not installed.
 
-* **Return type:**
-  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
-
 ```pycon
 >>> isinstance(package_version(), str)
 True
 ```
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 ### illustration.config.user_agent(, contact=None)
 
@@ -155,12 +155,12 @@ exactly like a rate limit. The contact is `contact`, else the
 [`CONTACT_ENV_VAR`](#illustration.config.CONTACT_ENV_VAR) environment variable (an operator’s own email or
 URL), else the project URL.
 
-* **Return type:**
-  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
-
 ```pycon
 >>> user_agent().startswith('illustration/')
 True
 >>> user_agent(contact='ops@example.org')
 'illustration/... (https://github.com/reeleehq/illustration; ops@example.org) ...'
 ```
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)

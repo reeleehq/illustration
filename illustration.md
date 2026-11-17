@@ -1,4 +1,4 @@
-> built 2026-10-13 08:02 UTC from fe8392e (main) · illustration 0.0.22. Details: build_info.json
+> built 2026-11-17 13:18 UTC from 88e0a8c (main) · illustration 0.0.23. Details: build_info.json
 
 # index.html.md
 
@@ -579,7 +579,7 @@ translated ones.
 * **Return type:**
   [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`ImageResult`](_autosummary/illustration.schema.html.md#illustration.schema.ImageResult)]
 
-### *class* illustration.base.SourceInfo(name, description='', requires_key=False, homepage=None, default_cacheable=True, license_note='', rate_limit='', tags=<factory>)
+### *class* illustration.base.SourceInfo(name, description='', requires_key=False, homepage=None, default_cacheable=True, license_note='', rate_limit='', tags=tuple())
 
 Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
@@ -878,13 +878,13 @@ Directory for durable data.
 
 The installed package version, or `'0+unknown'` if not installed.
 
-* **Return type:**
-  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
-
 ```pycon
 >>> isinstance(package_version(), str)
 True
 ```
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 ### illustration.config.user_agent(, contact=None)
 
@@ -896,15 +896,15 @@ exactly like a rate limit. The contact is `contact`, else the
 [`CONTACT_ENV_VAR`](_autosummary/illustration.config.html.md#illustration.config.CONTACT_ENV_VAR) environment variable (an operator’s own email or
 URL), else the project URL.
 
-* **Return type:**
-  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
-
 ```pycon
 >>> user_agent().startswith('illustration/')
 True
 >>> user_agent(contact='ops@example.org')
 'illustration/... (https://github.com/reeleehq/illustration; ops@example.org) ...'
 ```
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 
 # _autosummary/illustration.credentials.html.md
@@ -984,9 +984,6 @@ body, so the function never inlines key handling. (The built-in sources call
 [`check_requirements()`](_autosummary/illustration.credentials.html.md#illustration.credentials.check_requirements) directly; this decorator is the functional-style
 equivalent for Layer-2 helpers.)
 
-* **Return type:**
-  [`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)
-
 ```pycon
 >>> @requires_credentials("pexels")
 ... def fetch(): return "ok"
@@ -994,6 +991,9 @@ equivalent for Layer-2 helpers.)
 ...     fetch()
 'ok'
 ```
+
+* **Return type:**
+  [`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)
 
 ### illustration.credentials.resolve_api_key(provider, , api_key=None)
 
@@ -1091,12 +1091,12 @@ base / CI install). `tests/test_curation.py` covers this path in full under
 
 ### Classes
 
-| [`Grade`](_autosummary/illustration.curation.html.md#illustration.curation.Grade)(\*values)                           | CRAG's three-way retrieval grade (R2 §1).                              |
-|--------------------------------------------------------------------------------------------|------------------------------------------------------------------------|
-| [`Budget`](_autosummary/illustration.curation.html.md#illustration.curation.Budget)([max_iter, max_search_calls, ...]) | Hard loop bounds — the safety net, enforced in controller code (R2).   |
-| [`Candidate`](_autosummary/illustration.curation.html.md#illustration.curation.Candidate)(\*\*data)                       | One scored (and optionally inspected) candidate.                       |
-| [`IterationRecord`](_autosummary/illustration.curation.html.md#illustration.curation.IterationRecord)(\*\*data)                 | One iteration of the loop — the run-log R2 requires for observability. |
-| [`CurationResult`](_autosummary/illustration.curation.html.md#illustration.curation.CurationResult)(\*\*data)                  | The outcome of curating one beat.                                      |
+| [`Grade`](_autosummary/illustration.curation.html.md#illustration.curation.Grade)(\*values)                               | CRAG's three-way retrieval grade (R2 §1).                              |
+|------------------------------------------------------------------------------------------------|------------------------------------------------------------------------|
+| [`Budget`](_autosummary/illustration.curation.html.md#illustration.curation.Budget)([max_iter, max_search_calls, ...])     | Hard loop bounds — the safety net, enforced in controller code (R2).   |
+| [`Candidate`](_autosummary/illustration.curation.html.md#illustration.curation.Candidate)(\*, result[, score, caption, ...])  | One scored (and optionally inspected) candidate.                       |
+| [`IterationRecord`](_autosummary/illustration.curation.html.md#illustration.curation.IterationRecord)(\*, iteration, queries, ...)  | One iteration of the loop — the run-log R2 requires for observability. |
+| [`CurationResult`](_autosummary/illustration.curation.html.md#illustration.curation.CurationResult)(\*, beat, best, accepted, ...) | The outcome of curating one beat.                                      |
 
 ### *class* illustration.curation.Budget(max_iter=3, max_search_calls=8, max_caption_calls=12, max_judge_calls=8, accept_threshold=0.62, correct_min_score=None, select_max_k=3, select_rel=0.9, min_score=None, max_cost=None, cost_estimator=None)
 
@@ -1119,7 +1119,7 @@ candidate is escalated to the VLM judge instead of auto-accepted. `None`
 (default) keeps the cheap fast-path; set it (on the reranker’s score scale)
 when a dominant-but-weak top must still be rubric-verified.
 
-#### cost_estimator *: [Callable](https://docs.python.org/3/library/typing.html#typing.Callable)[[[str](https://docs.python.org/3/builtins/stdtypes.html#str), [dict](https://docs.python.org/3/builtins/stdtypes.html#dict)], [float](https://docs.python.org/3/builtins/functions.html#float)] | [None](https://docs.python.org/3/builtins/constants.html#None)* *= None*
+#### cost_estimator *: [Optional](https://docs.python.org/3/library/typing.html#typing.Optional)[[Callable](https://docs.python.org/3/library/typing.html#typing.Callable)[[[str](https://docs.python.org/3/builtins/stdtypes.html#str), [dict](https://docs.python.org/3/builtins/stdtypes.html#dict)], [float](https://docs.python.org/3/builtins/functions.html#float)]]* *= None*
 
 `(call_type, info) -> cost` estimate; `call_type` in
 {“search”, “caption”, “judge”}.
@@ -1145,7 +1145,7 @@ relative-only (the loop’s quality bar lives in the rubric, which is 0-1).
 
 `ir.select` tuning for the grade (conservative selector).
 
-### *class* illustration.curation.Candidate(\*\*data)
+### *class* illustration.curation.Candidate(, result, score=None, caption=None, rubric=None, rationale=None)
 
 Bases: `BaseModel`
 
@@ -1162,7 +1162,7 @@ the rubric overall if judged, else 0.
 * **Type:**
   A 0-1 comparable quality
 
-### *class* illustration.curation.CurationResult(\*\*data)
+### *class* illustration.curation.CurationResult(\*, beat, best, accepted, grade, reason, candidates=<factory>, trace=<factory>, spend=<factory>)
 
 Bases: `BaseModel`
 
@@ -1188,7 +1188,7 @@ A grader maps (reranked results, ir.Selection) -> a [`Grade`](_autosummary/illus
 
 alias of `Callable`[[[`Sequence`](https://docs.python.org/3/library/typing.html#typing.Sequence)[[`ImageResult`](_autosummary/illustration.schema.html.md#illustration.schema.ImageResult)], [`Any`](https://docs.python.org/3/library/typing.html#typing.Any)], [`Grade`](_autosummary/illustration.curation.html.md#illustration.curation.Grade)]
 
-### *class* illustration.curation.IterationRecord(\*\*data)
+### *class* illustration.curation.IterationRecord(, iteration, queries, n_candidates, n_passed, grade, action, best_score=None, search_calls=0, caption_calls=0, judge_calls=0, notes='')
 
 Bases: `BaseModel`
 
@@ -1393,9 +1393,6 @@ Returns [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path) ob
 a caller who handed in paths wants paths back, and the wrapper carries no
 information the file does not.
 
-* **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)]
-
 ```pycon
 >>> import pathlib, tempfile
 >>> from PIL import Image
@@ -1409,6 +1406,9 @@ information the file does not.
 >>> [p.name for p in kept]
 ['big.png']
 ```
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)]
 
 ### illustration.duplicates.default_signature(\*\*kwargs)
 
@@ -1465,9 +1465,6 @@ survivors.
 
 Two copies of one picture and one different picture:
 
-* **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`DuplicateGroup`](_autosummary/illustration.duplicates.html.md#illustration.duplicates.DuplicateGroup)]
-
 ```pycon
 >>> import pathlib, tempfile
 >>> from PIL import Image
@@ -1490,6 +1487,9 @@ Pinning the pHash tier keeps this example offline and torch-free; drop the
 >>> [sorted(pathlib.Path(m.url).name for m in g.members) for g in groups]
 [['a.png', 'a_copy.png'], ['b.png']]
 ```
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`DuplicateGroup`](_autosummary/illustration.duplicates.html.md#illustration.duplicates.DuplicateGroup)]
 
 ### illustration.duplicates.group_duplicates(results, \*, signature=None, threshold=None, quality=<function quality_key>)
 
@@ -1726,14 +1726,14 @@ an `aix.prompt_func()`-backed generator (built lazily); inject a
 * **Return type:**
   [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
-### illustration.expansion.make_query_expander(, n=3, prompt='You turn a narration beat into concrete, visual stock-image search queries.\\\\nBeat: {beat}\\\\n\\\\nWrite {n} short queries (3-7 words each), one per line, no numbering. Each must name concrete, depictable subjects/scenes/lighting a photographer could shoot — not abstract narration. Vary the angle (subject, setting, mood) across the lines.', model=None)
+### illustration.expansion.make_query_expander(, n=3, prompt='You turn a narration beat into concrete, visual stock-image search queries.\\nBeat: {beat}\\n\\nWrite {n} short queries (3-7 words each), one per line, no numbering. Each must name concrete, depictable subjects/scenes/lighting a photographer could shoot — not abstract narration. Vary the angle (subject, setting, mood) across the lines.', model=None)
 
 Build the default LLM expander on `aix` (lazy import on first call).
 
 * **Return type:**
   [`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)[[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)], [`Sequence`](https://docs.python.org/3/library/typing.html#typing.Sequence)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]]
 
-### illustration.expansion.make_query_refiner(, prompt='A stock-image search for a narration beat did not return good matches.\\\\nBeat: {beat}\\\\nWhat went wrong: {critique}\\\\n\\\\nWrite ONE improved search query (3-7 words) that is more concrete and more likely to match real photographs. Output only the query, nothing else.', model=None)
+### illustration.expansion.make_query_refiner(, prompt='A stock-image search for a narration beat did not return good matches.\\nBeat: {beat}\\nWhat went wrong: {critique}\\n\\nWrite ONE improved search query (3-7 words) that is more concrete and more likely to match real photographs. Output only the query, nothing else.', model=None)
 
 Build the default LLM refiner on `aix` (lazy import on first call).
 
@@ -1820,11 +1820,11 @@ Search for up to `n` images matching `query` from one or more sources.
   * **color** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – A named color or `#hex` (Pexels, Pixabay).
   * **content_type** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – `photo` | `illustration` | `vector` (Openverse,
     Pixabay; providers map/skip values they don’t support).
-  * **license_allow** (`Union`[[`bool`](https://docs.python.org/3/builtins/functions.html#bool), [`Iterable`](https://docs.python.org/3/library/typing.html#typing.Iterable)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]]) – License gate (R3). `False` (default) = no gate; `True`
+  * **license_allow** ([`Union`](https://docs.python.org/3/library/typing.html#typing.Union)[[`bool`](https://docs.python.org/3/builtins/functions.html#bool), [`Iterable`](https://docs.python.org/3/library/typing.html#typing.Iterable)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]]) – License gate (R3). `False` (default) = no gate; `True`
     = keep only commercial-safe licenses (CC0/PD/BY/BY-SA + Pexels);
     an iterable of license codes = keep only those. Aggregators disclaim
     license accuracy, so gate when commercial use matters.
-  * **dedupe** (`Union`[[`bool`](https://docs.python.org/3/builtins/functions.html#bool), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)]) – Collapse same-subject duplicates (R4), keeping the best image
+  * **dedupe** ([`Union`](https://docs.python.org/3/library/typing.html#typing.Union)[[`bool`](https://docs.python.org/3/builtins/functions.html#bool), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)]) – Collapse same-subject duplicates (R4), keeping the best image
     of each subject. `"auto"` (default) dedupes only when the call
     already fetches images — i.e. when `rerank` is on — so a bare
     metadata search stays offline. `True` forces it and accepts a
@@ -1832,7 +1832,7 @@ Search for up to `n` images matching `query` from one or more sources.
     name (`"best"` | `"all"` | `"first"`) or a
     `DuplicateGroup -> [ImageResult]` callable chooses what to keep.
     See [`illustration.duplicates`](_autosummary/illustration.duplicates.html.md#module-illustration.duplicates).
-  * **rerank** (`Union`[[`bool`](https://docs.python.org/3/builtins/functions.html#bool), [`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)]) – Local cross-modal precision rerank (R1). `False` (default) =
+  * **rerank** ([`Union`](https://docs.python.org/3/library/typing.html#typing.Union)[[`bool`](https://docs.python.org/3/builtins/functions.html#bool), [`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)]) – Local cross-modal precision rerank (R1). `False` (default) =
     off; `True` = SigLIP-2 (needs the `illustration[rerank]` extra);
     a `(query, results) -> scores` callable = a custom scorer. Applied
     to the assembled results, which it re-scores (populating `.score`)
@@ -1955,31 +1955,31 @@ See `misc/docs/design/illustration_design.md` for the full design.
 
 ### Classes
 
-| [`ImageResult`](_autosummary/illustration.html.md#illustration.ImageResult)(\*\*data)                     | One normalized image hit from any provider.                                  |
-|--------------------------------------------------------------------------------------------|------------------------------------------------------------------------------|
-| [`VideoResult`](_autosummary/illustration.html.md#illustration.VideoResult)(\*\*data)                     | One normalized video hit from any provider.                                  |
-| [`MediaResult`](_autosummary/illustration.html.md#illustration.MediaResult)(\*\*data)                     | What every normalized hit from any provider carries, whatever the media.     |
-| [`Rendition`](_autosummary/illustration.html.md#illustration.Rendition)(\*\*data)                       | One playable encoding of a video, as a provider offers it.                   |
-| [`TimeSpan`](_autosummary/illustration.html.md#illustration.TimeSpan)(\*\*data)                        | A span of a media file, in seconds.                                          |
-| [`RetrievalSource`](_autosummary/illustration.html.md#illustration.RetrievalSource)(\*[, session])            | Abstract base for a pure image-search provider.                              |
-| [`SourceInfo`](_autosummary/illustration.html.md#illustration.SourceInfo)(name[, description, ...])      | Static, human-facing metadata about a source (for discovery + the gate).     |
-| [`SourcesView`](_autosummary/illustration.html.md#illustration.SourcesView)()                             | A live `Mapping` over the registry with dict- *and* attribute-access.        |
-| [`SearchCache`](_autosummary/illustration.html.md#illustration.SearchCache)([store])                      | A thin read/write facade over an injectable `MutableMapping` store.          |
-| [`CurationResult`](_autosummary/illustration.html.md#illustration.CurationResult)(\*\*data)                  | The outcome of curating one beat.                                            |
-| [`Candidate`](_autosummary/illustration.html.md#illustration.Candidate)(\*\*data)                       | One scored (and optionally inspected) candidate.                             |
-| [`Budget`](_autosummary/illustration.html.md#illustration.Budget)([max_iter, max_search_calls, ...]) | Hard loop bounds — the safety net, enforced in controller code (R2).         |
-| [`Grade`](_autosummary/illustration.html.md#illustration.Grade)(\*values)                           | CRAG's three-way retrieval grade (R2 §1).                                    |
-| [`IterationRecord`](_autosummary/illustration.html.md#illustration.IterationRecord)(\*\*data)                 | One iteration of the loop — the run-log R2 requires for observability.       |
-| [`PrefilterResult`](_autosummary/illustration.html.md#illustration.PrefilterResult)(passed, reports)          | The outcome of pre-filtering a candidate set.                                |
-| [`PrefilterReport`](_autosummary/illustration.html.md#illustration.PrefilterReport)(\*\*data)                 | Per-candidate pre-filter verdict (the R2 PREFILTER stage record).            |
-| [`InspectReport`](_autosummary/illustration.html.md#illustration.InspectReport)(\*\*data)                   | A VLM inspection of one candidate (caption or judge mode; R2 INSPECT).       |
-| [`RubricScore`](_autosummary/illustration.html.md#illustration.RubricScore)(\*\*data)                     | A pointwise VLM judgement of one candidate (R2 §4 rubric dimensions).        |
-| [`SequenceSelection`](_autosummary/illustration.html.md#illustration.SequenceSelection)(\*\*data)               | One image chosen per beat, optimized for the cross-shot objective.           |
-| [`SequenceResult`](_autosummary/illustration.html.md#illustration.SequenceResult)(\*\*data)                  | The result of curating a whole sequence of beats.                            |
-| [`BeatSelection`](_autosummary/illustration.html.md#illustration.BeatSelection)(\*\*data)                   | The chosen image (and why) for one beat in a sequence.                       |
-| [`DuplicateGroup`](_autosummary/illustration.html.md#illustration.DuplicateGroup)(members[, signature])      | Images judged to be the same subject, best first.                            |
-| [`DuplicateSignature`](_autosummary/illustration.html.md#illustration.DuplicateSignature)                        |                                                                              |
-| [`SelectionBody`](_autosummary/illustration.html.md#illustration.SelectionBody)(\*\*data)                   | The typed body of an illustration selection annotation (lacing body schema). |
+| [`ImageResult`](_autosummary/illustration.html.md#illustration.ImageResult)(\*, provider, id, url[, ...])          | One normalized image hit from any provider.                                  |
+|-----------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------|
+| [`VideoResult`](_autosummary/illustration.html.md#illustration.VideoResult)(\*, provider, id, url[, ...])          | One normalized video hit from any provider.                                  |
+| [`MediaResult`](_autosummary/illustration.html.md#illustration.MediaResult)(\*, provider, id, url[, ...])          | What every normalized hit from any provider carries, whatever the media.     |
+| [`Rendition`](_autosummary/illustration.html.md#illustration.Rendition)(\*, url[, mime_type, video_codec, ...])  | One playable encoding of a video, as a provider offers it.                   |
+| [`TimeSpan`](_autosummary/illustration.html.md#illustration.TimeSpan)(\*, start, end)                           | A span of a media file, in seconds.                                          |
+| [`RetrievalSource`](_autosummary/illustration.html.md#illustration.RetrievalSource)(\*[, session])                     | Abstract base for a pure image-search provider.                              |
+| [`SourceInfo`](_autosummary/illustration.html.md#illustration.SourceInfo)(name[, description, ...])               | Static, human-facing metadata about a source (for discovery + the gate).     |
+| [`SourcesView`](_autosummary/illustration.html.md#illustration.SourcesView)()                                      | A live `Mapping` over the registry with dict- *and* attribute-access.        |
+| [`SearchCache`](_autosummary/illustration.html.md#illustration.SearchCache)([store])                               | A thin read/write facade over an injectable `MutableMapping` store.          |
+| [`CurationResult`](_autosummary/illustration.html.md#illustration.CurationResult)(\*, beat, best, accepted, ...)      | The outcome of curating one beat.                                            |
+| [`Candidate`](_autosummary/illustration.html.md#illustration.Candidate)(\*, result[, score, caption, ...])       | One scored (and optionally inspected) candidate.                             |
+| [`Budget`](_autosummary/illustration.html.md#illustration.Budget)([max_iter, max_search_calls, ...])          | Hard loop bounds — the safety net, enforced in controller code (R2).         |
+| [`Grade`](_autosummary/illustration.html.md#illustration.Grade)(\*values)                                    | CRAG's three-way retrieval grade (R2 §1).                                    |
+| [`IterationRecord`](_autosummary/illustration.html.md#illustration.IterationRecord)(\*, iteration, queries, ...)       | One iteration of the loop — the run-log R2 requires for observability.       |
+| [`PrefilterResult`](_autosummary/illustration.html.md#illustration.PrefilterResult)(passed, reports)                   | The outcome of pre-filtering a candidate set.                                |
+| [`PrefilterReport`](_autosummary/illustration.html.md#illustration.PrefilterReport)(\*, provider, id, passed[, ...])   | Per-candidate pre-filter verdict (the R2 PREFILTER stage record).            |
+| [`InspectReport`](_autosummary/illustration.html.md#illustration.InspectReport)(\*, provider, id, mode[, ...])       | A VLM inspection of one candidate (caption or judge mode; R2 INSPECT).       |
+| [`RubricScore`](_autosummary/illustration.html.md#illustration.RubricScore)(\*[, subject, action, setting, ...])   | A pointwise VLM judgement of one candidate (R2 §4 rubric dimensions).        |
+| [`SequenceSelection`](_autosummary/illustration.html.md#illustration.SequenceSelection)(\*[, selections, ...])           | One image chosen per beat, optimized for the cross-shot objective.           |
+| [`SequenceResult`](_autosummary/illustration.html.md#illustration.SequenceResult)(\*, beats, selection)               | The result of curating a whole sequence of beats.                            |
+| [`BeatSelection`](_autosummary/illustration.html.md#illustration.BeatSelection)(\*, beat_index, chosen[, ...])       | The chosen image (and why) for one beat in a sequence.                       |
+| [`DuplicateGroup`](_autosummary/illustration.html.md#illustration.DuplicateGroup)(members[, signature])               | Images judged to be the same subject, best first.                            |
+| [`DuplicateSignature`](_autosummary/illustration.html.md#illustration.DuplicateSignature)                                 |                                                                              |
+| [`SelectionBody`](_autosummary/illustration.html.md#illustration.SelectionBody)(\*, beat, beat_index, source[, ...]) | The typed body of an illustration selection annotation (lacing body schema). |
 
 ### Exceptions
 
@@ -1992,7 +1992,7 @@ See `misc/docs/design/illustration_design.md` for the full design.
 | [`RerankDependencyError`](_autosummary/illustration.html.md#illustration.RerankDependencyError)([missing])                 | The optional local-rerank dependencies are not installed.                                             |
 | [`CurateDependencyError`](_autosummary/illustration.html.md#illustration.CurateDependencyError)([missing, extra, purpose]) | An optional Layer-2 (agentic curation) dependency is not installed.                                   |
 
-### *class* illustration.BeatSelection(\*\*data)
+### *class* illustration.BeatSelection(, beat_index, chosen, relevance=0.0, coherence=0.0, redundancy=0.0, forced_duplicate=False, n_candidates=0)
 
 Bases: `BaseModel`
 
@@ -2023,7 +2023,7 @@ candidate is escalated to the VLM judge instead of auto-accepted. `None`
 (default) keeps the cheap fast-path; set it (on the reranker’s score scale)
 when a dominant-but-weak top must still be rubric-verified.
 
-#### cost_estimator *: [Callable](https://docs.python.org/3/library/typing.html#typing.Callable)[[[str](https://docs.python.org/3/builtins/stdtypes.html#str), [dict](https://docs.python.org/3/builtins/stdtypes.html#dict)], [float](https://docs.python.org/3/builtins/functions.html#float)] | [None](https://docs.python.org/3/builtins/constants.html#None)* *= None*
+#### cost_estimator *: [Optional](https://docs.python.org/3/library/typing.html#typing.Optional)[[Callable](https://docs.python.org/3/library/typing.html#typing.Callable)[[[str](https://docs.python.org/3/builtins/stdtypes.html#str), [dict](https://docs.python.org/3/builtins/stdtypes.html#dict)], [float](https://docs.python.org/3/builtins/functions.html#float)]]* *= None*
 
 `(call_type, info) -> cost` estimate; `call_type` in
 {“search”, “caption”, “judge”}.
@@ -2049,7 +2049,7 @@ relative-only (the loop’s quality bar lives in the rubric, which is 0-1).
 
 `ir.select` tuning for the grade (conservative selector).
 
-### *class* illustration.Candidate(\*\*data)
+### *class* illustration.Candidate(, result, score=None, caption=None, rubric=None, rationale=None)
 
 Bases: `BaseModel`
 
@@ -2075,7 +2075,7 @@ An optional Layer-2 (agentic curation) dependency is not installed.
 The message names the missing packages and the extra that provides them,
 so the failure is actionable (e.g. `pip install 'illustration[curate]'`).
 
-### *class* illustration.CurationResult(\*\*data)
+### *class* illustration.CurationResult(\*, beat, best, accepted, grade, reason, candidates=<factory>, trace=<factory>, spend=<factory>)
 
 Bases: `BaseModel`
 
@@ -2111,7 +2111,7 @@ Bases: [`Exception`](https://docs.python.org/3/builtins/exceptions.html#Exceptio
 
 Base class for every error raised by [`illustration`](_autosummary/illustration.html.md#module-illustration).
 
-### *class* illustration.ImageResult(\*\*data)
+### *class* illustration.ImageResult(\*, provider, id, url, thumbnail_url=None, width=None, height=None, title=None, description=None, tags=<factory>, license=None, license_url=None, attribution=None, source_page_url=None, author=None, author_url=None, cacheable=False, avg_color=None, query=None, score=None, raw=<factory>)
 
 Bases: [`MediaResult`](_autosummary/illustration.schema.html.md#illustration.schema.MediaResult)
 
@@ -2128,7 +2128,7 @@ Always `"image"`; deliberately not a serialized field (see [`MediaResult`](_auto
 
 Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
 
-### *class* illustration.InspectReport(\*\*data)
+### *class* illustration.InspectReport(, provider, id, mode, caption=None, rubric=None, rationale=None)
 
 Bases: `BaseModel`
 
@@ -2138,7 +2138,7 @@ A VLM inspection of one candidate (caption or judge mode; R2 INSPECT).
 
 Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
 
-### *class* illustration.IterationRecord(\*\*data)
+### *class* illustration.IterationRecord(, iteration, queries, n_candidates, n_passed, grade, action, best_score=None, search_calls=0, caption_calls=0, judge_calls=0, notes='')
 
 Bases: `BaseModel`
 
@@ -2148,7 +2148,7 @@ One iteration of the loop — the run-log R2 requires for observability.
 
 Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
 
-### *class* illustration.MediaResult(\*\*data)
+### *class* illustration.MediaResult(\*, provider, id, url, thumbnail_url=None, width=None, height=None, title=None, description=None, tags=<factory>, license=None, license_url=None, attribution=None, source_page_url=None, author=None, author_url=None, cacheable=False, avg_color=None, query=None, score=None, raw=<factory>)
 
 Bases: `BaseModel`
 
@@ -2184,7 +2184,7 @@ A source needs an API key that could not be resolved.
 
 The message tells the user exactly what to do; key values are never logged.
 
-### *class* illustration.PrefilterReport(\*\*data)
+### *class* illustration.PrefilterReport(\*, provider, id, passed, reasons=<factory>, values=<factory>)
 
 Bases: `BaseModel`
 
@@ -2216,7 +2216,7 @@ Bases: [`ProviderError`](_autosummary/illustration.errors.html.md#illustration.e
 
 A provider returned HTTP 429 (rate limit exceeded).
 
-### *class* illustration.Rendition(\*\*data)
+### *class* illustration.Rendition(, url, mime_type=None, video_codec=None, width=None, height=None, fps=None, size_bytes=None, quality_label=None, expires_at=None)
 
 Bases: `BaseModel`
 
@@ -2322,7 +2322,7 @@ translated ones.
 * **Return type:**
   [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`ImageResult`](_autosummary/illustration.schema.html.md#illustration.schema.ImageResult)]
 
-### *class* illustration.RubricScore(\*\*data)
+### *class* illustration.RubricScore(, subject=0.0, action=0.0, setting=0.0, mood=0.0, style=0.0, quality=0.0, overall=0.0, rationale='', parsed=True)
 
 Bases: `BaseModel`
 
@@ -2362,7 +2362,7 @@ Store `results` under the key; return the key.
 * **Return type:**
   [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
-### *class* illustration.SelectionBody(\*\*data)
+### *class* illustration.SelectionBody(\*, beat, beat_index, source, selected=None, candidates=<factory>, forced_duplicate=False, reason=None)
 
 Bases: `BaseModel`
 
@@ -2372,7 +2372,7 @@ The typed body of an illustration selection annotation (lacing body schema).
 
 Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
 
-### *class* illustration.SequenceResult(\*\*data)
+### *class* illustration.SequenceResult(, beats, selection)
 
 Bases: `BaseModel`
 
@@ -2382,7 +2382,7 @@ The result of curating a whole sequence of beats.
 
 Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
 
-### *class* illustration.SequenceSelection(\*\*data)
+### *class* illustration.SequenceSelection(\*, selections=<factory>, objective=0.0, notes=<factory>)
 
 Bases: `BaseModel`
 
@@ -2396,7 +2396,7 @@ The chosen image per beat, in order (`None` where a beat was empty).
 
 Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
 
-### *class* illustration.SourceInfo(name, description='', requires_key=False, homepage=None, default_cacheable=True, license_note='', rate_limit='', tags=<factory>)
+### *class* illustration.SourceInfo(name, description='', requires_key=False, homepage=None, default_cacheable=True, license_note='', rate_limit='', tags=tuple())
 
 Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
@@ -2413,7 +2413,7 @@ Attribute access (`sources.openverse`) is a convenience; dict access
 for a source whose name collides with a `Mapping` method (`get`,
 `keys`, `values`, …).
 
-### *class* illustration.TimeSpan(\*\*data)
+### *class* illustration.TimeSpan(, start, end)
 
 Bases: `BaseModel`
 
@@ -2432,7 +2432,7 @@ Bases: [`IllustrationError`](_autosummary/illustration.errors.html.md#illustrati
 
 A source name was requested that is not in the registry.
 
-### *class* illustration.VideoResult(\*\*data)
+### *class* illustration.VideoResult(\*, provider, id, url, thumbnail_url=None, width=None, height=None, title=None, description=None, tags=<factory>, license=None, license_url=None, attribution=None, source_page_url=None, author=None, author_url=None, cacheable=False, avg_color=None, query=None, score=None, raw=<factory>, media_type='video', duration_s=None, fps=None, has_audio=None, renditions=<factory>, poster_url=None, preview_frames=<factory>, moment=None, editorial_only=None, has_model_release=None, has_property_release=None, audio_policy=None)
 
 Bases: [`MediaResult`](_autosummary/illustration.schema.html.md#illustration.schema.MediaResult)
 
@@ -2501,9 +2501,6 @@ A result with no `license` at all is not flagged: there is nothing to
 name, and it should already have been dropped by `license_allowlist` if
 that matters to the caller.
 
-* **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`MediaResult`](_autosummary/illustration.schema.html.md#illustration.schema.MediaResult)]
-
 ```pycon
 >>> a = ImageResult(provider="p", id="1", url="u", license="by-sa", attribution="Jane Doe")
 >>> b = ImageResult(provider="p", id="2", url="u", license="by-sa",
@@ -2512,6 +2509,9 @@ that matters to the caller.
 >>> [r.id for r in check_attributions([a, b, c])]
 ['1']
 ```
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`MediaResult`](_autosummary/illustration.schema.html.md#illustration.schema.MediaResult)]
 
 ### illustration.check_requirements(provider, , api_key=None)
 
@@ -2600,9 +2600,6 @@ Returns [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path) ob
 a caller who handed in paths wants paths back, and the wrapper carries no
 information the file does not.
 
-* **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)]
-
 ```pycon
 >>> import pathlib, tempfile
 >>> from PIL import Image
@@ -2616,6 +2613,9 @@ information the file does not.
 >>> [p.name for p in kept]
 ['big.png']
 ```
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)]
 
 ### illustration.default_search_store()
 
@@ -2688,9 +2688,6 @@ a known permission code is returned as recorded (whitespace collapsed,
 case and version kept), never reinterpreted — it must still fail [`normalize_license()`](_autosummary/illustration.html.md#illustration.normalize_license)’s consumers
 (e.g. [`illustration.schema.license_allowlist()`](_autosummary/illustration.schema.html.md#illustration.schema.license_allowlist)) exactly as before.
 
-* **Return type:**
-  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
-
 ```pycon
 >>> display_license("cc-by-sa-4.0")
 'CC BY-SA 4.0'
@@ -2713,6 +2710,9 @@ case and version kept), never reinterpreted — it must still fail [`normalize_l
 >>> display_license(None) is None
 True
 ```
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
 
 ### illustration.expand_query(beat, , n=3, expander=None, model=None, include_verbatim=True)
 
@@ -2766,9 +2766,6 @@ survivors.
 
 Two copies of one picture and one different picture:
 
-* **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`DuplicateGroup`](_autosummary/illustration.duplicates.html.md#illustration.duplicates.DuplicateGroup)]
-
 ```pycon
 >>> import pathlib, tempfile
 >>> from PIL import Image
@@ -2791,6 +2788,9 @@ Pinning the pHash tier keeps this example offline and torch-free; drop the
 >>> [sorted(pathlib.Path(m.url).name for m in g.members) for g in groups]
 [['a.png', 'a_copy.png'], ['b.png']]
 ```
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`DuplicateGroup`](_autosummary/illustration.duplicates.html.md#illustration.duplicates.DuplicateGroup)]
 
 ### illustration.group_duplicates(results, \*, signature=None, threshold=None, quality=<function quality_key>)
 
@@ -2857,9 +2857,6 @@ canonical code without the allowlist having to enumerate every dialect —
 and without ever dropping an `nc`/`nd` restriction. Results with no
 `license` are dropped (unknown == not allowed).
 
-* **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`MediaResult`](_autosummary/illustration.schema.html.md#illustration.schema.MediaResult)]
-
 ```pycon
 >>> a = ImageResult(provider="p", id="1", url="u", license="cc0")
 >>> b = ImageResult(provider="p", id="2", url="u", license="by-nc")
@@ -2879,6 +2876,9 @@ Provider dialects pass the same gate:
 >>> [r.id for r in license_allowlist([w, p, nd])]
 ['4', '5']
 ```
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`MediaResult`](_autosummary/illustration.schema.html.md#illustration.schema.MediaResult)]
 
 ### illustration.list_sources()
 
@@ -2943,9 +2943,6 @@ Lower-cases, unifies separators to `-`, strips a trailing version and a
 leading `cc-`, then applies `LICENSE_ALIASES`. Returns `None` for
 `None`/blank — an absent licence is never a code.
 
-* **Return type:**
-  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
-
 ```pycon
 >>> normalize_license("by-sa"), normalize_license("cc0"), normalize_license("CC0 1.0")
 ('by-sa', 'cc0', 'cc0')
@@ -2958,6 +2955,9 @@ leading `cc-`, then applies `LICENSE_ALIASES`. Returns `None` for
 >>> normalize_license("")  is None
 True
 ```
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
 
 ### illustration.nsfw_check(, max_prob=0.5, classifier=None)
 
@@ -2975,20 +2975,17 @@ fetched or classified is dropped, never passed.
 
 The installed package version, or `'0+unknown'` if not installed.
 
-* **Return type:**
-  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
-
 ```pycon
 >>> isinstance(package_version(), str)
 True
 ```
 
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
+
 ### illustration.parse_media_result(obj)
 
 Validate a dict (or pass through a model) into the right result type.
-
-* **Return type:**
-  [`ImageResult`](_autosummary/illustration.schema.html.md#illustration.schema.ImageResult) | [`VideoResult`](_autosummary/illustration.schema.html.md#illustration.schema.VideoResult)
 
 ```pycon
 >>> parse_media_result({"provider": "p", "id": "1", "url": "u"}).media_type
@@ -2996,6 +2993,9 @@ Validate a dict (or pass through a model) into the right result type.
 >>> parse_media_result({"provider": "p", "id": "1", "url": "u", "media_type": "video"}).media_type
 'video'
 ```
+
+* **Return type:**
+  [`ImageResult`](_autosummary/illustration.schema.html.md#illustration.schema.ImageResult) | [`VideoResult`](_autosummary/illustration.schema.html.md#illustration.schema.VideoResult)
 
 ### illustration.persist_sequence(result, , store=None, actor='agent:illustration-curate', activity='infer', at_time=None)
 
@@ -3111,15 +3111,15 @@ The guard for image-only code paths. A [`VideoResult`](_autosummary/illustration
 take one without complaint and fetch a movie as a picture; this makes that
 loud.
 
-* **Return type:**
-  [`ImageResult`](_autosummary/illustration.schema.html.md#illustration.schema.ImageResult)
-
 ```pycon
 >>> require_image(VideoResult(provider="p", id="1", url="u"), where="render")
 Traceback (most recent call last):
 ...
 TypeError: render expects an ImageResult, got VideoResult
 ```
+
+* **Return type:**
+  [`ImageResult`](_autosummary/illustration.schema.html.md#illustration.schema.ImageResult)
 
 ### illustration.requires_credentials(provider)
 
@@ -3130,9 +3130,6 @@ body, so the function never inlines key handling. (The built-in sources call
 [`check_requirements()`](_autosummary/illustration.html.md#illustration.check_requirements) directly; this decorator is the functional-style
 equivalent for Layer-2 helpers.)
 
-* **Return type:**
-  [`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)
-
 ```pycon
 >>> @requires_credentials("pexels")
 ... def fetch(): return "ok"
@@ -3140,6 +3137,9 @@ equivalent for Layer-2 helpers.)
 ...     fetch()
 'ok'
 ```
+
+* **Return type:**
+  [`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)
 
 ### illustration.rerank(query, results, , scorer=None, descending=True)
 
@@ -3209,11 +3209,11 @@ Search for up to `n` images matching `query` from one or more sources.
   * **color** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – A named color or `#hex` (Pexels, Pixabay).
   * **content_type** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – `photo` | `illustration` | `vector` (Openverse,
     Pixabay; providers map/skip values they don’t support).
-  * **license_allow** (`Union`[[`bool`](https://docs.python.org/3/builtins/functions.html#bool), [`Iterable`](https://docs.python.org/3/library/typing.html#typing.Iterable)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]]) – License gate (R3). `False` (default) = no gate; `True`
+  * **license_allow** ([`Union`](https://docs.python.org/3/library/typing.html#typing.Union)[[`bool`](https://docs.python.org/3/builtins/functions.html#bool), [`Iterable`](https://docs.python.org/3/library/typing.html#typing.Iterable)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]]) – License gate (R3). `False` (default) = no gate; `True`
     = keep only commercial-safe licenses (CC0/PD/BY/BY-SA + Pexels);
     an iterable of license codes = keep only those. Aggregators disclaim
     license accuracy, so gate when commercial use matters.
-  * **dedupe** (`Union`[[`bool`](https://docs.python.org/3/builtins/functions.html#bool), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)]) – Collapse same-subject duplicates (R4), keeping the best image
+  * **dedupe** ([`Union`](https://docs.python.org/3/library/typing.html#typing.Union)[[`bool`](https://docs.python.org/3/builtins/functions.html#bool), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)]) – Collapse same-subject duplicates (R4), keeping the best image
     of each subject. `"auto"` (default) dedupes only when the call
     already fetches images — i.e. when `rerank` is on — so a bare
     metadata search stays offline. `True` forces it and accepts a
@@ -3221,7 +3221,7 @@ Search for up to `n` images matching `query` from one or more sources.
     name (`"best"` | `"all"` | `"first"`) or a
     `DuplicateGroup -> [ImageResult]` callable chooses what to keep.
     See [`illustration.duplicates`](_autosummary/illustration.duplicates.html.md#module-illustration.duplicates).
-  * **rerank** (`Union`[[`bool`](https://docs.python.org/3/builtins/functions.html#bool), [`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)]) – Local cross-modal precision rerank (R1). `False` (default) =
+  * **rerank** ([`Union`](https://docs.python.org/3/library/typing.html#typing.Union)[[`bool`](https://docs.python.org/3/builtins/functions.html#bool), [`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)]) – Local cross-modal precision rerank (R1). `False` (default) =
     off; `True` = SigLIP-2 (needs the `illustration[rerank]` extra);
     a `(query, results) -> scores` callable = a custom scorer. Applied
     to the assembled results, which it re-scores (populating `.score`)
@@ -3443,12 +3443,12 @@ offline with stubs (synthetic PIL images for the CV checks, canned strings for
 
 ### Classes
 
-| [`CheckOutcome`](_autosummary/illustration.inspection.html.md#illustration.inspection.CheckOutcome)(name, passed[, value, reason])   | The result of one check on one candidate.                              |
-|------------------------------------------------------------------------------------------------|------------------------------------------------------------------------|
-| [`PrefilterReport`](_autosummary/illustration.inspection.html.md#illustration.inspection.PrefilterReport)(\*\*data)                     | Per-candidate pre-filter verdict (the R2 PREFILTER stage record).      |
-| [`PrefilterResult`](_autosummary/illustration.inspection.html.md#illustration.inspection.PrefilterResult)(passed, reports)              | The outcome of pre-filtering a candidate set.                          |
-| [`RubricScore`](_autosummary/illustration.inspection.html.md#illustration.inspection.RubricScore)(\*\*data)                         | A pointwise VLM judgement of one candidate (R2 §4 rubric dimensions).  |
-| [`InspectReport`](_autosummary/illustration.inspection.html.md#illustration.inspection.InspectReport)(\*\*data)                       | A VLM inspection of one candidate (caption or judge mode; R2 INSPECT). |
+| [`CheckOutcome`](_autosummary/illustration.inspection.html.md#illustration.inspection.CheckOutcome)(name, passed[, value, reason])      | The result of one check on one candidate.                              |
+|---------------------------------------------------------------------------------------------------|------------------------------------------------------------------------|
+| [`PrefilterReport`](_autosummary/illustration.inspection.html.md#illustration.inspection.PrefilterReport)(\*, provider, id, passed[, ...]) | Per-candidate pre-filter verdict (the R2 PREFILTER stage record).      |
+| [`PrefilterResult`](_autosummary/illustration.inspection.html.md#illustration.inspection.PrefilterResult)(passed, reports)                 | The outcome of pre-filtering a candidate set.                          |
+| [`RubricScore`](_autosummary/illustration.inspection.html.md#illustration.inspection.RubricScore)(\*[, subject, action, setting, ...]) | A pointwise VLM judgement of one candidate (R2 §4 rubric dimensions).  |
+| [`InspectReport`](_autosummary/illustration.inspection.html.md#illustration.inspection.InspectReport)(\*, provider, id, mode[, ...])     | A VLM inspection of one candidate (caption or judge mode; R2 INSPECT). |
 
 ### Exceptions
 
@@ -3494,7 +3494,7 @@ A describe seam maps (image_ref, prompt) -> text. `image_ref` is anything
 
 alias of `Callable`[[[`Any`](https://docs.python.org/3/library/typing.html#typing.Any), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)], [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
-### *class* illustration.inspection.InspectReport(\*\*data)
+### *class* illustration.inspection.InspectReport(, provider, id, mode, caption=None, rubric=None, rationale=None)
 
 Bases: `BaseModel`
 
@@ -3504,7 +3504,7 @@ A VLM inspection of one candidate (caption or judge mode; R2 INSPECT).
 
 Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
 
-### *class* illustration.inspection.PrefilterReport(\*\*data)
+### *class* illustration.inspection.PrefilterReport(\*, provider, id, passed, reasons=<factory>, values=<factory>)
 
 Bases: `BaseModel`
 
@@ -3524,7 +3524,7 @@ The outcome of pre-filtering a candidate set.
 
 Reports for the candidates that failed at least one check.
 
-### *class* illustration.inspection.RubricScore(\*\*data)
+### *class* illustration.inspection.RubricScore(, subject=0.0, action=0.0, setting=0.0, mood=0.0, style=0.0, quality=0.0, overall=0.0, rationale='', parsed=True)
 
 Bases: `BaseModel`
 
@@ -3730,9 +3730,6 @@ licence ([`licenses_named()`](_autosummary/illustration.licensing.html.md#illust
 “Public domain”, or a different CC code do not count. For any other
 licence the looser [`mentions_license()`](_autosummary/illustration.licensing.html.md#illustration.licensing.mentions_license) signal is used.
 
-* **Return type:**
-  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
-
 ```pycon
 >>> attribution_names_license("Jane Doe / CC BY-SA 4.0", "cc-by-sa-4.0")
 True
@@ -3741,6 +3738,9 @@ False
 >>> attribution_names_license("CC BY Jane", "cc-by-nc-4.0")  # drops NC
 False
 ```
+
+* **Return type:**
+  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
 
 ### illustration.licensing.display_license(value)
 
@@ -3763,9 +3763,6 @@ carried one. This is presentation only: an input that does not resolve to
 a known permission code is returned as recorded (whitespace collapsed,
 case and version kept), never reinterpreted — it must still fail [`normalize_license()`](_autosummary/illustration.licensing.html.md#illustration.licensing.normalize_license)’s consumers
 (e.g. [`illustration.schema.license_allowlist()`](_autosummary/illustration.schema.html.md#illustration.schema.license_allowlist)) exactly as before.
-
-* **Return type:**
-  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
 
 ```pycon
 >>> display_license("cc-by-sa-4.0")
@@ -3790,6 +3787,9 @@ case and version kept), never reinterpreted — it must still fail [`normalize_l
 True
 ```
 
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
+
 ### illustration.licensing.licenses_named(text)
 
 The canonical codes (as [`normalize_license()`](_autosummary/illustration.licensing.html.md#illustration.licensing.normalize_license) spells them) of every
@@ -3801,9 +3801,6 @@ tell “names CC BY-SA” from “names some other licence” or “just says ©
 Long forms are folded first (“Creative Commons Attribution-ShareAlike” ->
 `by-sa`); versions are ignored, as in [`normalize_license()`](_autosummary/illustration.licensing.html.md#illustration.licensing.normalize_license).
 
-* **Return type:**
-  [`set`](https://docs.python.org/3/builtins/stdtypes.html#set)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
-
 ```pycon
 >>> sorted(licenses_named("Alice / CC BY-SA 4.0, via Wikimedia Commons"))
 ['by-sa']
@@ -3814,6 +3811,9 @@ Long forms are folded first (“Creative Commons Attribution-ShareAlike” ->
 >>> licenses_named("© Jane Doe"), licenses_named(None)
 (set(), set())
 ```
+
+* **Return type:**
+  [`set`](https://docs.python.org/3/builtins/stdtypes.html#set)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ### illustration.licensing.mentions_license(attribution)
 
@@ -3829,9 +3829,6 @@ are populated and correct. This never changes what a licence *is* — it
 only flags text that does not visibly say what it is, for a caller to
 review or fall back on `author`/`license`/`license_url` themselves.
 
-* **Return type:**
-  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
-
 ```pycon
 >>> mentions_license("Alice / CC BY-SA 4.0, via Wikimedia Commons")
 True
@@ -3845,6 +3842,9 @@ False
 False
 ```
 
+* **Return type:**
+  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
+
 ### illustration.licensing.normalize_license(value)
 
 Fold a provider’s licence spelling onto one canonical, comparable code.
@@ -3852,9 +3852,6 @@ Fold a provider’s licence spelling onto one canonical, comparable code.
 Lower-cases, unifies separators to `-`, strips a trailing version and a
 leading `cc-`, then applies [`LICENSE_ALIASES`](_autosummary/illustration.licensing.html.md#illustration.licensing.LICENSE_ALIASES). Returns `None` for
 `None`/blank — an absent licence is never a code.
-
-* **Return type:**
-  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
 
 ```pycon
 >>> normalize_license("by-sa"), normalize_license("cc0"), normalize_license("CC0 1.0")
@@ -3868,6 +3865,9 @@ leading `cc-`, then applies [`LICENSE_ALIASES`](_autosummary/illustration.licens
 >>> normalize_license("")  is None
 True
 ```
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
 
 
 # _autosummary/illustration.persistence.html.md
@@ -3936,8 +3936,8 @@ Behind the optional `[persist]` extra (`lacing`); imported lazily so base
 
 ### Classes
 
-| [`SelectionBody`](_autosummary/illustration.persistence.html.md#illustration.persistence.SelectionBody)(\*\*data)   | The typed body of an illustration selection annotation (lacing body schema).   |
-|----------------------------------------------------------------------------|--------------------------------------------------------------------------------|
+| [`SelectionBody`](_autosummary/illustration.persistence.html.md#illustration.persistence.SelectionBody)(\*, beat, beat_index, source[, ...])   | The typed body of an illustration selection annotation (lacing body schema).   |
+|-------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
 
 ### illustration.persistence.SELECTIONS_TIER *= 'selections'*
 
@@ -3947,7 +3947,7 @@ The lacing tier selections live on.
 
 The lacing body-schema URI for an illustration selection annotation.
 
-### *class* illustration.persistence.SelectionBody(\*\*data)
+### *class* illustration.persistence.SelectionBody(\*, beat, beat_index, source, selected=None, candidates=<factory>, forced_duplicate=False, reason=None)
 
 Bases: `BaseModel`
 
@@ -4426,8 +4426,8 @@ safe/license_type/color/content_type) — they degrade gracefully.
 
 ### Functions
 
-| [`thumbnail_at_width`](_autosummary/illustration.providers.wikimedia.html.md#illustration.providers.wikimedia.thumbnail_at_width)(url, width, \*[, ...])   | Rewrite a Commons thumbnail URL to render at `width` px.   |
-|----------------------------------------------------------------------------------------------|------------------------------------------------------------|
+| [`thumbnail_at_width`](_autosummary/illustration.providers.wikimedia.html.md#illustration.providers.wikimedia.thumbnail_at_width)(url, width, \*[, ...])   | Rewrite a Commons thumbnail URL to render at least `width` px wide.   |
+|----------------------------------------------------------------------------------------------|-----------------------------------------------------------------------|
 
 ### Classes
 
@@ -4473,26 +4473,32 @@ Native name of the free-text query parameter.
 
 ### illustration.providers.wikimedia.thumbnail_at_width(url, width, , original_width=None)
 
-Rewrite a Commons thumbnail URL to render at `width` px.
+Rewrite a Commons thumbnail URL to render at least `width` px wide.
 
-Fetching the 15 MB original just to downscale it is the slow path, and
-`upload.wikimedia.org` serves arbitrary widths of any thumbnail URL. Only
+Fetching the 15 MB original just to downscale it is the slow path; the
+thumbnail service is fast, but only at its standard widths
+(`THUMBNAIL_STEPS`): any other width is rejected (HTTP 400/429), so
+`width` is rounded **up** to the next step. When the original is narrower
+than that step (the service also refuses an upscale), the original file’s
+URL is returned for a web image, else the largest step it can serve: never
+the small provider thumbnail, which a pipeline would silently upscale. Only
 URLs already in `/thumb/` form on the upload host are touched (anything
-else comes back unchanged), and a `width` above `original_width` is left
-alone because the service answers 400 to an upscale.
-
-* **Return type:**
-  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
+else comes back unchanged).
 
 ```pycon
 >>> u = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/X.jpg/320px-X.jpg"
 >>> thumbnail_at_width(u, 1280)
 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/X.jpg/1280px-X.jpg'
->>> thumbnail_at_width(u, 1280, original_width=900) == u
-True
+>>> thumbnail_at_width(u, 1600)  # not a standard width: rounded up
+'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/X.jpg/1920px-X.jpg'
+>>> thumbnail_at_width(u, 1280, original_width=900)  # smaller original: the original
+'https://upload.wikimedia.org/wikipedia/commons/a/ab/X.jpg'
 >>> thumbnail_at_width("https://example.org/a.jpg", 1280)
 'https://example.org/a.jpg'
 ```
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
 
 
 # _autosummary/illustration.registry.html.md
@@ -4777,12 +4783,12 @@ provider-specific field the normalized schema doesn’t name.
 
 ### Classes
 
-| [`MediaResult`](_autosummary/illustration.schema.html.md#illustration.schema.MediaResult)(\*\*data)   | What every normalized hit from any provider carries, whatever the media.   |
-|--------------------------------------------------------------------------|----------------------------------------------------------------------------|
-| [`ImageResult`](_autosummary/illustration.schema.html.md#illustration.schema.ImageResult)(\*\*data)   | One normalized image hit from any provider.                                |
-| [`VideoResult`](_autosummary/illustration.schema.html.md#illustration.schema.VideoResult)(\*\*data)   | One normalized video hit from any provider.                                |
-| [`Rendition`](_autosummary/illustration.schema.html.md#illustration.schema.Rendition)(\*\*data)     | One playable encoding of a video, as a provider offers it.                 |
-| [`TimeSpan`](_autosummary/illustration.schema.html.md#illustration.schema.TimeSpan)(\*\*data)      | A span of a media file, in seconds.                                        |
+| [`MediaResult`](_autosummary/illustration.schema.html.md#illustration.schema.MediaResult)(\*, provider, id, url[, ...])         | What every normalized hit from any provider carries, whatever the media.   |
+|----------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------|
+| [`ImageResult`](_autosummary/illustration.schema.html.md#illustration.schema.ImageResult)(\*, provider, id, url[, ...])         | One normalized image hit from any provider.                                |
+| [`VideoResult`](_autosummary/illustration.schema.html.md#illustration.schema.VideoResult)(\*, provider, id, url[, ...])         | One normalized video hit from any provider.                                |
+| [`Rendition`](_autosummary/illustration.schema.html.md#illustration.schema.Rendition)(\*, url[, mime_type, video_codec, ...]) | One playable encoding of a video, as a provider offers it.                 |
+| [`TimeSpan`](_autosummary/illustration.schema.html.md#illustration.schema.TimeSpan)(\*, start, end)                          | A span of a media file, in seconds.                                        |
 
 ### illustration.schema.AnyMediaResult
 
@@ -4791,7 +4797,7 @@ tag is an image, so every stored selection and cached result still loads.
 
 alias of `Annotated`[`Annotated`[[`ImageResult`](_autosummary/illustration.schema.html.md#illustration.schema.ImageResult), `Tag`(tag=image)] | `Annotated`[[`VideoResult`](_autosummary/illustration.schema.html.md#illustration.schema.VideoResult), `Tag`(tag=video)], `Discriminator`(discriminator=`_media_type_of`, custom_error_type=[`None`](https://docs.python.org/3/builtins/constants.html#None), custom_error_message=[`None`](https://docs.python.org/3/builtins/constants.html#None), custom_error_context=[`None`](https://docs.python.org/3/builtins/constants.html#None))]
 
-### *class* illustration.schema.ImageResult(\*\*data)
+### *class* illustration.schema.ImageResult(\*, provider, id, url, thumbnail_url=None, width=None, height=None, title=None, description=None, tags=<factory>, license=None, license_url=None, attribution=None, source_page_url=None, author=None, author_url=None, cacheable=False, avg_color=None, query=None, score=None, raw=<factory>)
 
 Bases: [`MediaResult`](_autosummary/illustration.schema.html.md#illustration.schema.MediaResult)
 
@@ -4817,7 +4823,7 @@ persistence stores. For an image the last four are simply never recorded.
 
 The values of the `media_type` tag, in union order.
 
-### *class* illustration.schema.MediaResult(\*\*data)
+### *class* illustration.schema.MediaResult(\*, provider, id, url, thumbnail_url=None, width=None, height=None, title=None, description=None, tags=<factory>, license=None, license_url=None, attribution=None, source_page_url=None, author=None, author_url=None, cacheable=False, avg_color=None, query=None, score=None, raw=<factory>)
 
 Bases: `BaseModel`
 
@@ -4858,7 +4864,7 @@ unable to answer it.
 * **Type:**
   The **rights record**
 
-### *class* illustration.schema.Rendition(\*\*data)
+### *class* illustration.schema.Rendition(, url, mime_type=None, video_codec=None, width=None, height=None, fps=None, size_bytes=None, quality_label=None, expires_at=None)
 
 Bases: `BaseModel`
 
@@ -4868,7 +4874,7 @@ One playable encoding of a video, as a provider offers it.
 
 Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
 
-### *class* illustration.schema.TimeSpan(\*\*data)
+### *class* illustration.schema.TimeSpan(, start, end)
 
 Bases: `BaseModel`
 
@@ -4891,7 +4897,7 @@ has, and it is projected wholesale onto `walkthru.AssetRights` and read off
 every [`ImageResult`](_autosummary/illustration.schema.html.md#illustration.schema.ImageResult). All four are optional; `None` means \*not
 recorded\*, which is not the same claim as `False`.
 
-### *class* illustration.schema.VideoResult(\*\*data)
+### *class* illustration.schema.VideoResult(\*, provider, id, url, thumbnail_url=None, width=None, height=None, title=None, description=None, tags=<factory>, license=None, license_url=None, attribution=None, source_page_url=None, author=None, author_url=None, cacheable=False, avg_color=None, query=None, score=None, raw=<factory>, media_type='video', duration_s=None, fps=None, has_audio=None, renditions=<factory>, poster_url=None, preview_frames=<factory>, moment=None, editorial_only=None, has_model_release=None, has_property_release=None, audio_policy=None)
 
 Bases: [`MediaResult`](_autosummary/illustration.schema.html.md#illustration.schema.MediaResult)
 
@@ -4936,9 +4942,6 @@ A result with no `license` at all is not flagged: there is nothing to
 name, and it should already have been dropped by `license_allowlist` if
 that matters to the caller.
 
-* **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`MediaResult`](_autosummary/illustration.schema.html.md#illustration.schema.MediaResult)]
-
 ```pycon
 >>> a = ImageResult(provider="p", id="1", url="u", license="by-sa", attribution="Jane Doe")
 >>> b = ImageResult(provider="p", id="2", url="u", license="by-sa",
@@ -4947,6 +4950,9 @@ that matters to the caller.
 >>> [r.id for r in check_attributions([a, b, c])]
 ['1']
 ```
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`MediaResult`](_autosummary/illustration.schema.html.md#illustration.schema.MediaResult)]
 
 ### illustration.schema.license_allowlist(results, , allow=None)
 
@@ -4960,9 +4966,6 @@ spelling (`cc-by-sa-4.0` from Commons, `Pixabay License`) matches the
 canonical code without the allowlist having to enumerate every dialect —
 and without ever dropping an `nc`/`nd` restriction. Results with no
 `license` are dropped (unknown == not allowed).
-
-* **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`MediaResult`](_autosummary/illustration.schema.html.md#illustration.schema.MediaResult)]
 
 ```pycon
 >>> a = ImageResult(provider="p", id="1", url="u", license="cc0")
@@ -4984,12 +4987,12 @@ Provider dialects pass the same gate:
 ['4', '5']
 ```
 
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`MediaResult`](_autosummary/illustration.schema.html.md#illustration.schema.MediaResult)]
+
 ### illustration.schema.parse_media_result(obj)
 
 Validate a dict (or pass through a model) into the right result type.
-
-* **Return type:**
-  [`ImageResult`](_autosummary/illustration.schema.html.md#illustration.schema.ImageResult) | [`VideoResult`](_autosummary/illustration.schema.html.md#illustration.schema.VideoResult)
 
 ```pycon
 >>> parse_media_result({"provider": "p", "id": "1", "url": "u"}).media_type
@@ -4997,6 +5000,9 @@ Validate a dict (or pass through a model) into the right result type.
 >>> parse_media_result({"provider": "p", "id": "1", "url": "u", "media_type": "video"}).media_type
 'video'
 ```
+
+* **Return type:**
+  [`ImageResult`](_autosummary/illustration.schema.html.md#illustration.schema.ImageResult) | [`VideoResult`](_autosummary/illustration.schema.html.md#illustration.schema.VideoResult)
 
 ### illustration.schema.require_image(obj, , where='this function', strict=True)
 
@@ -5010,15 +5016,15 @@ The guard for image-only code paths. A [`VideoResult`](_autosummary/illustration
 take one without complaint and fetch a movie as a picture; this makes that
 loud.
 
-* **Return type:**
-  [`ImageResult`](_autosummary/illustration.schema.html.md#illustration.schema.ImageResult)
-
 ```pycon
 >>> require_image(VideoResult(provider="p", id="1", url="u"), where="render")
 Traceback (most recent call last):
 ...
 TypeError: render expects an ImageResult, got VideoResult
 ```
+
+* **Return type:**
+  [`ImageResult`](_autosummary/illustration.schema.html.md#illustration.schema.ImageResult)
 
 ### illustration.schema.to_search_hit(result)
 
@@ -5204,12 +5210,12 @@ exactly like M3’s `Scorer` seam.
 
 ### Classes
 
-| [`SequenceSelection`](_autosummary/illustration.sequence.html.md#illustration.sequence.SequenceSelection)(\*\*data)   | One image chosen per beat, optimized for the cross-shot objective.   |
-|--------------------------------------------------------------------------------|----------------------------------------------------------------------|
-| [`BeatSelection`](_autosummary/illustration.sequence.html.md#illustration.sequence.BeatSelection)(\*\*data)       | The chosen image (and why) for one beat in a sequence.               |
-| [`SequenceResult`](_autosummary/illustration.sequence.html.md#illustration.sequence.SequenceResult)(\*\*data)      | The result of curating a whole sequence of beats.                    |
+| [`SequenceSelection`](_autosummary/illustration.sequence.html.md#illustration.sequence.SequenceSelection)(\*[, selections, ...])     | One image chosen per beat, optimized for the cross-shot objective.   |
+|-----------------------------------------------------------------------------------------------|----------------------------------------------------------------------|
+| [`BeatSelection`](_autosummary/illustration.sequence.html.md#illustration.sequence.BeatSelection)(\*, beat_index, chosen[, ...]) | The chosen image (and why) for one beat in a sequence.               |
+| [`SequenceResult`](_autosummary/illustration.sequence.html.md#illustration.sequence.SequenceResult)(\*, beats, selection)         | The result of curating a whole sequence of beats.                    |
 
-### *class* illustration.sequence.BeatSelection(\*\*data)
+### *class* illustration.sequence.BeatSelection(, beat_index, chosen, relevance=0.0, coherence=0.0, redundancy=0.0, forced_duplicate=False, n_candidates=0)
 
 Bases: `BaseModel`
 
@@ -5235,7 +5241,7 @@ Perceptual-hash Hamming distance below which two images are “near-duplicate”
 
 Default candidate-pool width requested per beat by [`curate_sequence()`](_autosummary/illustration.sequence.html.md#illustration.sequence.curate_sequence).
 
-### *class* illustration.sequence.SequenceResult(\*\*data)
+### *class* illustration.sequence.SequenceResult(, beats, selection)
 
 Bases: `BaseModel`
 
@@ -5245,7 +5251,7 @@ The result of curating a whole sequence of beats.
 
 Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
 
-### *class* illustration.sequence.SequenceSelection(\*\*data)
+### *class* illustration.sequence.SequenceSelection(\*, selections=<factory>, objective=0.0, notes=<factory>)
 
 Bases: `BaseModel`
 
@@ -5483,7 +5489,7 @@ Beats with no chosen image are skipped. Needs the `[video]` extra.
 
 # About this build
 
-This documentation was built on **2026-10-13 08:02 UTC** from commit <a href="https://github.com/reeleehq/illustration/commit/fe8392ee4e48ad305e8dcb98eea481259dd895e1"><code>fe8392e</code></a> on branch <code>main</code>, for **illustration 0.0.22** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-11-17 13:18 UTC** from commit <a href="https://github.com/reeleehq/illustration/commit/88e0a8cef5cedc31c6759d9455382d6115303c85"><code>88e0a8c</code></a> on branch <code>main</code>, for **illustration 0.0.23** (from <code>pyproject.toml</code>).
 
 #### NOTE
 Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
@@ -5492,7 +5498,7 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 |                     |                                                                                                                                                              |
 |---------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/reeleehq/illustration/commit/fe8392ee4e48ad305e8dcb98eea481259dd895e1"><code>fe8392ee4e48ad305e8dcb98eea481259dd895e1</code></a> |
+| Commit              | <a href="https://github.com/reeleehq/illustration/commit/88e0a8cef5cedc31c6759d9455382d6115303c85"><code>88e0a8cef5cedc31c6759d9455382d6115303c85</code></a> |
 | Branch              | <code>main</code>                                                                                                                                            |
 | Tags at this commit | none                                                                                                                                                         |
 | Working tree        | clean                                                                                                                                                        |
@@ -5503,18 +5509,18 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 |              |                                                                                             |
 |--------------|---------------------------------------------------------------------------------------------|
 | Repository   | <code>reeleehq/illustration</code>                                                          |
-| Run          | <a href="https://github.com/reeleehq/illustration/actions/runs/38366376797">38366376797</a> |
+| Run          | <a href="https://github.com/reeleehq/illustration/actions/runs/44091156273">44091156273</a> |
 | Ref          | <code>refs/heads/main</code>                                                                |
-| Event commit | <code>fe8392ee4e48ad305e8dcb98eea481259dd895e1</code> (in the history of the built commit)  |
+| Event commit | <code>88e0a8cef5cedc31c6759d9455382d6115303c85</code> (in the history of the built commit)  |
 
 ## Tools
 
 |          |         |
 |----------|---------|
-| epythet  | 0.2.15  |
-| Sphinx   | 9.1.0   |
+| epythet  | 0.2.22  |
+| Sphinx   | 9.1.1   |
 | docutils | 0.22.4  |
-| Python   | 3.12.15 |
+| Python   | 3.12.16 |
 
 ## Configuration as resolved
 
@@ -5530,14 +5536,14 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/illustration/0.0.22/">0.0.22</a>, the same as the documented version.
+Latest release: <a href="https://pypi.org/project/illustration/0.0.23/">0.0.23</a>, the same as the documented version.
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/reeleehq/illustration && cd illustration
-git checkout fe8392ee4e48ad305e8dcb98eea481259dd895e1
-pip install "epythet==0.2.15"
+git checkout 88e0a8cef5cedc31c6759d9455382d6115303c85
+pip install "epythet==0.2.22"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```
 

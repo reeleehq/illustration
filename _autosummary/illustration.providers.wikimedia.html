@@ -7,6 +7,7 @@
     setColorMode(localStorage._theme||"auto");
   </script><link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d88b86f9" />
     <link rel="stylesheet" type="text/css" href="../_static/shibuya.css?v=2ceb65ce" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx_autodoc_typehints.css?v=057ac668" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link media="print" rel="stylesheet" type="text/css" href="../_static/print.css?v=20ff2c19" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -188,7 +189,7 @@ safe/license_type/color/content_type) — they degrade gracefully.</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#illustration.providers.wikimedia.thumbnail_at_width" title="illustration.providers.wikimedia.thumbnail_at_width"><code class="xref py py-obj docutils literal notranslate"><span class="pre">thumbnail_at_width</span></code></a>(url, width, *[, ...])</p></td>
-<td><p>Rewrite a Commons thumbnail URL to render at <code class="docutils literal notranslate"><span class="pre">width</span></code> px.</p></td>
+<td><p>Rewrite a Commons thumbnail URL to render at least <code class="docutils literal notranslate"><span class="pre">width</span></code> px wide.</p></td>
 </tr>
 </tbody>
 </table>
@@ -260,26 +261,32 @@ list the header refuses; so the TS twin sends it to flagged sources only.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="illustration.providers.wikimedia.thumbnail_at_width">
 <span class="sig-prename descclassname"><span class="pre">illustration.providers.wikimedia.</span></span><span class="sig-name descname"><span class="pre">thumbnail_at_width</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/providers/wikimedia.html#thumbnail_at_width"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.providers.wikimedia.thumbnail_at_width" title="Link to this definition">#</a></dt>
-<dd><p>Rewrite a Commons thumbnail URL to render at <code class="docutils literal notranslate"><span class="pre">width</span></code> px.</p>
-<p>Fetching the 15 MB original just to downscale it is the slow path, and
-<code class="docutils literal notranslate"><span class="pre">upload.wikimedia.org</span></code> serves arbitrary widths of any thumbnail URL. Only
+<dd><p>Rewrite a Commons thumbnail URL to render at least <code class="docutils literal notranslate"><span class="pre">width</span></code> px wide.</p>
+<p>Fetching the 15 MB original just to downscale it is the slow path; the
+thumbnail service is fast, but only at its standard widths
+(<code class="xref py py-data docutils literal notranslate"><span class="pre">THUMBNAIL_STEPS</span></code>): any other width is rejected (HTTP 400/429), so
+<code class="docutils literal notranslate"><span class="pre">width</span></code> is rounded <strong>up</strong> to the next step. When the original is narrower
+than that step (the service also refuses an upscale), the original file’s
+URL is returned for a web image, else the largest step it can serve: never
+the small provider thumbnail, which a pipeline would silently upscale. Only
 URLs already in <code class="docutils literal notranslate"><span class="pre">/thumb/</span></code> form on the upload host are touched (anything
-else comes back unchanged), and a <code class="docutils literal notranslate"><span class="pre">width</span></code> above <code class="docutils literal notranslate"><span class="pre">original_width</span></code> is left
-alone because the service answers 400 to an upscale.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> | <a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
-</dd>
-</dl>
+else comes back unchanged).</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="s2">"https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/X.jpg/320px-X.jpg"</span>
 </span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="n">thumbnail_at_width</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="mi">1280</span><span class="p">)</span>
 </span><span data-line="3"><span class="go">'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/X.jpg/1280px-X.jpg'</span>
-</span><span data-line="4"><span class="gp">&gt;&gt;&gt; </span><span class="n">thumbnail_at_width</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="mi">1280</span><span class="p">,</span> <span class="n">original_width</span><span class="o">=</span><span class="mi">900</span><span class="p">)</span> <span class="o">==</span> <span class="n">u</span>
-</span><span data-line="5"><span class="go">True</span>
-</span><span data-line="6"><span class="gp">&gt;&gt;&gt; </span><span class="n">thumbnail_at_width</span><span class="p">(</span><span class="s2">"https://example.org/a.jpg"</span><span class="p">,</span> <span class="mi">1280</span><span class="p">)</span>
-</span><span data-line="7"><span class="go">'https://example.org/a.jpg'</span>
+</span><span data-line="4"><span class="gp">&gt;&gt;&gt; </span><span class="n">thumbnail_at_width</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="mi">1600</span><span class="p">)</span>  <span class="c1"># not a standard width: rounded up</span>
+</span><span data-line="5"><span class="go">'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/X.jpg/1920px-X.jpg'</span>
+</span><span data-line="6"><span class="gp">&gt;&gt;&gt; </span><span class="n">thumbnail_at_width</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="mi">1280</span><span class="p">,</span> <span class="n">original_width</span><span class="o">=</span><span class="mi">900</span><span class="p">)</span>  <span class="c1"># smaller original: the original</span>
+</span><span data-line="7"><span class="go">'https://upload.wikimedia.org/wikipedia/commons/a/ab/X.jpg'</span>
+</span><span data-line="8"><span class="gp">&gt;&gt;&gt; </span><span class="n">thumbnail_at_width</span><span class="p">(</span><span class="s2">"https://example.org/a.jpg"</span><span class="p">,</span> <span class="mi">1280</span><span class="p">)</span>
+</span><span data-line="9"><span class="go">'https://example.org/a.jpg'</span>
 </span></pre></div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> | <span class="highlight sphinx_autodoc_typehints-value"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="kc"><span class="pre">None</span></span></code></a></span></span></p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -324,7 +331,7 @@ alone because the service answers 400 to an upscale.</p>
     </div>
   </div>
 </footer>
-      <script src="../_static/documentation_options.js?v=96ec9c95"></script>
+      <script src="../_static/documentation_options.js?v=3294188c"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>

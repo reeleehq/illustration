@@ -151,9 +151,6 @@ Returns [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path) ob
 a caller who handed in paths wants paths back, and the wrapper carries no
 information the file does not.
 
-* **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)]
-
 ```pycon
 >>> import pathlib, tempfile
 >>> from PIL import Image
@@ -167,6 +164,9 @@ information the file does not.
 >>> [p.name for p in kept]
 ['big.png']
 ```
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)]
 
 ### illustration.duplicates.default_signature(\*\*kwargs)
 
@@ -223,9 +223,6 @@ survivors.
 
 Two copies of one picture and one different picture:
 
-* **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`DuplicateGroup`](#illustration.duplicates.DuplicateGroup)]
-
 ```pycon
 >>> import pathlib, tempfile
 >>> from PIL import Image
@@ -248,6 +245,9 @@ Pinning the pHash tier keeps this example offline and torch-free; drop the
 >>> [sorted(pathlib.Path(m.url).name for m in g.members) for g in groups]
 [['a.png', 'a_copy.png'], ['b.png']]
 ```
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`DuplicateGroup`](#illustration.duplicates.DuplicateGroup)]
 
 ### illustration.duplicates.group_duplicates(results, \*, signature=None, threshold=None, quality=<function quality_key>)
 

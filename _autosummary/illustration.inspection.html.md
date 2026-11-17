@@ -55,12 +55,12 @@ offline with stubs (synthetic PIL images for the CV checks, canned strings for
 
 ### Classes
 
-| [`CheckOutcome`](#illustration.inspection.CheckOutcome)(name, passed[, value, reason])   | The result of one check on one candidate.                              |
-|------------------------------------------------------------------------------------------------|------------------------------------------------------------------------|
-| [`PrefilterReport`](#illustration.inspection.PrefilterReport)(\*\*data)                     | Per-candidate pre-filter verdict (the R2 PREFILTER stage record).      |
-| [`PrefilterResult`](#illustration.inspection.PrefilterResult)(passed, reports)              | The outcome of pre-filtering a candidate set.                          |
-| [`RubricScore`](#illustration.inspection.RubricScore)(\*\*data)                         | A pointwise VLM judgement of one candidate (R2 §4 rubric dimensions).  |
-| [`InspectReport`](#illustration.inspection.InspectReport)(\*\*data)                       | A VLM inspection of one candidate (caption or judge mode; R2 INSPECT). |
+| [`CheckOutcome`](#illustration.inspection.CheckOutcome)(name, passed[, value, reason])      | The result of one check on one candidate.                              |
+|---------------------------------------------------------------------------------------------------|------------------------------------------------------------------------|
+| [`PrefilterReport`](#illustration.inspection.PrefilterReport)(\*, provider, id, passed[, ...]) | Per-candidate pre-filter verdict (the R2 PREFILTER stage record).      |
+| [`PrefilterResult`](#illustration.inspection.PrefilterResult)(passed, reports)                 | The outcome of pre-filtering a candidate set.                          |
+| [`RubricScore`](#illustration.inspection.RubricScore)(\*[, subject, action, setting, ...]) | A pointwise VLM judgement of one candidate (R2 §4 rubric dimensions).  |
+| [`InspectReport`](#illustration.inspection.InspectReport)(\*, provider, id, mode[, ...])     | A VLM inspection of one candidate (caption or judge mode; R2 INSPECT). |
 
 ### Exceptions
 
@@ -106,7 +106,7 @@ A describe seam maps (image_ref, prompt) -> text. `image_ref` is anything
 
 alias of `Callable`[[[`Any`](https://docs.python.org/3/library/typing.html#typing.Any), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)], [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
-### *class* illustration.inspection.InspectReport(\*\*data)
+### *class* illustration.inspection.InspectReport(, provider, id, mode, caption=None, rubric=None, rationale=None)
 
 Bases: `BaseModel`
 
@@ -116,7 +116,7 @@ A VLM inspection of one candidate (caption or judge mode; R2 INSPECT).
 
 Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
 
-### *class* illustration.inspection.PrefilterReport(\*\*data)
+### *class* illustration.inspection.PrefilterReport(\*, provider, id, passed, reasons=<factory>, values=<factory>)
 
 Bases: `BaseModel`
 
@@ -136,7 +136,7 @@ The outcome of pre-filtering a candidate set.
 
 Reports for the candidates that failed at least one check.
 
-### *class* illustration.inspection.RubricScore(\*\*data)
+### *class* illustration.inspection.RubricScore(, subject=0.0, action=0.0, setting=0.0, mood=0.0, style=0.0, quality=0.0, overall=0.0, rationale='', parsed=True)
 
 Bases: `BaseModel`
 

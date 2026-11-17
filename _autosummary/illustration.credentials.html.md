@@ -73,9 +73,6 @@ body, so the function never inlines key handling. (The built-in sources call
 [`check_requirements()`](#illustration.credentials.check_requirements) directly; this decorator is the functional-style
 equivalent for Layer-2 helpers.)
 
-* **Return type:**
-  [`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)
-
 ```pycon
 >>> @requires_credentials("pexels")
 ... def fetch(): return "ok"
@@ -83,6 +80,9 @@ equivalent for Layer-2 helpers.)
 ...     fetch()
 'ok'
 ```
+
+* **Return type:**
+  [`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)
 
 ### illustration.credentials.resolve_api_key(provider, , api_key=None)
 

@@ -63,12 +63,12 @@ exactly like M3’s `Scorer` seam.
 
 ### Classes
 
-| [`SequenceSelection`](#illustration.sequence.SequenceSelection)(\*\*data)   | One image chosen per beat, optimized for the cross-shot objective.   |
-|--------------------------------------------------------------------------------|----------------------------------------------------------------------|
-| [`BeatSelection`](#illustration.sequence.BeatSelection)(\*\*data)       | The chosen image (and why) for one beat in a sequence.               |
-| [`SequenceResult`](#illustration.sequence.SequenceResult)(\*\*data)      | The result of curating a whole sequence of beats.                    |
+| [`SequenceSelection`](#illustration.sequence.SequenceSelection)(\*[, selections, ...])     | One image chosen per beat, optimized for the cross-shot objective.   |
+|-----------------------------------------------------------------------------------------------|----------------------------------------------------------------------|
+| [`BeatSelection`](#illustration.sequence.BeatSelection)(\*, beat_index, chosen[, ...]) | The chosen image (and why) for one beat in a sequence.               |
+| [`SequenceResult`](#illustration.sequence.SequenceResult)(\*, beats, selection)         | The result of curating a whole sequence of beats.                    |
 
-### *class* illustration.sequence.BeatSelection(\*\*data)
+### *class* illustration.sequence.BeatSelection(, beat_index, chosen, relevance=0.0, coherence=0.0, redundancy=0.0, forced_duplicate=False, n_candidates=0)
 
 Bases: `BaseModel`
 
@@ -94,7 +94,7 @@ Perceptual-hash Hamming distance below which two images are “near-duplicate”
 
 Default candidate-pool width requested per beat by [`curate_sequence()`](#illustration.sequence.curate_sequence).
 
-### *class* illustration.sequence.SequenceResult(\*\*data)
+### *class* illustration.sequence.SequenceResult(, beats, selection)
 
 Bases: `BaseModel`
 
@@ -104,7 +104,7 @@ The result of curating a whole sequence of beats.
 
 Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
 
-### *class* illustration.sequence.SequenceSelection(\*\*data)
+### *class* illustration.sequence.SequenceSelection(\*, selections=<factory>, objective=0.0, notes=<factory>)
 
 Bases: `BaseModel`
 

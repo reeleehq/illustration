@@ -111,7 +111,7 @@ translated ones.
 * **Return type:**
   [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`ImageResult`](illustration.schema.html.md#illustration.schema.ImageResult)]
 
-### *class* illustration.base.SourceInfo(name, description='', requires_key=False, homepage=None, default_cacheable=True, license_note='', rate_limit='', tags=<factory>)
+### *class* illustration.base.SourceInfo(name, description='', requires_key=False, homepage=None, default_cacheable=True, license_note='', rate_limit='', tags=tuple())
 
 Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 

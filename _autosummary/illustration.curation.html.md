@@ -65,12 +65,12 @@ base / CI install). `tests/test_curation.py` covers this path in full under
 
 ### Classes
 
-| [`Grade`](#illustration.curation.Grade)(\*values)                           | CRAG's three-way retrieval grade (R2 §1).                              |
-|--------------------------------------------------------------------------------------------|------------------------------------------------------------------------|
-| [`Budget`](#illustration.curation.Budget)([max_iter, max_search_calls, ...]) | Hard loop bounds — the safety net, enforced in controller code (R2).   |
-| [`Candidate`](#illustration.curation.Candidate)(\*\*data)                       | One scored (and optionally inspected) candidate.                       |
-| [`IterationRecord`](#illustration.curation.IterationRecord)(\*\*data)                 | One iteration of the loop — the run-log R2 requires for observability. |
-| [`CurationResult`](#illustration.curation.CurationResult)(\*\*data)                  | The outcome of curating one beat.                                      |
+| [`Grade`](#illustration.curation.Grade)(\*values)                               | CRAG's three-way retrieval grade (R2 §1).                              |
+|------------------------------------------------------------------------------------------------|------------------------------------------------------------------------|
+| [`Budget`](#illustration.curation.Budget)([max_iter, max_search_calls, ...])     | Hard loop bounds — the safety net, enforced in controller code (R2).   |
+| [`Candidate`](#illustration.curation.Candidate)(\*, result[, score, caption, ...])  | One scored (and optionally inspected) candidate.                       |
+| [`IterationRecord`](#illustration.curation.IterationRecord)(\*, iteration, queries, ...)  | One iteration of the loop — the run-log R2 requires for observability. |
+| [`CurationResult`](#illustration.curation.CurationResult)(\*, beat, best, accepted, ...) | The outcome of curating one beat.                                      |
 
 ### *class* illustration.curation.Budget(max_iter=3, max_search_calls=8, max_caption_calls=12, max_judge_calls=8, accept_threshold=0.62, correct_min_score=None, select_max_k=3, select_rel=0.9, min_score=None, max_cost=None, cost_estimator=None)
 
@@ -93,7 +93,7 @@ candidate is escalated to the VLM judge instead of auto-accepted. `None`
 (default) keeps the cheap fast-path; set it (on the reranker’s score scale)
 when a dominant-but-weak top must still be rubric-verified.
 
-#### cost_estimator *: [Callable](https://docs.python.org/3/library/typing.html#typing.Callable)[[[str](https://docs.python.org/3/builtins/stdtypes.html#str), [dict](https://docs.python.org/3/builtins/stdtypes.html#dict)], [float](https://docs.python.org/3/builtins/functions.html#float)] | [None](https://docs.python.org/3/builtins/constants.html#None)* *= None*
+#### cost_estimator *: [Optional](https://docs.python.org/3/library/typing.html#typing.Optional)[[Callable](https://docs.python.org/3/library/typing.html#typing.Callable)[[[str](https://docs.python.org/3/builtins/stdtypes.html#str), [dict](https://docs.python.org/3/builtins/stdtypes.html#dict)], [float](https://docs.python.org/3/builtins/functions.html#float)]]* *= None*
 
 `(call_type, info) -> cost` estimate; `call_type` in
 {“search”, “caption”, “judge”}.
@@ -119,7 +119,7 @@ relative-only (the loop’s quality bar lives in the rubric, which is 0-1).
 
 `ir.select` tuning for the grade (conservative selector).
 
-### *class* illustration.curation.Candidate(\*\*data)
+### *class* illustration.curation.Candidate(, result, score=None, caption=None, rubric=None, rationale=None)
 
 Bases: `BaseModel`
 
@@ -136,7 +136,7 @@ the rubric overall if judged, else 0.
 * **Type:**
   A 0-1 comparable quality
 
-### *class* illustration.curation.CurationResult(\*\*data)
+### *class* illustration.curation.CurationResult(\*, beat, best, accepted, grade, reason, candidates=<factory>, trace=<factory>, spend=<factory>)
 
 Bases: `BaseModel`
 
@@ -162,7 +162,7 @@ A grader maps (reranked results, ir.Selection) -> a [`Grade`](#illustration.cura
 
 alias of `Callable`[[[`Sequence`](https://docs.python.org/3/library/typing.html#typing.Sequence)[[`ImageResult`](illustration.schema.html.md#illustration.schema.ImageResult)], [`Any`](https://docs.python.org/3/library/typing.html#typing.Any)], [`Grade`](#illustration.curation.Grade)]
 
-### *class* illustration.curation.IterationRecord(\*\*data)
+### *class* illustration.curation.IterationRecord(, iteration, queries, n_candidates, n_passed, grade, action, best_score=None, search_calls=0, caption_calls=0, judge_calls=0, notes='')
 
 Bases: `BaseModel`
 

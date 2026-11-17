@@ -75,9 +75,6 @@ licence ([`licenses_named()`](#illustration.licensing.licenses_named)) or contai
 “Public domain”, or a different CC code do not count. For any other
 licence the looser [`mentions_license()`](#illustration.licensing.mentions_license) signal is used.
 
-* **Return type:**
-  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
-
 ```pycon
 >>> attribution_names_license("Jane Doe / CC BY-SA 4.0", "cc-by-sa-4.0")
 True
@@ -86,6 +83,9 @@ False
 >>> attribution_names_license("CC BY Jane", "cc-by-nc-4.0")  # drops NC
 False
 ```
+
+* **Return type:**
+  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
 
 ### illustration.licensing.display_license(value)
 
@@ -108,9 +108,6 @@ carried one. This is presentation only: an input that does not resolve to
 a known permission code is returned as recorded (whitespace collapsed,
 case and version kept), never reinterpreted — it must still fail [`normalize_license()`](#illustration.licensing.normalize_license)’s consumers
 (e.g. [`illustration.schema.license_allowlist()`](illustration.schema.html.md#illustration.schema.license_allowlist)) exactly as before.
-
-* **Return type:**
-  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
 
 ```pycon
 >>> display_license("cc-by-sa-4.0")
@@ -135,6 +132,9 @@ case and version kept), never reinterpreted — it must still fail [`normalize_l
 True
 ```
 
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
+
 ### illustration.licensing.licenses_named(text)
 
 The canonical codes (as [`normalize_license()`](#illustration.licensing.normalize_license) spells them) of every
@@ -146,9 +146,6 @@ tell “names CC BY-SA” from “names some other licence” or “just says ©
 Long forms are folded first (“Creative Commons Attribution-ShareAlike” ->
 `by-sa`); versions are ignored, as in [`normalize_license()`](#illustration.licensing.normalize_license).
 
-* **Return type:**
-  [`set`](https://docs.python.org/3/builtins/stdtypes.html#set)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
-
 ```pycon
 >>> sorted(licenses_named("Alice / CC BY-SA 4.0, via Wikimedia Commons"))
 ['by-sa']
@@ -159,6 +156,9 @@ Long forms are folded first (“Creative Commons Attribution-ShareAlike” ->
 >>> licenses_named("© Jane Doe"), licenses_named(None)
 (set(), set())
 ```
+
+* **Return type:**
+  [`set`](https://docs.python.org/3/builtins/stdtypes.html#set)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ### illustration.licensing.mentions_license(attribution)
 
@@ -174,9 +174,6 @@ are populated and correct. This never changes what a licence *is* — it
 only flags text that does not visibly say what it is, for a caller to
 review or fall back on `author`/`license`/`license_url` themselves.
 
-* **Return type:**
-  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
-
 ```pycon
 >>> mentions_license("Alice / CC BY-SA 4.0, via Wikimedia Commons")
 True
@@ -190,6 +187,9 @@ False
 False
 ```
 
+* **Return type:**
+  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
+
 ### illustration.licensing.normalize_license(value)
 
 Fold a provider’s licence spelling onto one canonical, comparable code.
@@ -197,9 +197,6 @@ Fold a provider’s licence spelling onto one canonical, comparable code.
 Lower-cases, unifies separators to `-`, strips a trailing version and a
 leading `cc-`, then applies [`LICENSE_ALIASES`](#illustration.licensing.LICENSE_ALIASES). Returns `None` for
 `None`/blank — an absent licence is never a code.
-
-* **Return type:**
-  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
 
 ```pycon
 >>> normalize_license("by-sa"), normalize_license("cc0"), normalize_license("CC0 1.0")
@@ -213,3 +210,6 @@ leading `cc-`, then applies [`LICENSE_ALIASES`](#illustration.licensing.LICENSE_
 >>> normalize_license("")  is None
 True
 ```
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)

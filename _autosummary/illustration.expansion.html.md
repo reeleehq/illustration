@@ -66,14 +66,14 @@ an `aix.prompt_func()`-backed generator (built lazily); inject a
 * **Return type:**
   [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
-### illustration.expansion.make_query_expander(, n=3, prompt='You turn a narration beat into concrete, visual stock-image search queries.\\\\nBeat: {beat}\\\\n\\\\nWrite {n} short queries (3-7 words each), one per line, no numbering. Each must name concrete, depictable subjects/scenes/lighting a photographer could shoot — not abstract narration. Vary the angle (subject, setting, mood) across the lines.', model=None)
+### illustration.expansion.make_query_expander(, n=3, prompt='You turn a narration beat into concrete, visual stock-image search queries.\\nBeat: {beat}\\n\\nWrite {n} short queries (3-7 words each), one per line, no numbering. Each must name concrete, depictable subjects/scenes/lighting a photographer could shoot — not abstract narration. Vary the angle (subject, setting, mood) across the lines.', model=None)
 
 Build the default LLM expander on `aix` (lazy import on first call).
 
 * **Return type:**
   [`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)[[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)], [`Sequence`](https://docs.python.org/3/library/typing.html#typing.Sequence)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]]
 
-### illustration.expansion.make_query_refiner(, prompt='A stock-image search for a narration beat did not return good matches.\\\\nBeat: {beat}\\\\nWhat went wrong: {critique}\\\\n\\\\nWrite ONE improved search query (3-7 words) that is more concrete and more likely to match real photographs. Output only the query, nothing else.', model=None)
+### illustration.expansion.make_query_refiner(, prompt='A stock-image search for a narration beat did not return good matches.\\nBeat: {beat}\\nWhat went wrong: {critique}\\n\\nWrite ONE improved search query (3-7 words) that is more concrete and more likely to match real photographs. Output only the query, nothing else.', model=None)
 
 Build the default LLM refiner on `aix` (lazy import on first call).
 

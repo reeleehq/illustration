@@ -62,8 +62,8 @@ Behind the optional `[persist]` extra (`lacing`); imported lazily so base
 
 ### Classes
 
-| [`SelectionBody`](#illustration.persistence.SelectionBody)(\*\*data)   | The typed body of an illustration selection annotation (lacing body schema).   |
-|----------------------------------------------------------------------------|--------------------------------------------------------------------------------|
+| [`SelectionBody`](#illustration.persistence.SelectionBody)(\*, beat, beat_index, source[, ...])   | The typed body of an illustration selection annotation (lacing body schema).   |
+|-------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
 
 ### illustration.persistence.SELECTIONS_TIER *= 'selections'*
 
@@ -73,7 +73,7 @@ The lacing tier selections live on.
 
 The lacing body-schema URI for an illustration selection annotation.
 
-### *class* illustration.persistence.SelectionBody(\*\*data)
+### *class* illustration.persistence.SelectionBody(\*, beat, beat_index, source, selected=None, candidates=<factory>, forced_duplicate=False, reason=None)
 
 Bases: `BaseModel`
 
