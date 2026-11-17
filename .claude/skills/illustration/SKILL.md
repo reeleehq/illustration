@@ -94,11 +94,15 @@ URLs:
 [Wikimedia's UA policy](https://foundation.wikimedia.org/wiki/Policy:User-Agent_policy)
 wants a tool name, a URL and an email. "Contact me on GitHub" does not count.
 
-**Prefer the thumbnail service to the original.** Rewrite
-`.../thumb/x/xx/Name.jpg/330px-Name.jpg` to `1280px-` and you get a right-sized
-render of a few hundred KB instead of a 15 MB original you are about to
-downscale to 1920 anyway. `1600px-` returns HTTP 400 for many files; 1280 and
-1024 are reliable buckets.
+**Prefer the thumbnail service to the original, at a standard width.** The
+upload host serves thumbnails only at its standard widths (20, 40, 60, 120, 250,
+330, 500, 960, 1280, 1920, 3840; `THUMBNAIL_STEPS`) and rejects any other
+(`1600px-` answers HTTP 400 "Use thumbnail sizes listed on…"), and it refuses to
+upscale past the original. Don't rewrite URLs by hand:
+`thumbnail_at_width(hit.thumbnail_url, 1920, original_width=hit.width)` rounds up
+to a standard step and, for an original narrower than that, returns the
+original file (never the 330 px thumbnail). Rewrite `hit.thumbnail_url`, not
+`hit.url`: the latter is the original with a `?utm_…` query and no `/thumb/`.
 
 **Never cache on existence alone.** A throttled first pass falls back to the
 330 px thumbnail and writes it; every later run finds the file on disk and never
