@@ -83,7 +83,10 @@ def test_image_for_result_width_never_upscales_or_touches_other_hosts(monkeypatc
     other = ImageResult(provider="p", id="2", url="u", thumbnail_url="https://e.org/320px-a.jpg")
     image_for_result(small, width=1280)
     image_for_result(other, width=1280)
-    assert asked == [_THUMB, "https://e.org/320px-a.jpg"]
+    # an original narrower than the ask is fetched itself (no upscale request, and
+    # never the 320 px thumbnail a pipeline would then blow up 3x)
+    original = _THUMB.replace("/thumb/", "/", 1).rsplit("/", 1)[0]
+    assert asked == [original, "https://e.org/320px-a.jpg"]
 
 
 def test_memoized_loader_width_resizes_commons_urls_and_falls_back():

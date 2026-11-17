@@ -53,22 +53,34 @@ _UPLOAD_HOST = "upload.wikimedia.org"
 _THUMB_SEGMENT_RE = re.compile(r"^((?:(?:lossy|lossless)-)?(?:page\d+-)?)\d+(px-.+)$")
 
 
+#: The thumbnail widths Wikimedia's upload host serves; a direct request for any
+#: other width is rejected (https://www.mediawiki.org/wiki/Common_thumbnail_sizes).
+THUMBNAIL_STEPS = (20, 40, 60, 120, 250, 330, 500, 960, 1280, 1920, 3840)
+_WEB_IMAGE_EXTS = (".jpg", ".jpeg", ".png", ".gif", ".webp")
+
+
 def thumbnail_at_width(
     url: "str | None", width: int, *, original_width: "int | None" = None
 ) -> "str | None":
-    """Rewrite a Commons thumbnail URL to render at ``width`` px.
+    """Rewrite a Commons thumbnail URL to render at least ``width`` px wide.
 
-    Fetching the 15 MB original just to downscale it is the slow path, and
-    ``upload.wikimedia.org`` serves arbitrary widths of any thumbnail URL. Only
+    Fetching the 15 MB original just to downscale it is the slow path; the
+    thumbnail service is fast, but only at its standard widths
+    (:data:`THUMBNAIL_STEPS`): any other width is rejected (HTTP 400/429), so
+    ``width`` is rounded **up** to the next step. When the original is narrower
+    than that step (the service also refuses an upscale), the original file's
+    URL is returned for a web image, else the largest step it can serve: never
+    the small provider thumbnail, which a pipeline would silently upscale. Only
     URLs already in ``/thumb/`` form on the upload host are touched (anything
-    else comes back unchanged), and a ``width`` above ``original_width`` is left
-    alone because the service answers 400 to an upscale.
+    else comes back unchanged).
 
     >>> u = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/X.jpg/320px-X.jpg"
     >>> thumbnail_at_width(u, 1280)
     'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/X.jpg/1280px-X.jpg'
-    >>> thumbnail_at_width(u, 1280, original_width=900) == u
-    True
+    >>> thumbnail_at_width(u, 1600)  # not a standard width: rounded up
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/X.jpg/1920px-X.jpg'
+    >>> thumbnail_at_width(u, 1280, original_width=900)  # smaller original: the original
+    'https://upload.wikimedia.org/wikipedia/commons/a/ab/X.jpg'
     >>> thumbnail_at_width("https://example.org/a.jpg", 1280)
     'https://example.org/a.jpg'
     """
@@ -79,11 +91,20 @@ def thumbnail_at_width(
         or "/thumb/" not in url
     ):
         return url
-    if original_width is not None and width > original_width:
-        return url
     head, _, last = url.rpartition("/")
     m = _THUMB_SEGMENT_RE.match(last)
-    return f"{head}/{m.group(1)}{width}{m.group(2)}" if m else url
+    if not m:
+        return url
+    step = next((s for s in THUMBNAIL_STEPS if s >= width), THUMBNAIL_STEPS[-1])
+    if original_width is not None and step > original_width:
+        original = head.replace("/thumb/", "/", 1)
+        if not m.group(1) and original.lower().endswith(_WEB_IMAGE_EXTS):
+            return original
+        fit = [s for s in THUMBNAIL_STEPS if s <= original_width]
+        if not fit:
+            return url
+        step = fit[-1]
+    return f"{head}/{m.group(1)}{step}{m.group(2)}"
 
 
 _CATEGORY_PREFIX = "category:"
