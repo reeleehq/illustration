@@ -1,8 +1,10 @@
 # illustration
 
-Find **existing** images to illustrate narrated video — cross-modal
-text-to-image retrieval (semantic image search) over stock / open-media corpora.
-Not an image *generator*: given narration text, it *retrieves* fitting images.
+Find **existing** images to illustrate narrated video — cross-modal text-to-image retrieval (semantic image search) over stock / open-media corpora. Not an image *generator*: given narration text, it *retrieves* fitting images.
+
+```bash
+pip install illustration
+```
 
 ```python
 import illustration
@@ -34,40 +36,18 @@ That's the whole common case. Everything below is optional depth.
 
 `illustration` has two layers:
 
-1. **The provider façade** — one unified `search()` over many heterogeneous
-   image-search backends (Openverse, Pexels, …), normalizing every result into
-   one schema with license/attribution/cacheability first-class.
-2. **An agentic curation layer** — query expansion, multi-provider search,
-   classical-CV + vision-LM inspection, reranking, a bounded corrective loop that
-   returns one vetted image per beat (`illustration.curate`), and **sequence-level
-   selection** across a whole storyboard with cross-shot coherence + near-duplicate
-   suppression (`illustration.curate_sequence`). Built on the `aix` AI façade and
-   `ir` retrieval substrate; the narrated-video and persistence hooks reuse the
-   `burns` / `walkthru` / `lacing` ecosystem packages rather than reinventing them.
+1. **The provider façade** — one unified `search()` over many heterogeneous image-search backends (Openverse, Pexels, …), normalizing every result into one schema with license/attribution/cacheability first-class.
+2. **An agentic curation layer** — query expansion, multi-provider search, classical-CV + vision-LM inspection, reranking, a bounded corrective loop that returns one vetted image per beat (`illustration.curate`), and **sequence-level selection** across a whole storyboard with cross-shot coherence + near-duplicate suppression (`illustration.curate_sequence`). Built on the `aix` AI façade and `ir` retrieval substrate; the narrated-video and persistence hooks reuse the `burns` / `walkthru` / `lacing` ecosystem packages rather than reinventing them.
 
-The design — provider comparison, canonical parameter mapping, escape-hatch
-design, result schema, and roadmap — is in
-[`misc/docs/design/illustration_design.md`](misc/docs/design/illustration_design.md).
-AI agents: [`.claude/skills/illustration/SKILL.md`](.claude/skills/illustration/SKILL.md)
-is the condensed usage guide (including the licence/attribution obligations);
-[`CLAUDE.md`](CLAUDE.md) is the contributor's map of the package.
+The design — provider comparison, canonical parameter mapping, escape-hatch design, result schema, and roadmap — is in [`misc/docs/design/illustration_design.md`](misc/docs/design/illustration_design.md). AI agents: [`.claude/skills/illustration/SKILL.md`](.claude/skills/illustration/SKILL.md) is the condensed usage guide (including the licence/attribution obligations); [`CLAUDE.md`](CLAUDE.md) is the contributor's map of the package.
 
 ## Install
 
-```bash
-pip install illustration
-```
-
-Local-ecosystem dependencies (`dol`, `config2py`) are developed alongside this
-package; in the dev environment they resolve to local source.
+Install with `pip install illustration` (see the top). Local-ecosystem dependencies (`dol`, `config2py`) are developed alongside this package; in the dev environment they resolve to local source.
 
 ### From the browser
 
-The same `search()` ships to npm as **`illustration-search`** (the `ts/`
-directory): the result schema, rights fields, licence tables and provider
-registry are generated from this package, and the provider code is pinned to
-it by fixtures. All four providers answer browser requests directly; Pexels and
-Pixabay take the caller's own key as an argument.
+The same `search()` ships to npm as **`illustration-search`** (the `ts/` directory): the result schema, rights fields, licence tables and provider registry are generated from this package, and the provider code is pinned to it by fixtures. All four providers answer browser requests directly; Pexels and Pixabay take the caller's own key as an argument.
 
 ```ts
 import { search } from 'illustration-search';
@@ -78,8 +58,7 @@ See [`ts/README.md`](ts/README.md).
 
 ## The result schema
 
-`search()` returns a list of `ImageResult` (Pydantic v2 — the single source of
-truth shared with the agentic layer):
+`search()` returns a list of `ImageResult` (Pydantic v2 — the single source of truth shared with the agentic layer):
 
 | field | meaning |
 |---|---|
@@ -94,10 +73,7 @@ truth shared with the agentic layer):
 
 ## Same-subject duplicates
 
-A search for one person returns several *reproductions of the same portrait* —
-a painting, engravings after it, a library's re-scan of an engraving. Different
-ids, different bytes, different rasters; one picture, as far as a viewer is
-concerned. A film that uses four of them looks like it ran out of pictures.
+A search for one person returns several *reproductions of the same portrait* — a painting, engravings after it, a library's re-scan of an engraving. Different ids, different bytes, different rasters; one picture, as far as a viewer is concerned. A film that uses four of them looks like it ran out of pictures.
 
 ```python
 illustration.dedupe(hits)  # best of each subject, order kept
@@ -105,61 +81,35 @@ illustration.dedupe(hits, strategy="all")  # group, but keep everything
 illustration.group_duplicates(hits)  # inspect the grouping yourself
 ```
 
-"Best" is the largest reproduction, then the most permissive licence, then the
-one with a recorded author — all replaceable via `quality=`.
+"Best" is the largest reproduction, then the most permissive licence, then the one with a recorded author — all replaceable via `quality=`.
 
-This is a different question from the near-duplicate suppression in `sequence`,
-which uses a perceptual hash. **pHash finds the same raster; it cannot tell that
-two engravings after one painting are one subject.** Measured on a real
-43-image set, pHash found 1 duplicate pair and DINOv2 found all four engravings
-of the sitter, three portraits of her husband, and two near-identical genre
-paintings — while keeping her *sister* correctly separate.
+This is a different question from the near-duplicate suppression in `sequence`, which uses a perceptual hash. **pHash finds the same raster; it cannot tell that two engravings after one painting are one subject.** Measured on a real 43-image set, pHash found 1 duplicate pair and DINOv2 found all four engravings of the sitter, three portraits of her husband, and two near-identical genre paintings — while keeping her *sister* correctly separate.
 
-Three tiers, strongest first: `dinov2_signature` (`pip install
-'illustration[dedupe]'`) and `phash_signature` (always available, and honest
-about it — `Signature.subject_level` is `False`) are chosen automatically by
-what is installed. `siglip_signature` is opt-in by name — it needs the same
-wheels as DINOv2 and is weaker here, so it is worth asking for only when a
-rerank has already paid for its embeddings.
+Three tiers, strongest first: `dinov2_signature` (`pip install 'illustration[dedupe]'`) and `phash_signature` (always available, and honest about it — `Signature.subject_level` is `False`) are chosen automatically by what is installed. `siglip_signature` is opt-in by name — it needs the same wheels as DINOv2 and is weaker here, so it is worth asking for only when a rerank has already paid for its embeddings.
 
 ### Files on disk
 
-The same question gets asked of a folder — "here are 200 stills, which of them
-are the same picture?" — so there is a path-shaped pair of the above:
+The same question gets asked of a folder — "here are 200 stills, which of them are the same picture?" — so there is a path-shaped pair of the above:
 
+<!-- wads-docs: skip needs files, credentials or objects defined by the reader -->
 ```python
 illustration.dedupe_paths(folder.glob("*.jpg"))  # -> the surviving Paths
 illustration.group_duplicate_paths(folder.glob("*.jpg"))  # -> DuplicateGroups
 ```
 
-Same `strategy=`/`quality=`/`threshold=` vocabulary, and `dedupe_paths` hands
-back `Path` objects rather than wrappers. Nothing is fetched: `local_signature`
-points the chosen tier's image loader at the file instead of at a URL, so a
-local pass touches no network at all. Pin the cheap tier with
-`signature=local_signature(illustration.phash_signature)` when you only want
-"same raster" and don't want the torch download.
+Same `strategy=`/`quality=`/`threshold=` vocabulary, and `dedupe_paths` hands back `Path` objects rather than wrappers. Nothing is fetched: `local_signature` points the chosen tier's image loader at the file instead of at a URL, so a local pass touches no network at all. Pin the cheap tier with `signature=local_signature(illustration.phash_signature)` when you only want "same raster" and don't want the torch download.
 
-Telling subjects apart needs the pixels, so `search()` defaults to
-`dedupe="auto"`: it dedupes when the call already fetches images (i.e. when
-reranking) and leaves a bare metadata search offline. Pass `dedupe=True` to
-force it. `select_sequence(signature=...)` applies the same test across beats,
-so one subject cannot win four of them.
+Telling subjects apart needs the pixels, so `search()` defaults to `dedupe="auto"`: it dedupes when the call already fetches images (i.e. when reranking) and leaves a bare metadata search offline. Pass `dedupe=True` to force it. `select_sequence(signature=...)` applies the same test across beats, so one subject cannot win four of them.
 
 ## Browsing a Wikimedia category
 
-A Commons **category** is a curated list; free-text search is a guess at the
-filename. Searching `"Hamilton Grange"` returns a branch library of that name —
-`"Category:Hamilton Grange National Memorial"` returns the house.
+A Commons **category** is a curated list; free-text search is a guess at the filename. Searching `"Hamilton Grange"` returns a branch library of that name — `"Category:Hamilton Grange National Memorial"` returns the house.
 
 ```python
 illustration.search("Category:Elizabeth Schuyler Hamilton", source="wikimedia")
 ```
 
-Detected from MediaWiki's own namespace prefix, so it works through the façade,
-the cache and the CLI with no new parameter. The `File:` prefix works the same
-way and fetches **exact titles** — relevance ranking cannot reliably surface a
-generic filename, and a caller who already knows the file should not have to
-hope:
+Detected from MediaWiki's own namespace prefix, so it works through the façade, the cache and the CLI with no new parameter. The `File:` prefix works the same way and fetches **exact titles** — relevance ranking cannot reliably surface a generic filename, and a caller who already knows the file should not have to hope:
 
 ```python
 illustration.search("File:Alexander Hamilton.jpg", source="wikimedia")
@@ -186,14 +136,11 @@ illustration.search(
 )  # per-source, no key
 ```
 
-Canonical filters (`orientation`, `size`, `safe`, `license_type`, `color`,
-`content_type`) translate to each provider's native parameters and degrade
-gracefully where a provider doesn't support one.
+Canonical filters (`orientation`, `size`, `safe`, `license_type`, `color`, `content_type`) translate to each provider's native parameters and degrade gracefully where a provider doesn't support one.
 
 ### Keys
 
-Pexels and Pixabay need a key (Openverse and Wikimedia do not). Provide it
-however suits you:
+Pexels and Pixabay need a key (Openverse and Wikimedia do not). Provide it however suits you:
 
 ```python
 import os
@@ -204,15 +151,13 @@ with illustration.using_credentials(pexels="...", pixabay="..."):
     illustration.search("harbour", source=["pexels", "pixabay"])
 ```
 
-A missing key raises an informative `MissingCredentialError` that names the key,
-how to set it, and where to get one — and never logs the value.
+A missing key raises an informative `MissingCredentialError` that names the key, how to set it, and where to get one — and never logs the value.
 
 ## Caching
 
-Results are SHA-256 content-addressed and cached behind an injectable `dol`
-store (default: JSON files under `~/.cache/illustration/`), so an identical
-second call is free:
+Results are SHA-256 content-addressed and cached behind an injectable `dol` store (default: JSON files under `~/.cache/illustration/`), so an identical second call is free:
 
+<!-- wads-docs: skip needs files, credentials or objects defined by the reader -->
 ```python
 illustration.search("harbour")  # hits the network
 illustration.search("harbour")  # served from cache
@@ -227,10 +172,9 @@ illustration.search("harbour", cache=SearchCache(my_mutable_mapping))
 
 ## Rerank (precision)
 
-Provider tag/lexical search is a cheap, high-**recall** stage. For **precision**,
-rerank the candidates by true cross-modal (text↔image) similarity with a local
-SigLIP-2 model — the recall→rerank pattern:
+Provider tag/lexical search is a cheap, high-**recall** stage. For **precision**, rerank the candidates by true cross-modal (text↔image) similarity with a local SigLIP-2 model — the recall→rerank pattern:
 
+<!-- wads-docs: skip needs files, credentials or objects defined by the reader -->
 ```python
 hits = illustration.search("a stormy harbour at dusk", n=50)  # recall
 top = illustration.rerank("a stormy harbour at dusk", hits)[:10]  # precision
@@ -238,27 +182,20 @@ top = illustration.rerank("a stormy harbour at dusk", hits)[:10]  # precision
 top = illustration.search("a stormy harbour at dusk", n=50, rerank=True)[:10]
 ```
 
-`rerank` populates each result's `.score` and sorts by it. The default SigLIP-2
-encoder needs the optional extra (`pip install 'illustration[rerank]'`); a clear
-error tells you if it's missing. The scorer is injectable — pass any
-`(query, results) -> scores` callable to use a different model:
+`rerank` populates each result's `.score` and sorts by it. The default SigLIP-2 encoder needs the optional extra (`pip install 'illustration[rerank]'`); a clear error tells you if it's missing. The scorer is injectable — pass any `(query, results) -> scores` callable to use a different model:
 
+<!-- wads-docs: skip needs files, credentials or objects defined by the reader -->
 ```python
 illustration.rerank("harbour", hits, scorer=my_scorer)
 ```
 
-Image embeddings are content-addressed and cached, so re-ranking overlapping
-candidates is cheap.
+Image embeddings are content-addressed and cached, so re-ranking overlapping candidates is cheap.
 
 ## Curate (agentic, the bounded CRAG loop)
 
-`search` + `rerank` give you ranked candidates; `curate` goes one step further
-and returns *one vetted image* for a narration beat, self-correcting across a
-hard-bounded number of rounds. The loop is corrective-RAG-shaped — retrieve →
-grade → conditionally re-query — with a classical-CV pre-filter gating the
-expensive vision-LM, caption-first / judge-on-ambiguity escalation, and a
-`Budget` of caps **enforced in code**:
+`search` + `rerank` give you ranked candidates; `curate` goes one step further and returns *one vetted image* for a narration beat, self-correcting across a hard-bounded number of rounds. The loop is corrective-RAG-shaped — retrieve → grade → conditionally re-query — with a classical-CV pre-filter gating the expensive vision-LM, caption-first / judge-on-ambiguity escalation, and a `Budget` of caps **enforced in code**:
 
+<!-- wads-docs: skip needs files, credentials or objects defined by the reader -->
 ```python
 from illustration import curate, Budget
 
@@ -278,23 +215,13 @@ for step in result.trace:  # per-iteration run-log (queries, grade, action, spen
 illustration curate "a stormy harbour at dusk" --source openverse --max-iter 3
 ```
 
-This needs the optional `[curate]` extra (`pip install 'illustration[curate]'` —
-`aix` + `ir` + Pillow/NumPy) plus provider and LLM API keys; the NSFW safety gate
-and SigLIP rerank additionally want `[rerank]` (so `illustration[rerank,curate]`
-for the full pipeline). Every paid step is an **injectable seam** — pass your own
-`search_fn`, `expander`/`refiner`, `scorer`, `describe`, `grader`, or `checks` to
-swap a model, add a test double, or run the loop entirely offline.
+This needs the optional `[curate]` extra (`pip install 'illustration[curate]'` — `aix` + `ir` + Pillow/NumPy) plus provider and LLM API keys; the NSFW safety gate and SigLIP rerank additionally want `[rerank]` (so `illustration[rerank,curate]` for the full pipeline). Every paid step is an **injectable seam** — pass your own `search_fn`, `expander`/`refiner`, `scorer`, `describe`, `grader`, or `checks` to swap a model, add a test double, or run the loop entirely offline.
 
-The image→text capability the judge/caption uses lives in `aix`
-(`aix.describe_image`, provider-neutral over LiteLLM), so any vision-capable
-model (Claude, GPT-4o, Gemini, …) works by model id alone.
+The image→text capability the judge/caption uses lives in `aix` (`aix.describe_image`, provider-neutral over LiteLLM), so any vision-capable model (Claude, GPT-4o, Gemini, …) works by model id alone.
 
 ## Sequence (storyboard selection)
 
-`curate` picks the best image for *one* beat; `curate_sequence` picks one image
-per beat across a whole storyboard, optimizing **cross-shot coherence** and
-**diversity** with a perceptual-hash **near-duplicate** hard constraint — so
-consecutive shots cohere and no two beats land on the same picture:
+`curate` picks the best image for *one* beat; `curate_sequence` picks one image per beat across a whole storyboard, optimizing **cross-shot coherence** and **diversity** with a perceptual-hash **near-duplicate** hard constraint — so consecutive shots cohere and no two beats land on the same picture:
 
 ```python
 from illustration import curate_sequence
@@ -314,18 +241,13 @@ for bs in result.selection.selections:
 illustration curate-sequence "dawn harbour" "hauling nets" "the quay"
 ```
 
-The selection math is **in-house and dependency-light** (NumPy MMR + a DCT
-perceptual hash; coherence reuses the SigLIP embeddings the reranker already
-caches) — `select_sequence(per_beat_candidates, *, relevance, embed, hasher,
-shortlist, alpha, beta, phash_threshold)` exposes every part as an injectable
-seam. `apricot` (submodular shortlisting) and `imagededup` (CNN dedup) are
-optional upgrades you plug into the `shortlist` / `hasher` seams.
+The selection math is **in-house and dependency-light** (NumPy MMR + a DCT perceptual hash; coherence reuses the SigLIP embeddings the reranker already caches) — `select_sequence(per_beat_candidates, *, relevance, embed, hasher, shortlist, alpha, beta, phash_threshold)` exposes every part as an injectable seam. `apricot` (submodular shortlisting) and `imagededup` (CNN dedup) are optional upgrades you plug into the `shortlist` / `hasher` seams.
 
 ## Persist & render (ecosystem hooks)
 
-The narrated-video and persistence steps are owned by other ecosystem packages;
-illustration provides thin, opt-in hooks rather than reinventing them.
+The narrated-video and persistence steps are owned by other ecosystem packages; illustration provides thin, opt-in hooks rather than reinventing them.
 
+<!-- wads-docs: skip needs files, credentials or objects defined by the reader -->
 ```python
 # Render the selected stills into a Ken-Burns film (burns + your narration audio):
 from illustration import render_sequence_video
@@ -349,16 +271,13 @@ resolve_selection(store, 1)  # the director's choice now supersedes the machine'
 resolve_selection(store, 1)["selected"]["attribution"]
 ```
 
-These need the opt-in extras: `illustration[video]` (`burns` + `walkthru`) and
-`illustration[persist]` (`lacing`; add `lacing[otio]` for `export_otio`). The
-render hook uses `burns` directly — the same renderer `walkthru` uses — so it
-never pulls the app layer.
+These need the opt-in extras: `illustration[video]` (`burns` + `walkthru`) and `illustration[persist]` (`lacing`; add `lacing[otio]` for `export_otio`). The render hook uses `burns` directly — the same renderer `walkthru` uses — so it never pulls the app layer.
 
 ## The escape hatch
 
-A pure façade exposes only the common interface — but you can always reach a
-provider's special powers, via a four-rung ladder (cleanest → rawest):
+A pure façade exposes only the common interface — but you can always reach a provider's special powers, via a four-rung ladder (cleanest → rawest):
 
+<!-- wads-docs: skip needs files, credentials or objects defined by the reader -->
 ```python
 # 1. pick the source(s)
 illustration.search("q", source="pexels")
@@ -380,13 +299,11 @@ illustration.sources["openverse"].raw_search(q="q", page_size=2)  # raw JSON
 hits[0].raw  # raw item
 ```
 
-A parameter is promoted from the escape hatch to a canonical façade argument
-once **two or more** providers support it (so the interface evolves predictably).
+A parameter is promoted from the escape hatch to a canonical façade argument once **two or more** providers support it (so the interface evolves predictably).
 
 ## Adding a provider
 
-Open-closed — subclass `RetrievalSource` and register it; the façade is
-untouched:
+Open-closed — subclass `RetrievalSource` and register it; the façade is untouched:
 
 ```python
 from illustration import RetrievalSource, ImageResult, register_source
@@ -412,18 +329,11 @@ class MySource(RetrievalSource):
 register_source(MySource())
 ```
 
-A provider ships on both sides: after registering it, run
-`illustration export-schema` (its declared vocabulary and a
-`schema/fixtures/<name>.payload.json` canned page become the contract the
-TypeScript twin is generated from and tested against), then port its hooks
-under `ts/src/providers/`.
+A provider ships on both sides: after registering it, run `illustration export-schema` (its declared vocabulary and a `schema/fixtures/<name>.payload.json` canned page become the contract the TypeScript twin is generated from and tested against), then port its hooks under `ts/src/providers/`.
 
 ## Licensing
 
-Licensing is first-class for commercial-adjacent video. Each result carries its
-license, license URL, attribution, and a `cacheable` flag. Aggregators
-(Wikimedia, Openverse) disclaim license accuracy, so gate on a known-good set
-when it matters — either inline on `search()` or with the standalone helper:
+Licensing is first-class for commercial-adjacent video. Each result carries its license, license URL, attribution, and a `cacheable` flag. Aggregators (Wikimedia, Openverse) disclaim license accuracy, so gate on a known-good set when it matters — either inline on `search()` or with the standalone helper:
 
 ```python
 # inline gate (R3): keep only commercial-safe licenses
@@ -437,21 +347,7 @@ safe = license_allowlist(hits)  # CC0/PD/BY/BY-SA default
 safe = license_allowlist(hits, allow={"cc0", "pdm"})  # public-domain only
 ```
 
-The gate normalizes both sides with `illustration.normalize_license` before
-comparing, so every provider's own spelling reaches the same canonical code —
-Wikimedia's `cc-by-sa-4.0` and Pixabay's `Pixabay License` both match the
-default `DFLT_LICENSE_ALLOWLIST` (`cc0`, `pdm`, `by`, `by-sa`,
-`pexels-license`, `pixabay-license`). Mechanically, normalization only ever
-strips a `cc-` prefix and a trailing version number: restrictions survive
-(`cc-by-nc-nd-4.0` → `by-nc-nd`, dropped), and an unrecognized code is left
-as-is and therefore dropped too — unknown is not allowed. On top of that,
-`illustration.LICENSE_ALIASES` is a short hand-written table folding ten further
-public-domain spellings onto `cc0`/`pdm` — so `pd` (what Wikimedia Commons
-actually emits for many files), `public domain`, `publicdomain`,
-`public-domain-mark`, `cc-zero`, `cc-0`, `zero`, `cc-pdm`, `cc-publicdomain` and
-`pdm-owner` all **pass** the default gate. Read that table, not just the
-prefix/version rule, when auditing what `license_allow=True` will keep. Name
-anything else you want explicitly in `allow={...}`.
+The gate normalizes both sides with `illustration.normalize_license` before comparing, so every provider's own spelling reaches the same canonical code — Wikimedia's `cc-by-sa-4.0` and Pixabay's `Pixabay License` both match the default `DFLT_LICENSE_ALLOWLIST` (`cc0`, `pdm`, `by`, `by-sa`, `pexels-license`, `pixabay-license`). Mechanically, normalization only ever strips a `cc-` prefix and a trailing version number: restrictions survive (`cc-by-nc-nd-4.0` → `by-nc-nd`, dropped), and an unrecognized code is left as-is and therefore dropped too — unknown is not allowed. On top of that, `illustration.LICENSE_ALIASES` is a short hand-written table folding ten further public-domain spellings onto `cc0`/`pdm` — so `pd` (what Wikimedia Commons actually emits for many files), `public domain`, `publicdomain`, `public-domain-mark`, `cc-zero`, `cc-0`, `zero`, `cc-pdm`, `cc-publicdomain` and `pdm-owner` all **pass** the default gate. Read that table, not just the prefix/version rule, when auditing what `license_allow=True` will keep. Name anything else you want explicitly in `allow={...}`.
 
 ## License
 
