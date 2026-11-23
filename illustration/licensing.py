@@ -63,6 +63,8 @@ LICENSE_ALIASES = {
     "pdm-owner": "pdm",
     "cc-pdm": "pdm",
     "cc-publicdomain": "pdm",
+    # YouTube's Creative Commons option, as yt-dlp reports it: CC BY 3.0.
+    "creative-commons-attribution-license-(reuse-allowed)": "by",
 }
 
 #: Tokens that *restrict* use. Present only so the guard test can assert that

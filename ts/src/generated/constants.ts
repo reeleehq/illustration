@@ -32,6 +32,7 @@ export const CONSTANTS = {
     "cc-pdm": "pdm",
     "cc-publicdomain": "pdm",
     "cc-zero": "cc0",
+    "creative-commons-attribution-license-(reuse-allowed)": "by",
     "pd": "pdm",
     "pdm-owner": "pdm",
     "public-domain": "pdm",
