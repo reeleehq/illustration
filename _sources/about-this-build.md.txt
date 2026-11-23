@@ -5,7 +5,7 @@ orphan: true
 
 # About this build
 
-This documentation was built on **2026-11-17 13:18 UTC** from commit <a href="https://github.com/reeleehq/illustration/commit/88e0a8cef5cedc31c6759d9455382d6115303c85"><code>88e0a8c</code></a> on branch <code>main</code>, for **illustration 0.0.23** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-11-23 05:01 UTC** from commit <a href="https://github.com/reeleehq/illustration/commit/450a65261c56cb47f1a9182ab5f1569c6e564de2"><code>450a652</code></a> on branch <code>main</code>, for **illustration 0.0.24** (from <code>pyproject.toml</code>).
 
 :::{note}
 Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
@@ -15,7 +15,7 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 | | |
 |---|---|
-| Commit | <a href="https://github.com/reeleehq/illustration/commit/88e0a8cef5cedc31c6759d9455382d6115303c85"><code>88e0a8cef5cedc31c6759d9455382d6115303c85</code></a> |
+| Commit | <a href="https://github.com/reeleehq/illustration/commit/450a65261c56cb47f1a9182ab5f1569c6e564de2"><code>450a65261c56cb47f1a9182ab5f1569c6e564de2</code></a> |
 | Branch | <code>main</code> |
 | Tags at this commit | none |
 | Working tree | clean |
@@ -26,15 +26,15 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 | | |
 |---|---|
 | Repository | <code>reeleehq/illustration</code> |
-| Run | <a href="https://github.com/reeleehq/illustration/actions/runs/44091156273">44091156273</a> |
+| Run | <a href="https://github.com/reeleehq/illustration/actions/runs/45115018003">45115018003</a> |
 | Ref | <code>refs/heads/main</code> |
-| Event commit | <code>88e0a8cef5cedc31c6759d9455382d6115303c85</code> (in the history of the built commit) |
+| Event commit | <code>450a65261c56cb47f1a9182ab5f1569c6e564de2</code> (in the history of the built commit) |
 
 ## Tools
 
 | | |
 |---|---|
-| epythet | 0.2.22 |
+| epythet | 0.2.23 |
 | Sphinx | 9.1.1 |
 | docutils | 0.22.4 |
 | Python | 3.12.16 |
@@ -53,14 +53,14 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/illustration/0.0.23/">0.0.23</a>, the same as the documented version.
+Latest release: <a href="https://pypi.org/project/illustration/0.0.24/">0.0.24</a>, the same as the documented version.
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/reeleehq/illustration && cd illustration
-git checkout 88e0a8cef5cedc31c6759d9455382d6115303c85
-pip install "epythet==0.2.22"
+git checkout 450a65261c56cb47f1a9182ab5f1569c6e564de2
+pip install "epythet==0.2.23"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```
 
