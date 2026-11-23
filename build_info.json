@@ -1,32 +1,32 @@
 {
   "schema_version": 1,
-  "built_at": "2026-11-23T05:12:32Z",
+  "built_at": "2026-11-23T06:37:34Z",
   "package": {
     "name": "illustration",
-    "version": "0.0.25",
+    "version": "0.0.26",
     "display_name": "illustration",
     "source": "pyproject.toml"
   },
   "git": {
     "available": true,
-    "commit": "733283fb457ae4c016aa869ac01d0b8e84268121",
-    "short_commit": "733283f",
+    "commit": "4e37bc2bd1b97e9aecae58059b9869516bd95dc8",
+    "short_commit": "4e37bc2",
     "branch": "main",
     "tags": [],
     "dirty": false,
     "remote_url": "https://github.com/reeleehq/illustration",
-    "commit_url": "https://github.com/reeleehq/illustration/commit/733283fb457ae4c016aa869ac01d0b8e84268121",
+    "commit_url": "https://github.com/reeleehq/illustration/commit/4e37bc2bd1b97e9aecae58059b9869516bd95dc8",
     "error": null
   },
   "ci": {
     "provider": "github",
     "repository": "reeleehq/illustration",
-    "sha": "733283fb457ae4c016aa869ac01d0b8e84268121",
+    "sha": "4e37bc2bd1b97e9aecae58059b9869516bd95dc8",
     "sha_in_history": true,
     "ref": "refs/heads/main",
     "ref_name": "main",
-    "run_id": "45116166801",
-    "run_url": "https://github.com/reeleehq/illustration/actions/runs/45116166801",
+    "run_id": "45125208309",
+    "run_url": "https://github.com/reeleehq/illustration/actions/runs/45125208309",
     "server_url": "https://github.com"
   },
   "tools": {
@@ -61,15 +61,13 @@
   "pypi": {
     "checked": true,
     "latest": "0.0.26",
-    "relation": "behind",
+    "relation": "same",
     "error": null
   },
-  "reproduce": "git clone https://github.com/reeleehq/illustration && cd illustration\ngit checkout 733283fb457ae4c016aa869ac01d0b8e84268121\npip install \"epythet==0.2.23\"\nepythet quickstart . --ignore tests/ scrap/ examples/",
+  "reproduce": "git clone https://github.com/reeleehq/illustration && cd illustration\ngit checkout 4e37bc2bd1b97e9aecae58059b9869516bd95dc8\npip install \"epythet==0.2.23\"\nepythet quickstart . --ignore tests/ scrap/ examples/",
   "warnings": [],
   "alignment": {
-    "aligned": false,
-    "notes": [
-      "The documented version (0.0.25) is behind the latest release on PyPI (0.0.26): `pip install illustration` gives newer code than these docs describe."
-    ]
+    "aligned": true,
+    "notes": []
   }
 }

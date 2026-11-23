@@ -2,18 +2,16 @@
 
 # About this build
 
-This documentation was built on **2026-11-23 05:12 UTC** from commit <a href="https://github.com/reeleehq/illustration/commit/733283fb457ae4c016aa869ac01d0b8e84268121"><code>733283f</code></a> on branch <code>main</code>, for **illustration 0.0.25** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-11-23 06:37 UTC** from commit <a href="https://github.com/reeleehq/illustration/commit/4e37bc2bd1b97e9aecae58059b9869516bd95dc8"><code>4e37bc2</code></a> on branch <code>main</code>, for **illustration 0.0.26** (from <code>pyproject.toml</code>).
 
-#### WARNING
-The documentation and the package may be misaligned:
-
-- The documented version (0.0.25) is behind the latest release on PyPI (0.0.26): `pip install illustration` gives newer code than these docs describe.
+#### NOTE
+Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
 
 ## Source
 
 |                     |                                                                                                                                                              |
 |---------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/reeleehq/illustration/commit/733283fb457ae4c016aa869ac01d0b8e84268121"><code>733283fb457ae4c016aa869ac01d0b8e84268121</code></a> |
+| Commit              | <a href="https://github.com/reeleehq/illustration/commit/4e37bc2bd1b97e9aecae58059b9869516bd95dc8"><code>4e37bc2bd1b97e9aecae58059b9869516bd95dc8</code></a> |
 | Branch              | <code>main</code>                                                                                                                                            |
 | Tags at this commit | none                                                                                                                                                         |
 | Working tree        | clean                                                                                                                                                        |
@@ -24,9 +22,9 @@ The documentation and the package may be misaligned:
 |              |                                                                                             |
 |--------------|---------------------------------------------------------------------------------------------|
 | Repository   | <code>reeleehq/illustration</code>                                                          |
-| Run          | <a href="https://github.com/reeleehq/illustration/actions/runs/45116166801">45116166801</a> |
+| Run          | <a href="https://github.com/reeleehq/illustration/actions/runs/45125208309">45125208309</a> |
 | Ref          | <code>refs/heads/main</code>                                                                |
-| Event commit | <code>733283fb457ae4c016aa869ac01d0b8e84268121</code> (in the history of the built commit)  |
+| Event commit | <code>4e37bc2bd1b97e9aecae58059b9869516bd95dc8</code> (in the history of the built commit)  |
 
 ## Tools
 
@@ -51,13 +49,13 @@ The documentation and the package may be misaligned:
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/illustration/0.0.26/">0.0.26</a>, newer than the documented version (0.0.25).
+Latest release: <a href="https://pypi.org/project/illustration/0.0.26/">0.0.26</a>, the same as the documented version.
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/reeleehq/illustration && cd illustration
-git checkout 733283fb457ae4c016aa869ac01d0b8e84268121
+git checkout 4e37bc2bd1b97e9aecae58059b9869516bd95dc8
 pip install "epythet==0.2.23"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```

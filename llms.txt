@@ -5,7 +5,7 @@
 
 ## Pages
 
-- [illustration](index.html.md): Find &#42;&#42;existing&#42;&#42; images to illustrate narrated video — cross-modal
+- [illustration](index.html.md): Find &#42;&#42;existing&#42;&#42; images to illustrate narrated video — cross-modal text-to-image retrieval (semanti...
 - [API reference](api.html.md): | &#96;illustration&#96;   | illustration — find existing images to illustrate narrated video.   |
 - [illustration](_autosummary/illustration.html.md): illustration — find existing images to illustrate narrated video.
 - [illustration.base](_autosummary/illustration.base.html.md): The provider plugin contract: &#96;RetrievalSource&#96;.
@@ -35,7 +35,7 @@
 - [illustration.translation](_autosummary/illustration.translation.html.md): Canonical → native parameter translation (the &#96;denote&#96; &#96;param_map&#96; idiom).
 - [illustration.video](_autosummary/illustration.video.html.md): Narration → Ken-Burns video hook — the M4 integration seam.
 - [For AI agents](ai-agents.html.md): &#96;illustration&#96; ships artifacts for coding agents alongside its code. This page lists
-- [About this build](about-this-build.html.md): This documentation was built on &#42;&#42;2026-11-23 05:12 UTC&#42;&#42; from commit &lt;a href="https://github.com/ree...
+- [About this build](about-this-build.html.md): This documentation was built on &#42;&#42;2026-11-23 06:37 UTC&#42;&#42; from commit &lt;a href="https://github.com/ree...
 
 ## Optional
 
