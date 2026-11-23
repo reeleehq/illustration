@@ -59,6 +59,7 @@ from illustration.config import cache_dir
 
 __all__ = [
     "FrameHit",
+    "FrameIndex",
     "index_video_frames",
     "search_frames",
     "storyboard_sampler",
@@ -298,6 +299,67 @@ def index_video_frames(
     return report
 
 
+class FrameIndex:
+    """The corpus as one stacked float32 matrix, so a query is one matrix product.
+
+    :func:`search_frames` over a store reads and parses every video's entry per
+    query, so latency grows with the corpus. Build a ``FrameIndex`` once and
+    pass it as ``index=``: the queries then cost one ``(frames x dim) @ (dim,)``
+    product and the per-hit work only for the few that are kept. Rebuild it
+    (``FrameIndex.from_store`` again) after indexing more videos. Videos indexed
+    with another model than ``model`` are left out and listed in ``other_model``.
+
+    >>> FrameIndex.from_store({}, model="m").frames
+    0
+    """
+
+    def __init__(self, entries: list, matrix: Any, rows: list, model: str, other_model: list):
+        self.entries = entries  # one dict per video (without its vectors)
+        self.matrix = matrix  # (frames, dim) float32
+        self.rows = rows  # per matrix row: (index into entries, time)
+        self.model = model
+        self.other_model = other_model
+
+    @property
+    def frames(self) -> int:
+        return len(self.rows)
+
+    @classmethod
+    def from_store(cls, store: "MutableMapping[str, Any]", *, model: str | None = None) -> "FrameIndex":
+        import numpy as np
+
+        model = _model_name(model)
+        entries, blocks, rows, other = [], [], [], []
+        for key in store:
+            entry = store[key]
+            identity = entry.get("id") or entry["video_id"] or entry["url"]
+            if not entry["vectors"]:
+                continue
+            if entry.get("model", model) != model:
+                other.append(identity)
+                continue
+            light = {k: v for k, v in entry.items() if k not in ("vectors", "times")}
+            blocks.append(np.asarray(entry["vectors"], dtype="float32"))
+            rows.extend((len(entries), float(t)) for t in entry["times"])
+            entries.append(light)
+        dim = blocks[0].shape[1] if blocks else 0
+        matrix = np.vstack(blocks) if blocks else np.zeros((0, dim), dtype="float32")
+        return cls(entries, matrix, rows, model, other)
+
+    def candidates(self, query: Any, wanted: "set | None" = None) -> list:
+        """``(score, t, entry)`` for every frame, as :func:`search_frames` ranks them."""
+        import numpy as np
+
+        sims = self.matrix @ np.asarray(query, dtype="float32") if self.frames else []
+        out = []
+        for score, (i, t) in zip(sims, self.rows):
+            entry = self.entries[i]
+            if wanted is not None and (entry.get("id") or entry["video_id"] or entry["url"]) not in wanted:
+                continue
+            out.append((float(score), t, entry))
+        return out
+
+
 def search_frames(
     text: str,
     *,
@@ -308,6 +370,7 @@ def search_frames(
     per_video: int = DFLT_PER_VIDEO,
     min_gap_s: float = DFLT_MIN_GAP_S,
     videos: Sequence[str] | None = None,
+    index: "FrameIndex | None" = None,
 ) -> list[FrameHit]:
     """The ``k`` frames that best match ``text``, best first.
 
@@ -315,30 +378,25 @@ def search_frames(
     most ``per_video`` hits per video, and two hits closer than ``min_gap_s``
     in one video are one scene (the better one is kept). ``videos`` limits the
     search to those video ids (or URLs, for a video that has no id). Videos
-    indexed with another embedding model are skipped, with a warning.
+    indexed with another embedding model are skipped, with a warning. Pass
+    ``index=FrameIndex.from_store(store)`` to search a prebuilt stacked matrix
+    instead of reading the store (``store`` is then not read).
     """
     import numpy as np
 
     model = _model_name(model)
-    store = default_frame_store(model) if store is None else store
+    if index is None:
+        store = default_frame_store(model) if store is None else store
     scorer = _default_scorer(model) if scorer is None else scorer
     using = getattr(scorer, "model_id", None) or model
     query = np.asarray(scorer.embed_text(text), dtype="float32")
     wanted = None if videos is None else set(videos)
-    scored: list[tuple[float, float, dict]] = []
-    other_model: list[str] = []
-    for key in store:
-        entry = store[key]
-        identity = entry.get("id") or entry["video_id"] or entry["url"]
-        if wanted is not None and identity not in wanted:
-            continue
-        if not entry["vectors"]:
-            continue
-        if entry.get("model", using) != using:
-            other_model.append(identity)
-            continue
-        sims = np.asarray(entry["vectors"], dtype="float32") @ query
-        scored.extend((float(s), float(t), entry) for s, t in zip(sims, entry["times"]))
+    if index is None:
+        index = FrameIndex.from_store(store, model=using)
+    elif index.model != using:
+        raise ValueError(f"the index was built for model {index.model!r}, the scorer is {using!r}")
+    scored = index.candidates(query, wanted)
+    other_model = index.other_model if wanted is None else [m for m in index.other_model if m in wanted]
     if other_model:
         warnings.warn(
             f"search_frames: skipped {len(other_model)} video(s) indexed with another "
