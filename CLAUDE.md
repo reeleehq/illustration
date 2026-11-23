@@ -64,6 +64,7 @@ storyboard.
 | `duplicates` | same-**subject** grouping + best-of-group (`dedupe`, `group_duplicates`) | `numpy`; DINOv2 via `[dedupe]` |
 | `persistence` | selections as `lacing` standoff annotations, OTIO export | `[persist]` |
 | `video` | `render_sequence_video` (burns), `to_walkthru_document` | `[video]` |
+| `frames` | text-to-frame search over a video corpus: `index_video_frames` (YouTube storyboards via `yb`), `search_frames` → `FrameHit` (video, t, licence) | `[frames]` + `[rerank]` |
 | `cli` / `__main__` | thin `cw` wrappers; no business logic | `cw` |
 | `_imageio` | the single image fetch/decode path (fail-soft) | `requests`/`Pillow` |
 

@@ -123,6 +123,7 @@ from illustration.persistence import (
     resolved_selections,
 )
 from illustration.video import render_sequence_video, to_walkthru_document
+from illustration.frames import FrameHit, index_video_frames, search_frames
 from illustration.registry import (
     SourcesView,
     default_sources,
@@ -256,6 +257,10 @@ __all__ = [
     "resolved_selections",
     "export_otio",
     "SelectionBody",
+    # text-to-frame search over a video corpus ([frames] + [rerank] extras)
+    "FrameHit",
+    "index_video_frames",
+    "search_frames",
     # M4 — video hook (burns / walkthru; [video] extra)
     "render_sequence_video",
     "to_walkthru_document",

@@ -68,6 +68,14 @@ video = [
     "burns",
     "walkthru>=0.0.19",  # AssetRef.rights (issue #15)
 ]
+# Text-to-frame search over a video corpus (illustration.frames, #46): yb reads
+# YouTube storyboards (seek-bar frames, no video download); the SigLIP embedder is
+# the [rerank] extra's, so install illustration[frames,rerank] for the defaults.
+frames = [
+    "yb[download]>=0.1.47",  # yb.download.youtube_storyboard
+    "pillow>=10",
+    "numpy>=1.24",
+]
 # Layer 2 — M4 persistence hook. Persist curation/selection decisions as lacing
 # standoff annotations (PROV-O provenance + append-only director overrides). Add
 # lacing[otio] for export_otio().

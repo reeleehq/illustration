@@ -190,6 +190,32 @@ class SiglipScorer:
         model, processor = self._model_and_processor()
         return [self._image_embedding(r, model, processor) for r in results]
 
+    def embed_text(self, text: str):
+        """The L2-normalized SigLIP embedding of ``text`` (a query)."""
+        model, processor = self._model_and_processor()
+        return self._embed_text(text, model, processor)
+
+    def embed_pil_images(self, images: Sequence[Any], *, batch: int = 64) -> list:
+        """L2-normalized SigLIP embeddings of in-memory images (PIL), in order.
+
+        For images that have no URL to cache by, such as frames cut from a
+        video (:mod:`illustration.frames`), which keeps its own store. Batched,
+        so a channel's worth of frames is a few forward passes per thousand.
+        """
+        import torch
+
+        model, processor = self._model_and_processor()
+        out: list = []
+        items = [im.convert("RGB") for im in images]
+        for i in range(0, len(items), batch):
+            inputs = processor(images=items[i : i + batch], return_tensors="pt")
+            if self.device:
+                inputs = {k: v.to(self.device) for k, v in inputs.items()}
+            with torch.no_grad():
+                feats = model.get_image_features(**inputs)
+            out.extend(_l2_normalize(f) for f in feats.cpu().numpy())
+        return out
+
     # -- internals -----------------------------------------------------------
 
     def _model_and_processor(self):
