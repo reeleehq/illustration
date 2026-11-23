@@ -72,7 +72,7 @@ video = [
 # YouTube storyboards (seek-bar frames, no video download); the SigLIP embedder is
 # the [rerank] extra's, so install illustration[frames,rerank] for the defaults.
 frames = [
-    "yb[download]>=0.1.47",  # yb.download.youtube_storyboard
+    "yb[download]>=0.1.48",  # yb.download.youtube_storyboard, with the uploader (attribution)
     "pillow>=10",
     "numpy>=1.24",
 ]
