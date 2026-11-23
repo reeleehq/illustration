@@ -286,7 +286,8 @@ def index_video_frames(
             "title": video.title,
             "duration": video.duration,
             "license": video.license,
-            "author": getattr(video, "uploader", None) or getattr(video, "channel", None),
+            "author": getattr(video, "uploader", None)
+            or getattr(video, "channel", None),
             "author_url": getattr(video, "channel_url", None),
             "model": getattr(scorer, "model_id", None) or model,
             "times": times,
@@ -337,9 +338,7 @@ def search_frames(
             other_model.append(identity)
             continue
         sims = np.asarray(entry["vectors"], dtype="float32") @ query
-        scored.extend(
-            (float(s), float(t), entry) for s, t in zip(sims, entry["times"])
-        )
+        scored.extend((float(s), float(t), entry) for s, t in zip(sims, entry["times"]))
     if other_model:
         warnings.warn(
             f"search_frames: skipped {len(other_model)} video(s) indexed with another "
