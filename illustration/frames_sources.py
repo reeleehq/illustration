@@ -101,9 +101,20 @@ class FileVideo:
 
         with tempfile.TemporaryDirectory(prefix="illustration-frames-") as tmp:
             subprocess.run(
-                [self.ffmpeg, "-v", "error", "-i", str(self.path), "-vf", f"fps=1/{self.every_s}",
-                 "-f", "image2", str(Path(tmp) / "%06d.png")],
-                check=True, capture_output=True,
+                [
+                    self.ffmpeg,
+                    "-v",
+                    "error",
+                    "-i",
+                    str(self.path),
+                    "-vf",
+                    f"fps=1/{self.every_s}",
+                    "-f",
+                    "image2",
+                    str(Path(tmp) / "%06d.png"),
+                ],
+                check=True,
+                capture_output=True,
             )
             for i, f in enumerate(sorted(Path(tmp).glob("*.png"))):
                 with Image.open(f) as image:
@@ -114,15 +125,28 @@ def _duration(path: Path, ffmpeg: str) -> float | None:
     probe = ffmpeg.replace("ffmpeg", "ffprobe")
     try:
         out = subprocess.run(
-            [probe, "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(path)],
-            check=True, capture_output=True, text=True,
+            [
+                probe,
+                "-v",
+                "error",
+                "-show_entries",
+                "format=duration",
+                "-of",
+                "csv=p=0",
+                str(path),
+            ],
+            check=True,
+            capture_output=True,
+            text=True,
         ).stdout.strip()
         return float(out)
     except (OSError, ValueError, subprocess.CalledProcessError):
         return None
 
 
-def file_sampler(path: "str | Path", *, every_s: float = DFLT_EVERY_S, ffmpeg: str = "ffmpeg") -> FileVideo:
+def file_sampler(
+    path: "str | Path", *, every_s: float = DFLT_EVERY_S, ffmpeg: str = "ffmpeg"
+) -> FileVideo:
     """A local video sampled every ``every_s`` seconds: ``index_video_frames([...], sampler=file_sampler)``.
 
     Use ``functools.partial(file_sampler, every_s=2)`` for another interval. Raises
@@ -137,12 +161,16 @@ def file_sampler(path: "str | Path", *, every_s: float = DFLT_EVERY_S, ffmpeg: s
     return FileVideo(p, every_s, _duration(p, ffmpeg), ffmpeg)
 
 
-def youtube_caption_loader(url: str, *, langs: Sequence[str] = ("en",)) -> tuple[dict, list[tuple[float, str]]]:
+def youtube_caption_loader(
+    url: str, *, langs: Sequence[str] = ("en",)
+) -> tuple[dict, list[tuple[float, str]]]:
     """``(meta, cues)`` for a YouTube video, through ``yb.download.download_youtube_subtitles``."""
     from yb.download import download_youtube_subtitles
 
     with tempfile.TemporaryDirectory(prefix="illustration-captions-") as tmp:
-        files = download_youtube_subtitles(url, download_dir=tmp, subtitle_langs=tuple(langs))
+        files = download_youtube_subtitles(
+            url, download_dir=tmp, subtitle_langs=tuple(langs)
+        )
         cues = parse_cues(Path(files[0]).read_text(errors="replace")) if files else []
     return {"url": url, "license": YOUTUBE_STANDARD_LICENSE}, cues
 
@@ -155,7 +183,9 @@ def search_captions(
     text: str,
     videos: Iterable[str],
     *,
-    loader: Callable[[str], tuple[Mapping, Sequence[tuple[float, str]]]] = youtube_caption_loader,
+    loader: Callable[
+        [str], tuple[Mapping, Sequence[tuple[float, str]]]
+    ] = youtube_caption_loader,
     k: int = 10,
     per_video: int = DFLT_PER_VIDEO,
     min_gap_s: float = DFLT_MIN_GAP_S,
@@ -184,13 +214,22 @@ def search_captions(
             words = set(_tokens(cue))
             hit = sum(w in words for w in query) / len(query)
             if hit:
-                scored.append((hit + (0.5 if phrase in " ".join(_tokens(cue)) else 0.0), float(t), meta, cue))
+                scored.append(
+                    (
+                        hit + (0.5 if phrase in " ".join(_tokens(cue)) else 0.0),
+                        float(t),
+                        meta,
+                        cue,
+                    )
+                )
     scored.sort(key=lambda row: (-row[0], row[1]))
     picked: list[FrameHit] = []
     taken: list[tuple[str, float]] = []
     for score, t, meta, _cue in scored:
         vid = meta.get("video_id") or meta["url"]
-        if sum(v == vid for v, _ in taken) >= per_video or any(v == vid and abs(pt - t) < min_gap_s for v, pt in taken):
+        if sum(v == vid for v, _ in taken) >= per_video or any(
+            v == vid and abs(pt - t) < min_gap_s for v, pt in taken
+        ):
             continue
         code = frame_license(meta.get("license"))
         picked.append(
@@ -202,7 +241,9 @@ def search_captions(
                 title=meta.get("title"),
                 license=code,
                 license_raw=meta.get("license"),
-                attribution=_attribution(meta.get("title"), meta.get("author"), code, meta.get("license")),
+                attribution=_attribution(
+                    meta.get("title"), meta.get("author"), code, meta.get("license")
+                ),
                 author=meta.get("author"),
                 author_url=meta.get("author_url"),
             )

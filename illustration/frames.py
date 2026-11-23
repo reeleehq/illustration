@@ -313,7 +313,9 @@ class FrameIndex:
     0
     """
 
-    def __init__(self, entries: list, matrix: Any, rows: list, model: str, other_model: list):
+    def __init__(
+        self, entries: list, matrix: Any, rows: list, model: str, other_model: list
+    ):
         self.entries = entries  # one dict per video (without its vectors)
         self.matrix = matrix  # (frames, dim) float32
         self.rows = rows  # per matrix row: (index into entries, time)
@@ -325,7 +327,9 @@ class FrameIndex:
         return len(self.rows)
 
     @classmethod
-    def from_store(cls, store: "MutableMapping[str, Any]", *, model: str | None = None) -> "FrameIndex":
+    def from_store(
+        cls, store: "MutableMapping[str, Any]", *, model: str | None = None
+    ) -> "FrameIndex":
         import numpy as np
 
         model = _model_name(model)
@@ -354,7 +358,10 @@ class FrameIndex:
         out = []
         for score, (i, t) in zip(sims, self.rows):
             entry = self.entries[i]
-            if wanted is not None and (entry.get("id") or entry["video_id"] or entry["url"]) not in wanted:
+            if (
+                wanted is not None
+                and (entry.get("id") or entry["video_id"] or entry["url"]) not in wanted
+            ):
                 continue
             out.append((float(score), t, entry))
         return out
@@ -394,9 +401,15 @@ def search_frames(
     if index is None:
         index = FrameIndex.from_store(store, model=using)
     elif index.model != using:
-        raise ValueError(f"the index was built for model {index.model!r}, the scorer is {using!r}")
+        raise ValueError(
+            f"the index was built for model {index.model!r}, the scorer is {using!r}"
+        )
     scored = index.candidates(query, wanted)
-    other_model = index.other_model if wanted is None else [m for m in index.other_model if m in wanted]
+    other_model = (
+        index.other_model
+        if wanted is None
+        else [m for m in index.other_model if m in wanted]
+    )
     if other_model:
         warnings.warn(
             f"search_frames: skipped {len(other_model)} video(s) indexed with another "
