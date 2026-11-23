@@ -292,15 +292,13 @@ def phash(image, *, hash_size: int = 8, highfreq_factor: int = 4) -> int:
     flat = coefs.flatten()
     med = np.median(flat[1:])  # exclude the DC coefficient
     bits = flat > med
-    value = 0
-    for bit in bits:
-        value = (value << 1) | int(bool(bit))
-    return value
+    # Pack most-significant bit first; drop packbits' zero padding to the byte.
+    return int.from_bytes(np.packbits(bits).tobytes(), "big") >> (-len(bits) % 8)
 
 
 def hamming_distance(a: int, b: int) -> int:
     """Number of differing bits between two perceptual hashes."""
-    return bin(a ^ b).count("1")
+    return (a ^ b).bit_count()
 
 
 def make_phash_hasher(
