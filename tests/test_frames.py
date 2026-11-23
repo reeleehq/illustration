@@ -43,9 +43,21 @@ class FakeVideo:
     duration: float
     license: str | None
     shown: list  # (t, name)
+    uploader: str | None = None
+    channel_url: str | None = None
 
     def frames(self):
         yield from self.shown
+
+
+@dataclass(frozen=True)
+class FakeBoard:
+    video_id: str
+    url: str
+    title: str
+    duration: float
+    license: str | None
+    shown: tuple
 
 
 VIDEOS = {
@@ -53,7 +65,8 @@ VIDEOS = {
                     [(0.0, "bed"), (5.0, "clock"), (10.0, "clock"), (40.0, "clock"), (45.0, "tower")]),
     "u2": FakeVideo("v2", "https://youtu.be/v2", "Two", 30.0,
                     "Creative Commons Attribution license (reuse allowed)",
-                    [(0.0, "clock"), (20.0, "bed")]),
+                    [(0.0, "clock"), (20.0, "bed")],
+                    uploader="Studio Two", channel_url="https://www.youtube.com/channel/UC2"),
 }
 
 
@@ -79,9 +92,16 @@ def test_hits_carry_the_video_s_licence_and_a_link_to_the_moment():
     store, scorer = {}, FakeScorer()
     index_video_frames(["u1", "u2"], store=store, sampler=_sampler, scorer=scorer)
     hits = {h.video_id: h for h in search_frames("clock", store=store, scorer=scorer, k=2, per_video=1)}
-    assert hits["v1"].license == "all-rights-reserved"
-    assert hits["v2"].license == "CC-BY" and hits["v2"].license_raw.startswith("Creative")
-    assert hits["v2"].watch_url == "https://youtu.be/v2?t=0s"
+    assert hits["v1"].license is None  # this fake sampler did not say
+    assert hits["v2"].license == "by" and hits["v2"].license_raw.startswith("Creative")
+    assert hits["v2"].license_url == "https://creativecommons.org/licenses/by/3.0/"
+    assert hits["v2"].attribution == '"Two" by Studio Two, CC BY'
+    assert hits["v2"].author_url == "https://www.youtube.com/channel/UC2"
+    assert hits["v2"].watch_url == "https://youtu.be/v2?t=0s" == hits["v2"].source_page_url
+    assert hits["v2"].cacheable is False
+    from illustration.schema import RIGHTS_FIELDS
+
+    assert set(hits["v2"].rights) == set(RIGHTS_FIELDS)
     assert hits["v1"].title == "One"
 
 
@@ -112,6 +132,97 @@ def test_an_empty_corpus_finds_nothing():
     assert search_frames("clock", store={}, scorer=FakeScorer()) == []
 
 
-def test_frame_license():
-    assert frame_license("creative commons whatever") == "CC-BY"
-    assert frame_license("") == "all-rights-reserved"
+def test_frame_license_is_the_package_s_canonical_code():
+    assert frame_license("Creative Commons Attribution license (reuse allowed)") == "by"
+    assert frame_license("Creative Commons Attribution-NonCommercial 4.0") != "by"
+    assert frame_license("CC BY-NC 4.0") == "by-nc"
+    assert frame_license(None) is None and frame_license("") is None
+
+
+def test_a_youtube_video_with_no_licence_is_under_the_standard_licence(monkeypatch):
+    import sys
+    import types
+
+    from illustration.frames import storyboard_sampler
+
+    board = FakeBoard("v9", "https://youtu.be/v9", "Nine", 10.0, None, [])
+    module = types.SimpleNamespace(youtube_storyboard=lambda url, **kw: board)
+    monkeypatch.setitem(sys.modules, "yb.download", module)
+    got = storyboard_sampler("https://youtu.be/v9")
+    assert got.license == "YouTube Standard License"
+    assert frame_license(got.license) == "youtube-standard-license"
+
+
+# ── from the adversarial review of PR #56 ───────────────────────────────────
+
+
+def test_ids_differing_only_in_dash_or_underscore_are_two_videos():
+    vids = {
+        "a": FakeVideo("abc-def", "https://youtu.be/abc-def", "A", 9.0, None, [(0.0, "clock")]),
+        "b": FakeVideo("abc_def", "https://youtu.be/abc_def", "B", 9.0, None, [(0.0, "bed")]),
+    }
+    store = {}
+    report = index_video_frames(["a", "b"], store=store, sampler=vids.__getitem__, scorer=FakeScorer())
+    assert report["indexed"] == ["abc-def", "abc_def"] and len(store) == 2
+
+
+def test_videos_without_an_id_are_told_apart_by_url():
+    files = {
+        f"/films/{n}.mp4": FakeVideo("", f"/films/{n}.mp4", n, 9.0, None, [(0.0, "clock")])
+        for n in "abcd"
+    }
+    store, scorer = {}, FakeScorer()
+    report = index_video_frames(list(files), store=store, sampler=files.__getitem__, scorer=scorer)
+    assert report["indexed"] == list(files)
+    hits = search_frames("clock", store=store, scorer=scorer, k=10)
+    assert len(hits) == 4
+    assert {h.video_url for h in search_frames("clock", store=store, scorer=scorer, videos=["/films/b.mp4"])} == {"/films/b.mp4"}
+
+
+def test_a_video_that_breaks_mid_way_is_a_failure_and_the_rest_go_on():
+    class Broken(FakeVideo):
+        def frames(self):
+            yield 0.0, "clock"
+            raise OSError("truncated sprite sheet")
+
+    vids = {"bad": Broken("vb", "https://youtu.be/vb", "B", 9.0, None, []), **VIDEOS}
+    store = {}
+    report = index_video_frames(["bad", "u1"], store=store, sampler=vids.__getitem__, scorer=FakeScorer())
+    assert "OSError" in report["failed"]["bad"] and report["indexed"] == ["v1"]
+    assert len(store) == 1  # nothing partial written
+
+
+def test_a_youtube_video_already_indexed_is_skipped_without_fetching():
+    store, calls = {}, []
+
+    def sampler(url):
+        calls.append(url)
+        return FakeVideo("dQw4w9WgXcQ", url, "R", 9.0, None, [(0.0, "clock")])
+
+    url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    index_video_frames([url], store=store, sampler=sampler, scorer=FakeScorer())
+    again = index_video_frames([url], store=store, sampler=sampler, scorer=FakeScorer())
+    assert calls == [url] and again["skipped"] == ["dQw4w9WgXcQ"]
+
+
+def test_a_search_with_another_model_skips_and_warns():
+    store, scorer = {}, FakeScorer()
+    index_video_frames(["u1"], store=store, sampler=_sampler, scorer=scorer)
+    other = FakeScorer()
+    other.model_id = "another/model"
+    with pytest.warns(UserWarning, match="another model"):
+        assert search_frames("clock", store=store, scorer=other) == []
+
+
+def test_frames_are_embedded_in_batches_as_they_are_read():
+    scorer = FakeScorer()
+    seen = []
+    real = scorer.embed_pil_images
+
+    def spy(images, *, batch=64):
+        seen.append(len(images))
+        return real(images, batch=batch)
+
+    scorer.embed_pil_images = spy
+    index_video_frames(["u1"], store={}, sampler=_sampler, scorer=scorer, batch=2)
+    assert seen == [2, 2, 1]
