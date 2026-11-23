@@ -18,6 +18,7 @@
 - [illustration.errors](_autosummary/illustration.errors.html.md): The package exception hierarchy.
 - [illustration.expansion](_autosummary/illustration.expansion.html.md): Query expansion &amp; refinement — the first node of the curation loop (R2 §1).
 - [illustration.facade](_autosummary/illustration.facade.html.md): The façade: &#96;search()&#96; — one call over any registered provider(s).
+- [illustration.frames](_autosummary/illustration.frames.html.md): Text-to-frame search over a video corpus: find &#42;where&#42; in a set of videos something is.
 - [illustration.inspection](_autosummary/illustration.inspection.html.md): Candidate inspection — classical-CV pre-filters + VLM caption/judge (R2 §2-3).
 - [illustration.licensing](_autosummary/illustration.licensing.html.md): Licence-code normalisation — one vocabulary for four provider vocabularies.
 - [illustration.persistence](_autosummary/illustration.persistence.html.md): Persist curation/selection decisions as &#96;lacing&#96; standoff annotations (R2 §6).
@@ -34,7 +35,7 @@
 - [illustration.translation](_autosummary/illustration.translation.html.md): Canonical → native parameter translation (the &#96;denote&#96; &#96;param_map&#96; idiom).
 - [illustration.video](_autosummary/illustration.video.html.md): Narration → Ken-Burns video hook — the M4 integration seam.
 - [For AI agents](ai-agents.html.md): &#96;illustration&#96; ships artifacts for coding agents alongside its code. This page lists
-- [About this build](about-this-build.html.md): This documentation was built on &#42;&#42;2026-11-23 05:01 UTC&#42;&#42; from commit &lt;a href="https://github.com/ree...
+- [About this build](about-this-build.html.md): This documentation was built on &#42;&#42;2026-11-23 05:12 UTC&#42;&#42; from commit &lt;a href="https://github.com/ree...
 
 ## Optional
 

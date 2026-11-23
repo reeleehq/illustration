@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="cyan" data-content_root="../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>illustration.frames - illustration</title><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="illustration.inspection" href="illustration.inspection.html" /><link rel="prev" title="illustration.facade" href="illustration.facade.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d88b86f9" />
+    <link rel="stylesheet" type="text/css" href="../_static/shibuya.css?v=2ceb65ce" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx_autodoc_typehints.css?v=057ac668" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link media="print" rel="stylesheet" type="text/css" href="../_static/print.css?v=20ff2c19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/><meta property="og:title" content="illustration.frames"/>
+    <meta name="twitter:card" content="summary"/>
+  
+<link rel="alternate" type="text/markdown" href="illustration.frames.html.md">
+<link rel="describedby" href="../llms.txt" type="text/markdown">
+</head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="../index.html">
+      
+      
+      <strong>illustration</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/thorwhalen/illustration" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="0"><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="illustration.html">illustration</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="illustration.base.html">illustration.base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="illustration.caching.html">illustration.caching</a></li>
+<li class="toctree-l3"><a class="reference internal" href="illustration.cli.html">illustration.cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="illustration.config.html">illustration.config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="illustration.credentials.html">illustration.credentials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="illustration.curation.html">illustration.curation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="illustration.duplicates.html">illustration.duplicates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="illustration.errors.html">illustration.errors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="illustration.expansion.html">illustration.expansion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="illustration.facade.html">illustration.facade</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">illustration.frames</a></li>
+<li class="toctree-l3"><a class="reference internal" href="illustration.inspection.html">illustration.inspection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="illustration.licensing.html">illustration.licensing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="illustration.persistence.html">illustration.persistence</a></li>
+<li class="toctree-l3"><a class="reference internal" href="illustration.providers.html">illustration.providers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="illustration.providers.openverse.html">illustration.providers.openverse</a></li>
+<li class="toctree-l4"><a class="reference internal" href="illustration.providers.pexels.html">illustration.providers.pexels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="illustration.providers.pixabay.html">illustration.providers.pixabay</a></li>
+<li class="toctree-l4"><a class="reference internal" href="illustration.providers.wikimedia.html">illustration.providers.wikimedia</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="illustration.registry.html">illustration.registry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="illustration.reranking.html">illustration.reranking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="illustration.schema.html">illustration.schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="illustration.schema_export.html">illustration.schema_export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="illustration.sequence.html">illustration.sequence</a></li>
+<li class="toctree-l3"><a class="reference internal" href="illustration.translation.html">illustration.translation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="illustration.video.html">illustration.video</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../ai-agents.html">For AI agents</a></li>
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#illustration.frames.DFLT_MIN_GAP_S"><code class="docutils literal notranslate"><span class="pre">DFLT_MIN_GAP_S</span></code></a></li>
+<li><a class="reference internal" href="#illustration.frames.DFLT_PER_VIDEO"><code class="docutils literal notranslate"><span class="pre">DFLT_PER_VIDEO</span></code></a></li>
+<li><a class="reference internal" href="#illustration.frames.FrameHit"><code class="docutils literal notranslate"><span class="pre">FrameHit</span></code></a><ul>
+<li><a class="reference internal" href="#illustration.frames.FrameHit.rights"><code class="docutils literal notranslate"><span class="pre">FrameHit.rights</span></code></a></li>
+<li><a class="reference internal" href="#illustration.frames.FrameHit.source_page_url"><code class="docutils literal notranslate"><span class="pre">FrameHit.source_page_url</span></code></a></li>
+<li><a class="reference internal" href="#illustration.frames.FrameHit.watch_url"><code class="docutils literal notranslate"><span class="pre">FrameHit.watch_url</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#illustration.frames.default_frame_store"><code class="docutils literal notranslate"><span class="pre">default_frame_store()</span></code></a></li>
+<li><a class="reference internal" href="#illustration.frames.frame_license"><code class="docutils literal notranslate"><span class="pre">frame_license()</span></code></a></li>
+<li><a class="reference internal" href="#illustration.frames.index_video_frames"><code class="docutils literal notranslate"><span class="pre">index_video_frames()</span></code></a></li>
+<li><a class="reference internal" href="#illustration.frames.search_frames"><code class="docutils literal notranslate"><span class="pre">search_frames()</span></code></a></li>
+<li><a class="reference internal" href="#illustration.frames.storyboard_sampler"><code class="docutils literal notranslate"><span class="pre">storyboard_sampler()</span></code></a></li>
+<li><a class="reference internal" href="#illustration.frames.youtube_video_id"><code class="docutils literal notranslate"><span class="pre">youtube_video_id()</span></code></a></li>
+</ul>
+</div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../index.html"><span itemprop="name">illustration</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../api.html"><span itemprop="name">API reference</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="2" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="illustration.html"><span itemprop="name">illustration</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="3" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">illustration.frames</strong>
+        <meta itemprop="position" content="4" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue dark-code" role="main">
+          <section id="module-illustration.frames">
+<span id="illustration-frames"></span><h1>illustration.frames<a class="headerlink" href="#module-illustration.frames" title="Link to this heading">#</a></h1>
+<p>Text-to-frame search over a video corpus: find <em>where</em> in a set of videos something is.</p>
+<p>“A cartoon wall clock”, “a bedroom at night”, “Tokyo Tower”: instead of
+scrubbing, index the videos’ frames once with SigLIP, then ask in words. One
+more illustration source, where an “image” is <code class="docutils literal notranslate"><span class="pre">(video,</span> <span class="pre">t)</span></code> (#46).</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">illustration.frames</span><span class="w"> </span><span class="kn">import</span> <span class="n">index_video_frames</span><span class="p">,</span> <span class="n">search_frames</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="n">index_video_frames</span><span class="p">([</span><span class="s2">"https://youtu.be/&lt;id&gt;"</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span>
+</span><span data-line="3"><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">hit</span> <span class="ow">in</span> <span class="n">search_frames</span><span class="p">(</span><span class="s2">"a cartoon wall clock"</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">12</span><span class="p">):</span>
+</span><span data-line="4"><span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">hit</span><span class="o">.</span><span class="n">watch_url</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">hit</span><span class="o">.</span><span class="n">score</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">hit</span><span class="o">.</span><span class="n">license</span><span class="p">)</span>
+</span></pre></div>
+</div>
+<p><strong>Three seams, with working defaults.</strong></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">sampler</span></code>: a video URL to its frames. The default,
+<a class="reference internal" href="#illustration.frames.storyboard_sampler" title="illustration.frames.storyboard_sampler"><code class="xref py py-func docutils literal notranslate"><span class="pre">storyboard_sampler()</span></code></a>, reads YouTube’s storyboard (the seek-bar</p>
+<blockquote>
+<div><p>thumbnails, 320x180, one every few seconds) through
+<code class="docutils literal notranslate"><span class="pre">yb.download.youtube_storyboard</span></code>: no video download, and it works where
+video downloads hit a bot wall. Anything returning an object with
+<code class="docutils literal notranslate"><span class="pre">video_id</span></code>, <code class="docutils literal notranslate"><span class="pre">url</span></code>, <code class="docutils literal notranslate"><span class="pre">title</span></code>, <code class="docutils literal notranslate"><span class="pre">duration</span></code>, <code class="docutils literal notranslate"><span class="pre">license</span></code> and <code class="docutils literal notranslate"><span class="pre">frames()</span></code>
+(<code class="docutils literal notranslate"><span class="pre">(t,</span> <span class="pre">PIL</span> <span class="pre">image)</span></code> pairs) fits, e.g. frames sampled from a local file.</p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scorer</span></code>: what embeds the frames and the query. The default is the
+package’s SigLIP 2 scorer (<a class="reference internal" href="illustration.reranking.html#illustration.reranking.SiglipScorer" title="illustration.reranking.SiglipScorer"><code class="xref py py-class docutils literal notranslate"><span class="pre">illustration.reranking.SiglipScorer</span></code></a>,
+the <code class="docutils literal notranslate"><span class="pre">[rerank]</span></code> extra); anything with <code class="docutils literal notranslate"><span class="pre">embed_text(text)</span></code> and
+<code class="docutils literal notranslate"><span class="pre">embed_pil_images(images,</span> <span class="pre">*,</span> <span class="pre">batch)</span></code> fits (an ONNX text encoder on a
+machine without torch, for instance), and its <code class="docutils literal notranslate"><span class="pre">model_id</span></code> (if it has one)
+is recorded with the corpus: a search with another model skips those videos
+and warns, since their vectors are not comparable.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">store</span></code>: where the corpus lives, one entry per video (its times, its
+vectors, its title and licence). Default: JSON files under the cache dir, per
+model, since a corpus is regenerable.</p></li>
+</ul>
+<p><strong>Limits to know.</strong> A storyboard frame stands for a few seconds and can lag
+the moment it shows by about a second, so cut the real frame from a few
+candidate times around a hit (<code class="docutils literal notranslate"><span class="pre">yb.download</span></code>’s <code class="docutils literal notranslate"><span class="pre">start</span></code>/<code class="docutils literal notranslate"><span class="pre">end</span></code>). At 320x180
+it finds scenes, not small props; a caption track can find what the picture
+cannot (search both).</p>
+<p><strong>Licence.</strong> A hit carries the package’s full rights record
+(<a class="reference internal" href="illustration.schema.html#illustration.schema.RIGHTS_FIELDS" title="illustration.schema.RIGHTS_FIELDS"><code class="xref py py-data docutils literal notranslate"><span class="pre">illustration.schema.RIGHTS_FIELDS</span></code></a>): the licence as the canonical
+code of <a class="reference internal" href="illustration.licensing.html#illustration.licensing.normalize_license" title="illustration.licensing.normalize_license"><code class="xref py py-func docutils literal notranslate"><span class="pre">illustration.licensing.normalize_license()</span></code></a> (YouTube’s Creative
+Commons licence is <code class="docutils literal notranslate"><span class="pre">by</span></code>; its standard licence, which is all rights reserved,
+is <code class="docutils literal notranslate"><span class="pre">youtube-standard-license</span></code>; <code class="docutils literal notranslate"><span class="pre">None</span></code> when the sampler did not say), the
+licence URL, an attribution line, the author and their page, the source page
+(the video at that moment), and <code class="docutils literal notranslate"><span class="pre">cacheable=False</span></code> (the frames are never
+stored, only their embeddings). Fine to find and study; republishing follows
+the licence.</p>
+<p class="rubric">Module Attributes</p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#illustration.frames.DFLT_PER_VIDEO" title="illustration.frames.DFLT_PER_VIDEO"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DFLT_PER_VIDEO</span></code></a></p></td>
+<td><p>At most this many hits from one video, so one long video cannot fill the list.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#illustration.frames.DFLT_MIN_GAP_S" title="illustration.frames.DFLT_MIN_GAP_S"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DFLT_MIN_GAP_S</span></code></a></p></td>
+<td><p>keep the best.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="rubric">Functions</p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#illustration.frames.index_video_frames" title="illustration.frames.index_video_frames"><code class="xref py py-obj docutils literal notranslate"><span class="pre">index_video_frames</span></code></a>(videos, *[, store, ...])</p></td>
+<td><p>Embed every frame of <code class="docutils literal notranslate"><span class="pre">videos</span></code> into the corpus; return what happened.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#illustration.frames.search_frames" title="illustration.frames.search_frames"><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_frames</span></code></a>(text, *[, store, scorer, ...])</p></td>
+<td><p>The <code class="docutils literal notranslate"><span class="pre">k</span></code> frames that best match <code class="docutils literal notranslate"><span class="pre">text</span></code>, best first.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#illustration.frames.storyboard_sampler" title="illustration.frames.storyboard_sampler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">storyboard_sampler</span></code></a>(url, **kwargs)</p></td>
+<td><p>A video's YouTube storyboard (<code class="docutils literal notranslate"><span class="pre">yb.download.youtube_storyboard</span></code>).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#illustration.frames.default_frame_store" title="illustration.frames.default_frame_store"><code class="xref py py-obj docutils literal notranslate"><span class="pre">default_frame_store</span></code></a>(model)</p></td>
+<td><p>JSON files under the cache dir, one per video, per embedding model.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#illustration.frames.frame_license" title="illustration.frames.frame_license"><code class="xref py py-obj docutils literal notranslate"><span class="pre">frame_license</span></code></a>(raw)</p></td>
+<td><p>A video licence as the package's canonical code (<a class="reference internal" href="illustration.licensing.html#illustration.licensing.normalize_license" title="illustration.licensing.normalize_license"><code class="xref py py-func docutils literal notranslate"><span class="pre">illustration.licensing.normalize_license()</span></code></a>); <code class="docutils literal notranslate"><span class="pre">None</span></code> when unknown.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#illustration.frames.youtube_video_id" title="illustration.frames.youtube_video_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">youtube_video_id</span></code></a>(url)</p></td>
+<td><p>The video id in a YouTube URL, or <code class="docutils literal notranslate"><span class="pre">None</span></code>: lets indexing skip a video it already has without fetching anything.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="rubric">Classes</p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#illustration.frames.FrameHit" title="illustration.frames.FrameHit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FrameHit</span></code></a>(video_id, video_url, t, score[, ...])</p></td>
+<td><p>One frame that matches a query: which video, when, how well, and the rights record (<a class="reference internal" href="illustration.schema.html#illustration.schema.RIGHTS_FIELDS" title="illustration.schema.RIGHTS_FIELDS"><code class="xref py py-data docutils literal notranslate"><span class="pre">illustration.schema.RIGHTS_FIELDS</span></code></a>) of that video.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py data">
+<dt class="sig sig-object py" id="illustration.frames.DFLT_MIN_GAP_S">
+<span class="sig-prename descclassname"><span class="pre">illustration.frames.</span></span><span class="sig-name descname"><span class="pre">DFLT_MIN_GAP_S</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">12.0</span></span><a class="headerlink" href="#illustration.frames.DFLT_MIN_GAP_S" title="Link to this definition">#</a></dt>
+<dd><p>keep the best.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Two hits in one video closer than this (seconds) are one scene</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="illustration.frames.DFLT_PER_VIDEO">
+<span class="sig-prename descclassname"><span class="pre">illustration.frames.</span></span><span class="sig-name descname"><span class="pre">DFLT_PER_VIDEO</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></span><a class="headerlink" href="#illustration.frames.DFLT_PER_VIDEO" title="Link to this definition">#</a></dt>
+<dd><p>At most this many hits from one video, so one long video cannot fill the list.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="illustration.frames.FrameHit">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">illustration.frames.</span></span><span class="sig-name descname"><span class="pre">FrameHit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">video_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">video_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">license</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">license_raw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">license_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">author</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">author_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cacheable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/frames.html#FrameHit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.frames.FrameHit" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>One frame that matches a query: which video, when, how well, and the
+rights record (<a class="reference internal" href="illustration.schema.html#illustration.schema.RIGHTS_FIELDS" title="illustration.schema.RIGHTS_FIELDS"><code class="xref py py-data docutils literal notranslate"><span class="pre">illustration.schema.RIGHTS_FIELDS</span></code></a>) of that video.</p>
+<dl class="field-list simple">
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="illustration.frames.FrameHit.rights">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">rights</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a></span><a class="headerlink" href="#illustration.frames.FrameHit.rights" title="Link to this definition">#</a></dt>
+<dd><p>The rights record, by <a class="reference internal" href="illustration.schema.html#illustration.schema.RIGHTS_FIELDS" title="illustration.schema.RIGHTS_FIELDS"><code class="xref py py-data docutils literal notranslate"><span class="pre">illustration.schema.RIGHTS_FIELDS</span></code></a>’ names.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="illustration.frames.FrameHit.source_page_url">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">source_page_url</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><a class="headerlink" href="#illustration.frames.FrameHit.source_page_url" title="Link to this definition">#</a></dt>
+<dd><p>the video at this moment (<a class="reference internal" href="#illustration.frames.FrameHit.watch_url" title="illustration.frames.FrameHit.watch_url"><code class="xref py py-attr docutils literal notranslate"><span class="pre">watch_url</span></code></a>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The page the frame is on</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="illustration.frames.FrameHit.watch_url">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">watch_url</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><a class="headerlink" href="#illustration.frames.FrameHit.watch_url" title="Link to this definition">#</a></dt>
+<dd><p>The video URL opening at this frame (whole seconds).</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">FrameHit</span><span class="p">(</span><span class="s2">"v"</span><span class="p">,</span> <span class="s2">"https://www.youtube.com/watch?v=v"</span><span class="p">,</span> <span class="mf">75.4</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span><span class="o">.</span><span class="n">watch_url</span>
+</span><span data-line="2"><span class="go">'https://www.youtube.com/watch?v=v&amp;t=75s'</span>
+</span><span data-line="3"><span class="gp">&gt;&gt;&gt; </span><span class="n">FrameHit</span><span class="p">(</span><span class="s2">"v"</span><span class="p">,</span> <span class="s2">"https://youtu.be/v"</span><span class="p">,</span> <span class="mf">9.0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span><span class="o">.</span><span class="n">watch_url</span>
+</span><span data-line="4"><span class="go">'https://youtu.be/v?t=9s'</span>
+</span></pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="illustration.frames.default_frame_store">
+<span class="sig-prename descclassname"><span class="pre">illustration.frames.</span></span><span class="sig-name descname"><span class="pre">default_frame_store</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/frames.html#default_frame_store"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.frames.default_frame_store" title="Link to this definition">#</a></dt>
+<dd><p>JSON files under the cache dir, one per video, per embedding model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.MutableMapping" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MutableMapping</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="illustration.frames.frame_license">
+<span class="sig-prename descclassname"><span class="pre">illustration.frames.</span></span><span class="sig-name descname"><span class="pre">frame_license</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/frames.html#frame_license"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.frames.frame_license" title="Link to this definition">#</a></dt>
+<dd><p>A video licence as the package’s canonical code
+(<a class="reference internal" href="illustration.licensing.html#illustration.licensing.normalize_license" title="illustration.licensing.normalize_license"><code class="xref py py-func docutils literal notranslate"><span class="pre">illustration.licensing.normalize_license()</span></code></a>); <code class="docutils literal notranslate"><span class="pre">None</span></code> when unknown.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">frame_license</span><span class="p">(</span><span class="s2">"Creative Commons Attribution license (reuse allowed)"</span><span class="p">)</span>
+</span><span data-line="2"><span class="go">'by'</span>
+</span><span data-line="3"><span class="gp">&gt;&gt;&gt; </span><span class="n">frame_license</span><span class="p">(</span><span class="n">YOUTUBE_STANDARD_LICENSE</span><span class="p">),</span> <span class="n">frame_license</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+</span><span data-line="4"><span class="go">('youtube-standard-license', None)</span>
+</span><span data-line="5"><span class="gp">&gt;&gt;&gt; </span><span class="n">frame_license</span><span class="p">(</span><span class="s2">"CC BY-NC 4.0"</span><span class="p">)</span>  <span class="c1"># a custom sampler's licence keeps its NC</span>
+</span><span data-line="6"><span class="go">'by-nc'</span>
+</span></pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> | <span class="highlight sphinx_autodoc_typehints-value"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="kc"><span class="pre">None</span></span></code></a></span></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="illustration.frames.index_video_frames">
+<span class="sig-prename descclassname"><span class="pre">illustration.frames.</span></span><span class="sig-name descname"><span class="pre">index_video_frames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">videos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">store</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;function</span> <span class="pre">storyboard_sampler&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scorer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">64</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/frames.html#index_video_frames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.frames.index_video_frames" title="Link to this definition">#</a></dt>
+<dd><p>Embed every frame of <code class="docutils literal notranslate"><span class="pre">videos</span></code> into the corpus; return what happened.</p>
+<p>A video already in the store is skipped unless <code class="docutils literal notranslate"><span class="pre">refresh=True</span></code> (for a
+YouTube URL, without fetching anything), so indexing a channel again only
+does the new videos. A video that cannot be read or embedded (no
+storyboard, unavailable, a corrupt sheet, a scorer error) is recorded in
+<code class="docutils literal notranslate"><span class="pre">failed</span></code> with the reason, nothing is written for it, and the others go
+on. Frames are embedded <code class="docutils literal notranslate"><span class="pre">batch</span></code> at a time as they are read, so a long
+video never sits in memory whole.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>[ids], “skipped”: [ids], “failed”: {url: why},
+“frames”: number of frames embedded}``; a video’s id is its
+<code class="docutils literal notranslate"><span class="pre">video_id</span></code>, else its URL.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="illustration.frames.search_frames">
+<span class="sig-prename descclassname"><span class="pre">illustration.frames.</span></span><span class="sig-name descname"><span class="pre">search_frames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">store</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scorer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">per_video</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_gap_s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">12.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">videos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/frames.html#search_frames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.frames.search_frames" title="Link to this definition">#</a></dt>
+<dd><p>The <code class="docutils literal notranslate"><span class="pre">k</span></code> frames that best match <code class="docutils literal notranslate"><span class="pre">text</span></code>, best first.</p>
+<p>Diversified, because the next frame of a match is usually a match too: at
+most <code class="docutils literal notranslate"><span class="pre">per_video</span></code> hits per video, and two hits closer than <code class="docutils literal notranslate"><span class="pre">min_gap_s</span></code>
+in one video are one scene (the better one is kept). <code class="docutils literal notranslate"><span class="pre">videos</span></code> limits the
+search to those video ids (or URLs, for a video that has no id). Videos
+indexed with another embedding model are skipped, with a warning.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference internal" href="#illustration.frames.FrameHit" title="illustration.frames.FrameHit"><code class="xref py py-class docutils literal notranslate"><span class="pre">FrameHit</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="illustration.frames.storyboard_sampler">
+<span class="sig-prename descclassname"><span class="pre">illustration.frames.</span></span><span class="sig-name descname"><span class="pre">storyboard_sampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/frames.html#storyboard_sampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.frames.storyboard_sampler" title="Link to this definition">#</a></dt>
+<dd><p>A video’s YouTube storyboard (<code class="docutils literal notranslate"><span class="pre">yb.download.youtube_storyboard</span></code>).</p>
+<p>A YouTube video with no licence reported is under YouTube’s standard
+licence, so that is what it records (<code class="xref py py-data docutils literal notranslate"><span class="pre">YOUTUBE_STANDARD_LICENSE</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="illustration.frames.youtube_video_id">
+<span class="sig-prename descclassname"><span class="pre">illustration.frames.</span></span><span class="sig-name descname"><span class="pre">youtube_video_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/frames.html#youtube_video_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.frames.youtube_video_id" title="Link to this definition">#</a></dt>
+<dd><p>The video id in a YouTube URL, or <code class="docutils literal notranslate"><span class="pre">None</span></code>: lets indexing skip a video it
+already has without fetching anything.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">youtube_video_id</span><span class="p">(</span><span class="s2">"https://www.youtube.com/watch?v=dQw4w9WgXcQ&amp;t=3"</span><span class="p">)</span>
+</span><span data-line="2"><span class="go">'dQw4w9WgXcQ'</span>
+</span><span data-line="3"><span class="gp">&gt;&gt;&gt; </span><span class="n">youtube_video_id</span><span class="p">(</span><span class="s2">"https://youtu.be/a-b_cdefghi"</span><span class="p">),</span> <span class="n">youtube_video_id</span><span class="p">(</span><span class="s2">"/films/a.mp4"</span><span class="p">)</span>
+</span><span data-line="4"><span class="go">('a-b_cdefghi', None)</span>
+</span></pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> | <span class="highlight sphinx_autodoc_typehints-value"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="kc"><span class="pre">None</span></span></code></a></span></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"><div class="navigation-prev">
+    <a href="illustration.facade.html">
+      <i class="i-lucide chevron-left"></i>
+      <div class="page-info">
+        <span>Previous</span><div class="title">illustration.facade</div></div>
+    </a>
+  </div><div class="navigation-next">
+    <a href="illustration.inspection.html">
+      <div class="page-info">
+        <span>Next</span>
+        <div class="title">illustration.inspection</div>
+      </div>
+      <i class="i-lucide chevron-right"></i>
+    </a>
+  </div></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright">
+  <p>
+    Made with
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+  <a href="https://github.com/thorwhalen/illustration" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div>
+    </div>
+  </div>
+</footer>
+      <script src="../_static/documentation_options.js?v=5d650c58"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=fd10adb8"></script>
+      <script src="../_static/shibuya.js?v=50760d75"></script></body>
+</html>

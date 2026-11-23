@@ -1,0 +1,30 @@
+illustration.frames
+===================
+
+.. automodule:: illustration.frames
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      DFLT_PER_VIDEO
+      DFLT_MIN_GAP_S
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      index_video_frames
+      search_frames
+      storyboard_sampler
+      default_frame_store
+      frame_license
+      youtube_video_id
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      FrameHit
+   

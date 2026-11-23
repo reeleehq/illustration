@@ -76,6 +76,7 @@ data-aria-dark="Switch to auto color mode">
 <li class="toctree-l3"><a class="reference internal" href="illustration.errors.html">illustration.errors</a></li>
 <li class="toctree-l3"><a class="reference internal" href="illustration.expansion.html">illustration.expansion</a></li>
 <li class="toctree-l3"><a class="reference internal" href="illustration.facade.html">illustration.facade</a></li>
+<li class="toctree-l3"><a class="reference internal" href="illustration.frames.html">illustration.frames</a></li>
 <li class="toctree-l3"><a class="reference internal" href="illustration.inspection.html">illustration.inspection</a></li>
 <li class="toctree-l3"><a class="reference internal" href="illustration.licensing.html">illustration.licensing</a></li>
 <li class="toctree-l3"><a class="reference internal" href="illustration.persistence.html">illustration.persistence</a></li>
@@ -139,6 +140,12 @@ data-aria-dark="Switch to auto color mode">
 </ul>
 </li>
 <li><a class="reference internal" href="#illustration.DuplicateSignature"><code class="docutils literal notranslate"><span class="pre">DuplicateSignature</span></code></a></li>
+<li><a class="reference internal" href="#illustration.FrameHit"><code class="docutils literal notranslate"><span class="pre">FrameHit</span></code></a><ul>
+<li><a class="reference internal" href="#illustration.FrameHit.rights"><code class="docutils literal notranslate"><span class="pre">FrameHit.rights</span></code></a></li>
+<li><a class="reference internal" href="#illustration.FrameHit.source_page_url"><code class="docutils literal notranslate"><span class="pre">FrameHit.source_page_url</span></code></a></li>
+<li><a class="reference internal" href="#illustration.FrameHit.watch_url"><code class="docutils literal notranslate"><span class="pre">FrameHit.watch_url</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#illustration.Grade"><code class="docutils literal notranslate"><span class="pre">Grade</span></code></a></li>
 <li><a class="reference internal" href="#illustration.IllustrationError"><code class="docutils literal notranslate"><span class="pre">IllustrationError</span></code></a></li>
 <li><a class="reference internal" href="#illustration.ImageResult"><code class="docutils literal notranslate"><span class="pre">ImageResult</span></code></a><ul>
@@ -246,6 +253,7 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#illustration.group_duplicate_paths"><code class="docutils literal notranslate"><span class="pre">group_duplicate_paths()</span></code></a></li>
 <li><a class="reference internal" href="#illustration.group_duplicates"><code class="docutils literal notranslate"><span class="pre">group_duplicates()</span></code></a></li>
 <li><a class="reference internal" href="#illustration.hamming_distance"><code class="docutils literal notranslate"><span class="pre">hamming_distance()</span></code></a></li>
+<li><a class="reference internal" href="#illustration.index_video_frames"><code class="docutils literal notranslate"><span class="pre">index_video_frames()</span></code></a></li>
 <li><a class="reference internal" href="#illustration.inspect_candidate"><code class="docutils literal notranslate"><span class="pre">inspect_candidate()</span></code></a></li>
 <li><a class="reference internal" href="#illustration.judge_candidate"><code class="docutils literal notranslate"><span class="pre">judge_candidate()</span></code></a></li>
 <li><a class="reference internal" href="#illustration.license_allowlist"><code class="docutils literal notranslate"><span class="pre">license_allowlist()</span></code></a></li>
@@ -275,6 +283,7 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#illustration.score_grade"><code class="docutils literal notranslate"><span class="pre">score_grade()</span></code></a></li>
 <li><a class="reference internal" href="#illustration.search"><code class="docutils literal notranslate"><span class="pre">search()</span></code></a></li>
 <li><a class="reference internal" href="#illustration.search_cache_key"><code class="docutils literal notranslate"><span class="pre">search_cache_key()</span></code></a></li>
+<li><a class="reference internal" href="#illustration.search_frames"><code class="docutils literal notranslate"><span class="pre">search_frames()</span></code></a></li>
 <li><a class="reference internal" href="#illustration.select_sequence"><code class="docutils literal notranslate"><span class="pre">select_sequence()</span></code></a></li>
 <li><a class="reference internal" href="#illustration.siglip_signature"><code class="docutils literal notranslate"><span class="pre">siglip_signature()</span></code></a></li>
 <li><a class="reference internal" href="#illustration.to_search_hit"><code class="docutils literal notranslate"><span class="pre">to_search_hit()</span></code></a></li>
@@ -494,6 +503,12 @@ so an identical second call is free.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#illustration.export_otio" title="illustration.export_otio"><code class="xref py py-obj docutils literal notranslate"><span class="pre">export_otio</span></code></a>(store[, target])</p></td>
 <td><p>Export the annotation store to OpenTimelineIO (needs <code class="docutils literal notranslate"><span class="pre">lacing[otio]</span></code>).</p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#illustration.index_video_frames" title="illustration.index_video_frames"><code class="xref py py-obj docutils literal notranslate"><span class="pre">index_video_frames</span></code></a>(videos, *[, store, ...])</p></td>
+<td><p>Embed every frame of <code class="docutils literal notranslate"><span class="pre">videos</span></code> into the corpus; return what happened.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#illustration.search_frames" title="illustration.search_frames"><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_frames</span></code></a>(text, *[, store, scorer, ...])</p></td>
+<td><p>The <code class="docutils literal notranslate"><span class="pre">k</span></code> frames that best match <code class="docutils literal notranslate"><span class="pre">text</span></code>, best first.</p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#illustration.render_sequence_video" title="illustration.render_sequence_video"><code class="xref py py-obj docutils literal notranslate"><span class="pre">render_sequence_video</span></code></a>(selections, *, saveas)</p></td>
 <td><p>Render chosen images into a single Ken-Burns film via <code class="docutils literal notranslate"><span class="pre">burns</span></code>.</p></td>
 </tr>
@@ -578,6 +593,9 @@ so an identical second call is free.</p>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#illustration.SelectionBody" title="illustration.SelectionBody"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SelectionBody</span></code></a>(*, beat, beat_index, source[, ...])</p></td>
 <td><p>The typed body of an illustration selection annotation (lacing body schema).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#illustration.FrameHit" title="illustration.FrameHit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FrameHit</span></code></a>(video_id, video_url, t, score[, ...])</p></td>
+<td><p>One frame that matches a query: which video, when, how well, and the rights record (<a class="reference internal" href="illustration.schema.html#illustration.schema.RIGHTS_FIELDS" title="illustration.schema.RIGHTS_FIELDS"><code class="xref py py-data docutils literal notranslate"><span class="pre">illustration.schema.RIGHTS_FIELDS</span></code></a>) of that video.</p></td>
 </tr>
 </tbody>
 </table>
@@ -759,6 +777,45 @@ so the failure is actionable (e.g. <code class="docutils literal notranslate"><s
 <dt class="sig sig-object py" id="illustration.DuplicateSignature">
 <span class="sig-prename descclassname"><span class="pre">illustration.</span></span><span class="sig-name descname"><span class="pre">DuplicateSignature</span></span><a class="headerlink" href="#illustration.DuplicateSignature" title="Link to this definition">#</a></dt>
 <dd><p>alias of <a class="reference internal" href="illustration.duplicates.html#illustration.duplicates.Signature" title="illustration.duplicates.Signature"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signature</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="illustration.FrameHit">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">illustration.</span></span><span class="sig-name descname"><span class="pre">FrameHit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">video_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">video_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">license</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">license_raw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">license_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">author</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">author_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cacheable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/frames.html#FrameHit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.FrameHit" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>One frame that matches a query: which video, when, how well, and the
+rights record (<a class="reference internal" href="illustration.schema.html#illustration.schema.RIGHTS_FIELDS" title="illustration.schema.RIGHTS_FIELDS"><code class="xref py py-data docutils literal notranslate"><span class="pre">illustration.schema.RIGHTS_FIELDS</span></code></a>) of that video.</p>
+<dl class="field-list simple">
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="illustration.FrameHit.rights">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">rights</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a></span><a class="headerlink" href="#illustration.FrameHit.rights" title="Link to this definition">#</a></dt>
+<dd><p>The rights record, by <a class="reference internal" href="illustration.schema.html#illustration.schema.RIGHTS_FIELDS" title="illustration.schema.RIGHTS_FIELDS"><code class="xref py py-data docutils literal notranslate"><span class="pre">illustration.schema.RIGHTS_FIELDS</span></code></a>’ names.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="illustration.FrameHit.source_page_url">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">source_page_url</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><a class="headerlink" href="#illustration.FrameHit.source_page_url" title="Link to this definition">#</a></dt>
+<dd><p>the video at this moment (<a class="reference internal" href="#illustration.FrameHit.watch_url" title="illustration.FrameHit.watch_url"><code class="xref py py-attr docutils literal notranslate"><span class="pre">watch_url</span></code></a>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The page the frame is on</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="illustration.FrameHit.watch_url">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">watch_url</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><a class="headerlink" href="#illustration.FrameHit.watch_url" title="Link to this definition">#</a></dt>
+<dd><p>The video URL opening at this frame (whole seconds).</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">FrameHit</span><span class="p">(</span><span class="s2">"v"</span><span class="p">,</span> <span class="s2">"https://www.youtube.com/watch?v=v"</span><span class="p">,</span> <span class="mf">75.4</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span><span class="o">.</span><span class="n">watch_url</span>
+</span><span data-line="2"><span class="go">'https://www.youtube.com/watch?v=v&amp;t=75s'</span>
+</span><span data-line="3"><span class="gp">&gt;&gt;&gt; </span><span class="n">FrameHit</span><span class="p">(</span><span class="s2">"v"</span><span class="p">,</span> <span class="s2">"https://youtu.be/v"</span><span class="p">,</span> <span class="mf">9.0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span><span class="o">.</span><span class="n">watch_url</span>
+</span><span data-line="4"><span class="go">'https://youtu.be/v?t=9s'</span>
+</span></pre></div>
+</div>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -1664,6 +1721,29 @@ duplicate rather than silently merging two different pictures.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="illustration.index_video_frames">
+<span class="sig-prename descclassname"><span class="pre">illustration.</span></span><span class="sig-name descname"><span class="pre">index_video_frames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">videos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">store</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;function</span> <span class="pre">storyboard_sampler&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scorer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">64</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/frames.html#index_video_frames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.index_video_frames" title="Link to this definition">#</a></dt>
+<dd><p>Embed every frame of <code class="docutils literal notranslate"><span class="pre">videos</span></code> into the corpus; return what happened.</p>
+<p>A video already in the store is skipped unless <code class="docutils literal notranslate"><span class="pre">refresh=True</span></code> (for a
+YouTube URL, without fetching anything), so indexing a channel again only
+does the new videos. A video that cannot be read or embedded (no
+storyboard, unavailable, a corrupt sheet, a scorer error) is recorded in
+<code class="docutils literal notranslate"><span class="pre">failed</span></code> with the reason, nothing is written for it, and the others go
+on. Frames are embedded <code class="docutils literal notranslate"><span class="pre">batch</span></code> at a time as they are read, so a long
+video never sits in memory whole.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>[ids], “skipped”: [ids], “failed”: {url: why},
+“frames”: number of frames embedded}``; a video’s id is its
+<code class="docutils literal notranslate"><span class="pre">video_id</span></code>, else its URL.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="illustration.inspect_candidate">
 <span class="sig-prename descclassname"><span class="pre">illustration.</span></span><span class="sig-name descname"><span class="pre">inspect_candidate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'caption'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">describe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_tokens</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/inspection.html#inspect_candidate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.inspect_candidate" title="Link to this definition">#</a></dt>
 <dd><p>Inspect one candidate: a cheap caption (default) or a full rubric judge.</p>
@@ -2193,6 +2273,22 @@ share a key.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="illustration.search_frames">
+<span class="sig-prename descclassname"><span class="pre">illustration.</span></span><span class="sig-name descname"><span class="pre">search_frames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">store</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scorer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">per_video</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_gap_s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">12.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">videos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/frames.html#search_frames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.search_frames" title="Link to this definition">#</a></dt>
+<dd><p>The <code class="docutils literal notranslate"><span class="pre">k</span></code> frames that best match <code class="docutils literal notranslate"><span class="pre">text</span></code>, best first.</p>
+<p>Diversified, because the next frame of a match is usually a match too: at
+most <code class="docutils literal notranslate"><span class="pre">per_video</span></code> hits per video, and two hits closer than <code class="docutils literal notranslate"><span class="pre">min_gap_s</span></code>
+in one video are one scene (the better one is kept). <code class="docutils literal notranslate"><span class="pre">videos</span></code> limits the
+search to those video ids (or URLs, for a video that has no id). Videos
+indexed with another embedding model are skipped, with a warning.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference internal" href="illustration.frames.html#illustration.frames.FrameHit" title="illustration.frames.FrameHit"><code class="xref py py-class docutils literal notranslate"><span class="pre">FrameHit</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="illustration.select_sequence">
 <span class="sig-prename descclassname"><span class="pre">illustration.</span></span><span class="sig-name descname"><span class="pre">select_sequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">per_beat_candidates</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">relevance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hasher</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shortlist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phash_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signature</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/sequence.html#select_sequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.select_sequence" title="Link to this definition">#</a></dt>
 <dd><p>Choose one image per beat optimizing relevance + coherence − redundancy.</p>
@@ -2336,37 +2432,40 @@ through). Bindings nest: an inner block overlays the outer.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="illustration.facade.html#module-illustration.facade" title="illustration.facade"><code class="xref py py-obj docutils literal notranslate"><span class="pre">facade</span></code></a></p></td>
 <td><p>The façade: <a class="reference internal" href="#illustration.search" title="illustration.search"><code class="xref py py-func docutils literal notranslate"><span class="pre">search()</span></code></a> — one call over any registered provider(s).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="illustration.inspection.html#module-illustration.inspection" title="illustration.inspection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inspection</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="illustration.frames.html#module-illustration.frames" title="illustration.frames"><code class="xref py py-obj docutils literal notranslate"><span class="pre">frames</span></code></a></p></td>
+<td><p>Text-to-frame search over a video corpus: find <em>where</em> in a set of videos something is.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="illustration.inspection.html#module-illustration.inspection" title="illustration.inspection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inspection</span></code></a></p></td>
 <td><p>Candidate inspection — classical-CV pre-filters + VLM caption/judge (R2 §2-3).</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="illustration.licensing.html#module-illustration.licensing" title="illustration.licensing"><code class="xref py py-obj docutils literal notranslate"><span class="pre">licensing</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="illustration.licensing.html#module-illustration.licensing" title="illustration.licensing"><code class="xref py py-obj docutils literal notranslate"><span class="pre">licensing</span></code></a></p></td>
 <td><p>Licence-code normalisation — one vocabulary for four provider vocabularies.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="illustration.persistence.html#module-illustration.persistence" title="illustration.persistence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">persistence</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="illustration.persistence.html#module-illustration.persistence" title="illustration.persistence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">persistence</span></code></a></p></td>
 <td><p>Persist curation/selection decisions as <code class="docutils literal notranslate"><span class="pre">lacing</span></code> standoff annotations (R2 §6).</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="illustration.providers.html#module-illustration.providers" title="illustration.providers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">providers</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="illustration.providers.html#module-illustration.providers" title="illustration.providers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">providers</span></code></a></p></td>
 <td><p>Built-in provider sources, registered on import.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="illustration.registry.html#module-illustration.registry" title="illustration.registry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">registry</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="illustration.registry.html#module-illustration.registry" title="illustration.registry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">registry</span></code></a></p></td>
 <td><p>The open-closed source registry and the <code class="docutils literal notranslate"><span class="pre">sources</span></code> view.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="illustration.reranking.html#module-illustration.reranking" title="illustration.reranking"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reranking</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="illustration.reranking.html#module-illustration.reranking" title="illustration.reranking"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reranking</span></code></a></p></td>
 <td><p>Local cross-modal rerank — the precision stage (research report R1 §3).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="illustration.schema.html#module-illustration.schema" title="illustration.schema"><code class="xref py py-obj docutils literal notranslate"><span class="pre">schema</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="illustration.schema.html#module-illustration.schema" title="illustration.schema"><code class="xref py py-obj docutils literal notranslate"><span class="pre">schema</span></code></a></p></td>
 <td><p>The normalized result schema — the single source of truth (Pydantic v2).</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="illustration.schema_export.html#module-illustration.schema_export" title="illustration.schema_export"><code class="xref py py-obj docutils literal notranslate"><span class="pre">schema_export</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="illustration.schema_export.html#module-illustration.schema_export" title="illustration.schema_export"><code class="xref py py-obj docutils literal notranslate"><span class="pre">schema_export</span></code></a></p></td>
 <td><p>Export the Python SSOT as committed JSON for the TypeScript twin (<code class="docutils literal notranslate"><span class="pre">ts/</span></code>).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="illustration.sequence.html#module-illustration.sequence" title="illustration.sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sequence</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="illustration.sequence.html#module-illustration.sequence" title="illustration.sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sequence</span></code></a></p></td>
 <td><p>Sequence-level selection — the M4 domain core (research report R2 §5).</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="illustration.translation.html#module-illustration.translation" title="illustration.translation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translation</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="illustration.translation.html#module-illustration.translation" title="illustration.translation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translation</span></code></a></p></td>
 <td><p>Canonical → native parameter translation (the <code class="docutils literal notranslate"><span class="pre">denote</span></code> <code class="docutils literal notranslate"><span class="pre">param_map</span></code> idiom).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="illustration.video.html#module-illustration.video" title="illustration.video"><code class="xref py py-obj docutils literal notranslate"><span class="pre">video</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="illustration.video.html#module-illustration.video" title="illustration.video"><code class="xref py py-obj docutils literal notranslate"><span class="pre">video</span></code></a></p></td>
 <td><p>Narration → Ken-Burns video hook — the M4 integration seam.</p></td>
 </tr>
 </tbody>
@@ -2414,7 +2513,7 @@ through). Bindings nest: an inner block overlays the outer.</p>
     </div>
   </div>
 </footer>
-      <script src="../_static/documentation_options.js?v=f91d8841"></script>
+      <script src="../_static/documentation_options.js?v=5d650c58"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>

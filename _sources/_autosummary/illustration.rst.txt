@@ -62,6 +62,8 @@
       resolve_selection
       resolved_selections
       export_otio
+      index_video_frames
+      search_frames
       render_sequence_video
       to_walkthru_document
    
@@ -93,6 +95,7 @@
       DuplicateGroup
       DuplicateSignature
       SelectionBody
+      FrameHit
    
    .. rubric:: Exceptions
 
@@ -122,6 +125,7 @@
    errors
    expansion
    facade
+   frames
    inspection
    licensing
    persistence

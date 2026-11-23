@@ -79,6 +79,21 @@ addressed (keyed by model + image URL) in an injectable `dol` store, so a
 re-rank of overlapping candidates is cheap. A candidate whose image can’t be
 fetched/embedded scores `-1.0` (sorted to the bottom) rather than failing.
 
+#### embed_pil_images(images, , batch=64)
+
+L2-normalized SigLIP embeddings of in-memory images (PIL), in order.
+
+For images that have no URL to cache by, such as frames cut from a
+video ([`illustration.frames`](illustration.frames.html.md#module-illustration.frames)), which keeps its own store. Batched,
+so a channel’s worth of frames is a few forward passes per thousand.
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)
+
+#### embed_text(text)
+
+The L2-normalized SigLIP embedding of `text` (a query).
+
 #### image_embeddings(results)
 
 L2-normalized image embeddings (cached) for `results`; `None` per failure.

@@ -76,6 +76,7 @@ data-aria-dark="Switch to auto color mode">
 <li class="toctree-l3"><a class="reference internal" href="illustration.errors.html">illustration.errors</a></li>
 <li class="toctree-l3"><a class="reference internal" href="illustration.expansion.html">illustration.expansion</a></li>
 <li class="toctree-l3"><a class="reference internal" href="illustration.facade.html">illustration.facade</a></li>
+<li class="toctree-l3"><a class="reference internal" href="illustration.frames.html">illustration.frames</a></li>
 <li class="toctree-l3"><a class="reference internal" href="illustration.inspection.html">illustration.inspection</a></li>
 <li class="toctree-l3"><a class="reference internal" href="illustration.licensing.html">illustration.licensing</a></li>
 <li class="toctree-l3"><a class="reference internal" href="illustration.persistence.html">illustration.persistence</a></li>
@@ -113,6 +114,8 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#illustration.reranking.DFLT_RERANK_MODEL"><code class="docutils literal notranslate"><span class="pre">DFLT_RERANK_MODEL</span></code></a></li>
 <li><a class="reference internal" href="#illustration.reranking.Scorer"><code class="docutils literal notranslate"><span class="pre">Scorer</span></code></a></li>
 <li><a class="reference internal" href="#illustration.reranking.SiglipScorer"><code class="docutils literal notranslate"><span class="pre">SiglipScorer</span></code></a><ul>
+<li><a class="reference internal" href="#illustration.reranking.SiglipScorer.embed_pil_images"><code class="docutils literal notranslate"><span class="pre">SiglipScorer.embed_pil_images()</span></code></a></li>
+<li><a class="reference internal" href="#illustration.reranking.SiglipScorer.embed_text"><code class="docutils literal notranslate"><span class="pre">SiglipScorer.embed_text()</span></code></a></li>
 <li><a class="reference internal" href="#illustration.reranking.SiglipScorer.image_embeddings"><code class="docutils literal notranslate"><span class="pre">SiglipScorer.image_embeddings()</span></code></a></li>
 </ul>
 </li>
@@ -264,6 +267,28 @@ fetched/embedded scores <code class="docutils literal notranslate"><span class="
 <dl class="field-list simple">
 </dl>
 <dl class="py method">
+<dt class="sig sig-object py" id="illustration.reranking.SiglipScorer.embed_pil_images">
+<span class="sig-name descname"><span class="pre">embed_pil_images</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">64</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/reranking.html#SiglipScorer.embed_pil_images"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.reranking.SiglipScorer.embed_pil_images" title="Link to this definition">#</a></dt>
+<dd><p>L2-normalized SigLIP embeddings of in-memory images (PIL), in order.</p>
+<p>For images that have no URL to cache by, such as frames cut from a
+video (<a class="reference internal" href="illustration.frames.html#module-illustration.frames" title="illustration.frames"><code class="xref py py-mod docutils literal notranslate"><span class="pre">illustration.frames</span></code></a>), which keeps its own store. Batched,
+so a channel’s worth of frames is a few forward passes per thousand.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="illustration.reranking.SiglipScorer.embed_text">
+<span class="sig-name descname"><span class="pre">embed_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/reranking.html#SiglipScorer.embed_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.reranking.SiglipScorer.embed_text" title="Link to this definition">#</a></dt>
+<dd><p>The L2-normalized SigLIP embedding of <code class="docutils literal notranslate"><span class="pre">text</span></code> (a query).</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="illustration.reranking.SiglipScorer.image_embeddings">
 <span class="sig-name descname"><span class="pre">image_embeddings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/reranking.html#SiglipScorer.image_embeddings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.reranking.SiglipScorer.image_embeddings" title="Link to this definition">#</a></dt>
 <dd><p>L2-normalized image embeddings (cached) for <code class="docutils literal notranslate"><span class="pre">results</span></code>; <code class="docutils literal notranslate"><span class="pre">None</span></code> per failure.</p>
@@ -384,7 +409,7 @@ or a test double. An empty <code class="docutils literal notranslate"><span clas
     </div>
   </div>
 </footer>
-      <script src="../_static/documentation_options.js?v=f91d8841"></script>
+      <script src="../_static/documentation_options.js?v=5d650c58"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>

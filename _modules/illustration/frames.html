@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="cyan" data-content_root="../../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>illustration.frames - illustration</title><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d88b86f9" />
+    <link rel="stylesheet" type="text/css" href="../../_static/shibuya.css?v=2ceb65ce" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx_autodoc_typehints.css?v=057ac668" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link media="print" rel="stylesheet" type="text/css" href="../../_static/print.css?v=20ff2c19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/><meta property="og:title" content="illustration.frames"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="../../index.html">
+      
+      
+      <strong>illustration</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/thorwhalen/illustration" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="0"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/illustration.html">illustration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/illustration.base.html">illustration.base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/illustration.caching.html">illustration.caching</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/illustration.cli.html">illustration.cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/illustration.config.html">illustration.config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/illustration.credentials.html">illustration.credentials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/illustration.curation.html">illustration.curation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/illustration.duplicates.html">illustration.duplicates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/illustration.errors.html">illustration.errors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/illustration.expansion.html">illustration.expansion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/illustration.facade.html">illustration.facade</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/illustration.frames.html">illustration.frames</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/illustration.inspection.html">illustration.inspection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/illustration.licensing.html">illustration.licensing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/illustration.persistence.html">illustration.persistence</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/illustration.providers.html">illustration.providers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/illustration.providers.openverse.html">illustration.providers.openverse</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/illustration.providers.pexels.html">illustration.providers.pexels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/illustration.providers.pixabay.html">illustration.providers.pixabay</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/illustration.providers.wikimedia.html">illustration.providers.wikimedia</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/illustration.registry.html">illustration.registry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/illustration.reranking.html">illustration.reranking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/illustration.schema.html">illustration.schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/illustration.schema_export.html">illustration.schema_export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/illustration.sequence.html">illustration.sequence</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/illustration.translation.html">illustration.translation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/illustration.video.html">illustration.video</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../ai-agents.html">For AI agents</a></li>
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../index.html"><span itemprop="name">illustration</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../index.html"><span itemprop="name">Module code</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="2" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">illustration.frames</strong>
+        <meta itemprop="position" content="3" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue dark-code" role="main">
+          <h1>Source code for illustration.frames</h1><div class="highlight"><pre>
+<span></span><span data-line="1"><span class="sd">"""Text-to-frame search over a video corpus: find *where* in a set of videos something is.</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="sd">"A cartoon wall clock", "a bedroom at night", "Tokyo Tower": instead of</span>
+</span><span data-line="4"><span class="sd">scrubbing, index the videos' frames once with SigLIP, then ask in words. One</span>
+</span><span data-line="5"><span class="sd">more illustration source, where an "image" is ``(video, t)`` (#46).</span>
+</span><span data-line="6">
+</span><span data-line="7"><span class="sd">    &gt;&gt;&gt; from illustration.frames import index_video_frames, search_frames  # doctest: +SKIP</span>
+</span><span data-line="8"><span class="sd">    &gt;&gt;&gt; index_video_frames(["https://youtu.be/&lt;id&gt;", ...])  # doctest: +SKIP</span>
+</span><span data-line="9"><span class="sd">    &gt;&gt;&gt; for hit in search_frames("a cartoon wall clock", k=12):  # doctest: +SKIP</span>
+</span><span data-line="10"><span class="sd">    ...     print(hit.watch_url, round(hit.score, 3), hit.license)</span>
+</span><span data-line="11">
+</span><span data-line="12"><span class="sd">**Three seams, with working defaults.**</span>
+</span><span data-line="13">
+</span><span data-line="14"><span class="sd">- ``sampler``: a video URL to its frames. The default,</span>
+</span><span data-line="15"><span class="sd">  :func:`storyboard_sampler`, reads YouTube's storyboard (the seek-bar</span>
+</span><span data-line="16"><span class="sd">  thumbnails, 320x180, one every few seconds) through</span>
+</span><span data-line="17"><span class="sd">  ``yb.download.youtube_storyboard``: no video download, and it works where</span>
+</span><span data-line="18"><span class="sd">  video downloads hit a bot wall. Anything returning an object with</span>
+</span><span data-line="19"><span class="sd">  ``video_id``, ``url``, ``title``, ``duration``, ``license`` and ``frames()``</span>
+</span><span data-line="20"><span class="sd">  (``(t, PIL image)`` pairs) fits, e.g. frames sampled from a local file.</span>
+</span><span data-line="21"><span class="sd">- ``scorer``: what embeds the frames and the query. The default is the</span>
+</span><span data-line="22"><span class="sd">  package's SigLIP 2 scorer (:class:`illustration.reranking.SiglipScorer`,</span>
+</span><span data-line="23"><span class="sd">  the ``[rerank]`` extra); anything with ``embed_text(text)`` and</span>
+</span><span data-line="24"><span class="sd">  ``embed_pil_images(images, *, batch)`` fits (an ONNX text encoder on a</span>
+</span><span data-line="25"><span class="sd">  machine without torch, for instance), and its ``model_id`` (if it has one)</span>
+</span><span data-line="26"><span class="sd">  is recorded with the corpus: a search with another model skips those videos</span>
+</span><span data-line="27"><span class="sd">  and warns, since their vectors are not comparable.</span>
+</span><span data-line="28"><span class="sd">- ``store``: where the corpus lives, one entry per video (its times, its</span>
+</span><span data-line="29"><span class="sd">  vectors, its title and licence). Default: JSON files under the cache dir, per</span>
+</span><span data-line="30"><span class="sd">  model, since a corpus is regenerable.</span>
+</span><span data-line="31">
+</span><span data-line="32"><span class="sd">**Limits to know.** A storyboard frame stands for a few seconds and can lag</span>
+</span><span data-line="33"><span class="sd">the moment it shows by about a second, so cut the real frame from a few</span>
+</span><span data-line="34"><span class="sd">candidate times around a hit (``yb.download``'s ``start``/``end``). At 320x180</span>
+</span><span data-line="35"><span class="sd">it finds scenes, not small props; a caption track can find what the picture</span>
+</span><span data-line="36"><span class="sd">cannot (search both).</span>
+</span><span data-line="37">
+</span><span data-line="38"><span class="sd">**Licence.** A hit carries the package's full rights record</span>
+</span><span data-line="39"><span class="sd">(:data:`illustration.schema.RIGHTS_FIELDS`): the licence as the canonical</span>
+</span><span data-line="40"><span class="sd">code of :func:`illustration.licensing.normalize_license` (YouTube's Creative</span>
+</span><span data-line="41"><span class="sd">Commons licence is ``by``; its standard licence, which is all rights reserved,</span>
+</span><span data-line="42"><span class="sd">is ``youtube-standard-license``; ``None`` when the sampler did not say), the</span>
+</span><span data-line="43"><span class="sd">licence URL, an attribution line, the author and their page, the source page</span>
+</span><span data-line="44"><span class="sd">(the video at that moment), and ``cacheable=False`` (the frames are never</span>
+</span><span data-line="45"><span class="sd">stored, only their embeddings). Fine to find and study; republishing follows</span>
+</span><span data-line="46"><span class="sd">the licence.</span>
+</span><span data-line="47"><span class="sd">"""</span>
+</span><span data-line="48">
+</span><span data-line="49"><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+</span><span data-line="50">
+</span><span data-line="51"><span class="kn">import</span><span class="w"> </span><span class="nn">hashlib</span>
+</span><span data-line="52"><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+</span><span data-line="53"><span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+</span><span data-line="54"><span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+</span><span data-line="55"><span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">replace</span>
+</span><span data-line="56"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">MutableMapping</span><span class="p">,</span> <span class="n">Sequence</span>
+</span><span data-line="57">
+</span><span data-line="58"><span class="kn">from</span><span class="w"> </span><span class="nn">illustration.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">cache_dir</span>
+</span><span data-line="59">
+</span><span data-line="60"><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+</span><span data-line="61">    <span class="s2">"FrameHit"</span><span class="p">,</span>
+</span><span data-line="62">    <span class="s2">"index_video_frames"</span><span class="p">,</span>
+</span><span data-line="63">    <span class="s2">"search_frames"</span><span class="p">,</span>
+</span><span data-line="64">    <span class="s2">"storyboard_sampler"</span><span class="p">,</span>
+</span><span data-line="65">    <span class="s2">"default_frame_store"</span><span class="p">,</span>
+</span><span data-line="66">    <span class="s2">"frame_license"</span><span class="p">,</span>
+</span><span data-line="67">    <span class="s2">"youtube_video_id"</span><span class="p">,</span>
+</span><span data-line="68">    <span class="s2">"DFLT_PER_VIDEO"</span><span class="p">,</span>
+</span><span data-line="69">    <span class="s2">"DFLT_MIN_GAP_S"</span><span class="p">,</span>
+</span><span data-line="70"><span class="p">]</span>
+</span><span data-line="71">
+</span><span data-line="72"><span class="c1">#: At most this many hits from one video, so one long video cannot fill the list.</span>
+</span><span data-line="73"><span class="n">DFLT_PER_VIDEO</span> <span class="o">=</span> <span class="mi">3</span>
+</span><span data-line="74"><span class="c1">#: Two hits in one video closer than this (seconds) are one scene: keep the best.</span>
+</span><span data-line="75"><span class="n">DFLT_MIN_GAP_S</span> <span class="o">=</span> <span class="mf">12.0</span>
+</span><span data-line="76"><span class="c1">#: Frames embedded per forward pass.</span>
+</span><span data-line="77"><span class="n">DFLT_BATCH</span> <span class="o">=</span> <span class="mi">64</span>
+</span><span data-line="78">
+</span><span data-line="79"><span class="c1">#: YouTube's standard licence, under which every video not marked Creative</span>
+</span><span data-line="80"><span class="c1">#: Commons is published (yt-dlp reports no ``license`` for it).</span>
+</span><span data-line="81"><span class="n">YOUTUBE_STANDARD_LICENSE</span> <span class="o">=</span> <span class="s2">"YouTube Standard License"</span>
+</span><span data-line="82">
+</span><span data-line="83"><span class="c1">#: Where each licence's terms are, by canonical code. YouTube's Creative Commons</span>
+</span><span data-line="84"><span class="c1">#: option is CC BY 3.0.</span>
+</span><span data-line="85"><span class="n">_LICENSE_URLS</span> <span class="o">=</span> <span class="p">{</span>
+</span><span data-line="86">    <span class="s2">"by"</span><span class="p">:</span> <span class="s2">"https://creativecommons.org/licenses/by/3.0/"</span><span class="p">,</span>
+</span><span data-line="87">    <span class="s2">"youtube-standard-license"</span><span class="p">:</span> <span class="s2">"https://www.youtube.com/t/terms"</span><span class="p">,</span>
+</span><span data-line="88"><span class="p">}</span>
+</span><span data-line="89">
+</span><span data-line="90">
+<div class="viewcode-block" id="frame_license">
+<a class="viewcode-back" href="../../_autosummary/illustration.frames.html#illustration.frame_license">[docs]</a>
+</span><span data-line="91"><span class="k">def</span><span class="w"> </span><span class="nf">frame_license</span><span class="p">(</span><span class="n">raw</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="92"><span class="w">    </span><span class="sd">"""A video licence as the package's canonical code</span>
+</span><span data-line="93"><span class="sd">    (:func:`illustration.licensing.normalize_license`); ``None`` when unknown.</span>
+</span><span data-line="94">
+</span><span data-line="95"><span class="sd">    &gt;&gt;&gt; frame_license("Creative Commons Attribution license (reuse allowed)")</span>
+</span><span data-line="96"><span class="sd">    'by'</span>
+</span><span data-line="97"><span class="sd">    &gt;&gt;&gt; frame_license(YOUTUBE_STANDARD_LICENSE), frame_license(None)</span>
+</span><span data-line="98"><span class="sd">    ('youtube-standard-license', None)</span>
+</span><span data-line="99"><span class="sd">    &gt;&gt;&gt; frame_license("CC BY-NC 4.0")  # a custom sampler's licence keeps its NC</span>
+</span><span data-line="100"><span class="sd">    'by-nc'</span>
+</span><span data-line="101"><span class="sd">    """</span>
+</span><span data-line="102">    <span class="kn">from</span><span class="w"> </span><span class="nn">illustration.licensing</span><span class="w"> </span><span class="kn">import</span> <span class="n">normalize_license</span>
+</span><span data-line="103">
+</span><span data-line="104">    <span class="k">return</span> <span class="n">normalize_license</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span></div>
+
+</span><span data-line="105">
+</span><span data-line="106">
+<div class="viewcode-block" id="youtube_video_id">
+<a class="viewcode-back" href="../../_autosummary/illustration.frames.html#illustration.youtube_video_id">[docs]</a>
+</span><span data-line="107"><span class="k">def</span><span class="w"> </span><span class="nf">youtube_video_id</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="108"><span class="w">    </span><span class="sd">"""The video id in a YouTube URL, or ``None``: lets indexing skip a video it</span>
+</span><span data-line="109"><span class="sd">    already has without fetching anything.</span>
+</span><span data-line="110">
+</span><span data-line="111"><span class="sd">    &gt;&gt;&gt; youtube_video_id("https://www.youtube.com/watch?v=dQw4w9WgXcQ&amp;t=3")</span>
+</span><span data-line="112"><span class="sd">    'dQw4w9WgXcQ'</span>
+</span><span data-line="113"><span class="sd">    &gt;&gt;&gt; youtube_video_id("https://youtu.be/a-b_cdefghi"), youtube_video_id("/films/a.mp4")</span>
+</span><span data-line="114"><span class="sd">    ('a-b_cdefghi', None)</span>
+</span><span data-line="115"><span class="sd">    """</span>
+</span><span data-line="116">    <span class="n">found</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span>
+</span><span data-line="117">        <span class="sa">r</span><span class="s2">"(?:youtube\.com/(?:watch\?(?:.*&amp;)?v=|shorts/|embed/|live/)|youtu\.be/)"</span>
+</span><span data-line="118">        <span class="sa">r</span><span class="s2">"([A-Za-z0-9_-]{6,})"</span><span class="p">,</span>
+</span><span data-line="119">        <span class="n">url</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">,</span>
+</span><span data-line="120">    <span class="p">)</span>
+</span><span data-line="121">    <span class="k">return</span> <span class="n">found</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">found</span> <span class="k">else</span> <span class="kc">None</span></div>
+
+</span><span data-line="122">
+</span><span data-line="123">
+<div class="viewcode-block" id="FrameHit">
+<a class="viewcode-back" href="../../_autosummary/illustration.frames.html#illustration.FrameHit">[docs]</a>
+</span><span data-line="124"><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="125"><span class="k">class</span><span class="w"> </span><span class="nc">FrameHit</span><span class="p">:</span>
+</span><span data-line="126"><span class="w">    </span><span class="sd">"""One frame that matches a query: which video, when, how well, and the</span>
+</span><span data-line="127"><span class="sd">    rights record (:data:`illustration.schema.RIGHTS_FIELDS`) of that video."""</span>
+</span><span data-line="128">
+</span><span data-line="129">    <span class="n">video_id</span><span class="p">:</span> <span class="nb">str</span>
+</span><span data-line="130">    <span class="n">video_url</span><span class="p">:</span> <span class="nb">str</span>
+</span><span data-line="131">    <span class="n">t</span><span class="p">:</span> <span class="nb">float</span>
+</span><span data-line="132">    <span class="n">score</span><span class="p">:</span> <span class="nb">float</span>
+</span><span data-line="133">    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="134">    <span class="n">license</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># canonical code; None: the sampler did not say</span>
+</span><span data-line="135">    <span class="n">license_raw</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="136">    <span class="n">license_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="137">    <span class="n">attribution</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="138">    <span class="n">author</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="139">    <span class="n">author_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="140">    <span class="n">cacheable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># only embeddings are kept, never the frames</span>
+</span><span data-line="141">
+</span><span data-line="142">    <span class="nd">@property</span>
+</span><span data-line="143">    <span class="k">def</span><span class="w"> </span><span class="nf">source_page_url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="144"><span class="w">        </span><span class="sd">"""The page the frame is on: the video at this moment (:attr:`watch_url`)."""</span>
+</span><span data-line="145">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">watch_url</span>
+</span><span data-line="146">
+</span><span data-line="147">    <span class="nd">@property</span>
+</span><span data-line="148">    <span class="k">def</span><span class="w"> </span><span class="nf">rights</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+</span><span data-line="149"><span class="w">        </span><span class="sd">"""The rights record, by :data:`illustration.schema.RIGHTS_FIELDS`' names."""</span>
+</span><span data-line="150">        <span class="kn">from</span><span class="w"> </span><span class="nn">illustration.schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">RIGHTS_FIELDS</span>
+</span><span data-line="151">
+</span><span data-line="152">        <span class="k">return</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">RIGHTS_FIELDS</span><span class="p">}</span>
+</span><span data-line="153">
+</span><span data-line="154">    <span class="nd">@property</span>
+</span><span data-line="155">    <span class="k">def</span><span class="w"> </span><span class="nf">watch_url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="156"><span class="w">        </span><span class="sd">"""The video URL opening at this frame (whole seconds).</span>
+</span><span data-line="157">
+</span><span data-line="158"><span class="sd">        &gt;&gt;&gt; FrameHit("v", "https://www.youtube.com/watch?v=v", 75.4, 0.2).watch_url</span>
+</span><span data-line="159"><span class="sd">        'https://www.youtube.com/watch?v=v&amp;t=75s'</span>
+</span><span data-line="160"><span class="sd">        &gt;&gt;&gt; FrameHit("v", "https://youtu.be/v", 9.0, 0.2).watch_url</span>
+</span><span data-line="161"><span class="sd">        'https://youtu.be/v?t=9s'</span>
+</span><span data-line="162"><span class="sd">        """</span>
+</span><span data-line="163">        <span class="n">sep</span> <span class="o">=</span> <span class="s2">"&amp;"</span> <span class="k">if</span> <span class="s2">"?"</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">video_url</span> <span class="k">else</span> <span class="s2">"?"</span>
+</span><span data-line="164">        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">video_url</span><span class="si">}{</span><span class="n">sep</span><span class="si">}</span><span class="s2">t=</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">)</span><span class="si">}</span><span class="s2">s"</span></div>
+
+</span><span data-line="165">
+</span><span data-line="166">
+<div class="viewcode-block" id="storyboard_sampler">
+<a class="viewcode-back" href="../../_autosummary/illustration.frames.html#illustration.storyboard_sampler">[docs]</a>
+</span><span data-line="167"><span class="k">def</span><span class="w"> </span><span class="nf">storyboard_sampler</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+</span><span data-line="168"><span class="w">    </span><span class="sd">"""A video's YouTube storyboard (``yb.download.youtube_storyboard``).</span>
+</span><span data-line="169">
+</span><span data-line="170"><span class="sd">    A YouTube video with no licence reported is under YouTube's standard</span>
+</span><span data-line="171"><span class="sd">    licence, so that is what it records (:data:`YOUTUBE_STANDARD_LICENSE`).</span>
+</span><span data-line="172"><span class="sd">    """</span>
+</span><span data-line="173">    <span class="k">try</span><span class="p">:</span>
+</span><span data-line="174">        <span class="kn">from</span><span class="w"> </span><span class="nn">yb.download</span><span class="w"> </span><span class="kn">import</span> <span class="n">youtube_storyboard</span>
+</span><span data-line="175">    <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>  <span class="c1"># pragma: no cover - the message is the point</span>
+</span><span data-line="176">        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+</span><span data-line="177">            <span class="s2">"the storyboard sampler reads YouTube through yb: install the "</span>
+</span><span data-line="178">            <span class="s2">"[frames] extra, or pass sampler="</span>
+</span><span data-line="179">        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">error</span>
+</span><span data-line="180">    <span class="n">board</span> <span class="o">=</span> <span class="n">youtube_storyboard</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span data-line="181">    <span class="k">return</span> <span class="n">board</span> <span class="k">if</span> <span class="n">board</span><span class="o">.</span><span class="n">license</span> <span class="k">else</span> <span class="n">replace</span><span class="p">(</span><span class="n">board</span><span class="p">,</span> <span class="n">license</span><span class="o">=</span><span class="n">YOUTUBE_STANDARD_LICENSE</span><span class="p">)</span></div>
+
+</span><span data-line="182">
+</span><span data-line="183">
+<div class="viewcode-block" id="default_frame_store">
+<a class="viewcode-back" href="../../_autosummary/illustration.frames.html#illustration.default_frame_store">[docs]</a>
+</span><span data-line="184"><span class="k">def</span><span class="w"> </span><span class="nf">default_frame_store</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"MutableMapping[str, Any]"</span><span class="p">:</span>
+</span><span data-line="185"><span class="w">    </span><span class="sd">"""JSON files under the cache dir, one per video, per embedding model."""</span>
+</span><span data-line="186">    <span class="kn">from</span><span class="w"> </span><span class="nn">dol</span><span class="w"> </span><span class="kn">import</span> <span class="n">JsonFiles</span>
+</span><span data-line="187">
+</span><span data-line="188">    <span class="kn">from</span><span class="w"> </span><span class="nn">illustration.reranking</span><span class="w"> </span><span class="kn">import</span> <span class="n">_slug</span>
+</span><span data-line="189">
+</span><span data-line="190">    <span class="n">root</span> <span class="o">=</span> <span class="n">cache_dir</span><span class="p">(</span><span class="n">ensure</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">/</span> <span class="s2">"frames"</span> <span class="o">/</span> <span class="n">_slug</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+</span><span data-line="191">    <span class="n">root</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="192">    <span class="k">return</span> <span class="n">JsonFiles</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">root</span><span class="p">))</span></div>
+
+</span><span data-line="193">
+</span><span data-line="194">
+</span><span data-line="195"><span class="k">def</span><span class="w"> </span><span class="nf">_default_scorer</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+</span><span data-line="196">    <span class="kn">from</span><span class="w"> </span><span class="nn">illustration.reranking</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_siglip_scorer</span>
+</span><span data-line="197">
+</span><span data-line="198">    <span class="k">return</span> <span class="n">make_siglip_scorer</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">)</span>
+</span><span data-line="199">
+</span><span data-line="200">
+</span><span data-line="201"><span class="k">def</span><span class="w"> </span><span class="nf">_model_name</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="202">    <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="203">        <span class="k">return</span> <span class="n">model</span>
+</span><span data-line="204">    <span class="kn">from</span><span class="w"> </span><span class="nn">illustration.reranking</span><span class="w"> </span><span class="kn">import</span> <span class="n">DFLT_RERANK_MODEL</span>
+</span><span data-line="205">
+</span><span data-line="206">    <span class="k">return</span> <span class="n">DFLT_RERANK_MODEL</span>
+</span><span data-line="207">
+</span><span data-line="208">
+</span><span data-line="209"><span class="k">def</span><span class="w"> </span><span class="nf">_entry_key</span><span class="p">(</span><span class="n">identity</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="210"><span class="w">    </span><span class="sd">"""One store key per video: a digest of its identity, so ids differing only</span>
+</span><span data-line="211"><span class="sd">    in ``-``/``_``, case or path separators never share an entry."""</span>
+</span><span data-line="212">    <span class="k">return</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">identity</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">))</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()[:</span><span class="mi">40</span><span class="p">]</span> <span class="o">+</span> <span class="s2">".json"</span>
+</span><span data-line="213">
+</span><span data-line="214">
+</span><span data-line="215"><span class="k">def</span><span class="w"> </span><span class="nf">_attribution</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">author</span><span class="p">,</span> <span class="n">license_code</span><span class="p">,</span> <span class="n">license_raw</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="216">    <span class="kn">from</span><span class="w"> </span><span class="nn">illustration.licensing</span><span class="w"> </span><span class="kn">import</span> <span class="n">display_license</span>
+</span><span data-line="217">
+</span><span data-line="218">    <span class="n">what</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'"</span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s1">"'</span> <span class="k">if</span> <span class="n">title</span> <span class="k">else</span> <span class="s2">"Video"</span>
+</span><span data-line="219">    <span class="n">by</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">" by </span><span class="si">{</span><span class="n">author</span><span class="si">}</span><span class="s2">"</span> <span class="k">if</span> <span class="n">author</span> <span class="k">else</span> <span class="s2">""</span>
+</span><span data-line="220">    <span class="n">terms</span> <span class="o">=</span> <span class="n">display_license</span><span class="p">(</span><span class="n">license_code</span><span class="p">)</span> <span class="ow">or</span> <span class="n">license_raw</span>
+</span><span data-line="221">    <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">what</span><span class="si">}{</span><span class="n">by</span><span class="si">}</span><span class="s2">"</span> <span class="o">+</span> <span class="p">(</span><span class="sa">f</span><span class="s2">", </span><span class="si">{</span><span class="n">terms</span><span class="si">}</span><span class="s2">"</span> <span class="k">if</span> <span class="n">terms</span> <span class="k">else</span> <span class="s2">""</span><span class="p">)</span>
+</span><span data-line="222">
+</span><span data-line="223">
+<div class="viewcode-block" id="index_video_frames">
+<a class="viewcode-back" href="../../_autosummary/illustration.frames.html#illustration.index_video_frames">[docs]</a>
+</span><span data-line="224"><span class="k">def</span><span class="w"> </span><span class="nf">index_video_frames</span><span class="p">(</span>
+</span><span data-line="225">    <span class="n">videos</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+</span><span data-line="226">    <span class="o">*</span><span class="p">,</span>
+</span><span data-line="227">    <span class="n">store</span><span class="p">:</span> <span class="s2">"MutableMapping[str, Any] | None"</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="228">    <span class="n">sampler</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">storyboard_sampler</span><span class="p">,</span>
+</span><span data-line="229">    <span class="n">scorer</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="230">    <span class="n">model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="231">    <span class="n">refresh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span data-line="232">    <span class="n">batch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DFLT_BATCH</span><span class="p">,</span>
+</span><span data-line="233"><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+</span><span data-line="234"><span class="w">    </span><span class="sd">"""Embed every frame of ``videos`` into the corpus; return what happened.</span>
+</span><span data-line="235">
+</span><span data-line="236"><span class="sd">    A video already in the store is skipped unless ``refresh=True`` (for a</span>
+</span><span data-line="237"><span class="sd">    YouTube URL, without fetching anything), so indexing a channel again only</span>
+</span><span data-line="238"><span class="sd">    does the new videos. A video that cannot be read or embedded (no</span>
+</span><span data-line="239"><span class="sd">    storyboard, unavailable, a corrupt sheet, a scorer error) is recorded in</span>
+</span><span data-line="240"><span class="sd">    ``failed`` with the reason, nothing is written for it, and the others go</span>
+</span><span data-line="241"><span class="sd">    on. Frames are embedded ``batch`` at a time as they are read, so a long</span>
+</span><span data-line="242"><span class="sd">    video never sits in memory whole.</span>
+</span><span data-line="243">
+</span><span data-line="244"><span class="sd">    Returns:</span>
+</span><span data-line="245"><span class="sd">        ``{"indexed": [ids], "skipped": [ids], "failed": {url: why},</span>
+</span><span data-line="246"><span class="sd">        "frames": number of frames embedded}``; a video's id is its</span>
+</span><span data-line="247"><span class="sd">        ``video_id``, else its URL.</span>
+</span><span data-line="248"><span class="sd">    """</span>
+</span><span data-line="249">    <span class="n">model</span> <span class="o">=</span> <span class="n">_model_name</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+</span><span data-line="250">    <span class="n">store</span> <span class="o">=</span> <span class="n">default_frame_store</span><span class="p">(</span><span class="n">model</span><span class="p">)</span> <span class="k">if</span> <span class="n">store</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">store</span>
+</span><span data-line="251">    <span class="n">report</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"indexed"</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">"skipped"</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">"failed"</span><span class="p">:</span> <span class="p">{},</span> <span class="s2">"frames"</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+</span><span data-line="252">    <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">videos</span><span class="p">:</span>
+</span><span data-line="253">        <span class="n">known</span> <span class="o">=</span> <span class="n">youtube_video_id</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+</span><span data-line="254">        <span class="k">if</span> <span class="n">known</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">refresh</span> <span class="ow">and</span> <span class="n">_entry_key</span><span class="p">(</span><span class="n">known</span><span class="p">)</span> <span class="ow">in</span> <span class="n">store</span><span class="p">:</span>
+</span><span data-line="255">            <span class="n">report</span><span class="p">[</span><span class="s2">"skipped"</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">known</span><span class="p">)</span>
+</span><span data-line="256">            <span class="k">continue</span>
+</span><span data-line="257">        <span class="k">try</span><span class="p">:</span>
+</span><span data-line="258">            <span class="n">video</span> <span class="o">=</span> <span class="n">sampler</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+</span><span data-line="259">            <span class="n">identity</span> <span class="o">=</span> <span class="n">video</span><span class="o">.</span><span class="n">video_id</span> <span class="ow">or</span> <span class="n">video</span><span class="o">.</span><span class="n">url</span> <span class="ow">or</span> <span class="n">url</span>
+</span><span data-line="260">            <span class="n">key</span> <span class="o">=</span> <span class="n">_entry_key</span><span class="p">(</span><span class="n">identity</span><span class="p">)</span>
+</span><span data-line="261">            <span class="k">if</span> <span class="ow">not</span> <span class="n">refresh</span> <span class="ow">and</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">store</span><span class="p">:</span>
+</span><span data-line="262">                <span class="n">report</span><span class="p">[</span><span class="s2">"skipped"</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">identity</span><span class="p">)</span>
+</span><span data-line="263">                <span class="k">continue</span>
+</span><span data-line="264">            <span class="k">if</span> <span class="n">scorer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="265">                <span class="n">scorer</span> <span class="o">=</span> <span class="n">_default_scorer</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+</span><span data-line="266">            <span class="n">times</span><span class="p">,</span> <span class="n">vectors</span><span class="p">,</span> <span class="n">pending</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+</span><span data-line="267">
+</span><span data-line="268">            <span class="k">def</span><span class="w"> </span><span class="nf">flush</span><span class="p">():</span>
+</span><span data-line="269">                <span class="n">vectors</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">scorer</span><span class="o">.</span><span class="n">embed_pil_images</span><span class="p">(</span><span class="n">pending</span><span class="p">,</span> <span class="n">batch</span><span class="o">=</span><span class="n">batch</span><span class="p">))</span>
+</span><span data-line="270">                <span class="n">pending</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+</span><span data-line="271">
+</span><span data-line="272">            <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">video</span><span class="o">.</span><span class="n">frames</span><span class="p">():</span>
+</span><span data-line="273">                <span class="n">times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+</span><span data-line="274">                <span class="n">pending</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+</span><span data-line="275">                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pending</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">batch</span><span class="p">:</span>
+</span><span data-line="276">                    <span class="n">flush</span><span class="p">()</span>
+</span><span data-line="277">            <span class="k">if</span> <span class="n">pending</span><span class="p">:</span>
+</span><span data-line="278">                <span class="n">flush</span><span class="p">()</span>
+</span><span data-line="279">        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>  <span class="c1"># noqa: BLE001 - one bad video is a note, not the end</span>
+</span><span data-line="280">            <span class="n">report</span><span class="p">[</span><span class="s2">"failed"</span><span class="p">][</span><span class="n">url</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">error</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">"</span>
+</span><span data-line="281">            <span class="k">continue</span>
+</span><span data-line="282">        <span class="n">store</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+</span><span data-line="283">            <span class="s2">"id"</span><span class="p">:</span> <span class="n">identity</span><span class="p">,</span>
+</span><span data-line="284">            <span class="s2">"video_id"</span><span class="p">:</span> <span class="n">video</span><span class="o">.</span><span class="n">video_id</span><span class="p">,</span>
+</span><span data-line="285">            <span class="s2">"url"</span><span class="p">:</span> <span class="n">video</span><span class="o">.</span><span class="n">url</span> <span class="ow">or</span> <span class="n">url</span><span class="p">,</span>
+</span><span data-line="286">            <span class="s2">"title"</span><span class="p">:</span> <span class="n">video</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
+</span><span data-line="287">            <span class="s2">"duration"</span><span class="p">:</span> <span class="n">video</span><span class="o">.</span><span class="n">duration</span><span class="p">,</span>
+</span><span data-line="288">            <span class="s2">"license"</span><span class="p">:</span> <span class="n">video</span><span class="o">.</span><span class="n">license</span><span class="p">,</span>
+</span><span data-line="289">            <span class="s2">"author"</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">video</span><span class="p">,</span> <span class="s2">"uploader"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">video</span><span class="p">,</span> <span class="s2">"channel"</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+</span><span data-line="290">            <span class="s2">"author_url"</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">video</span><span class="p">,</span> <span class="s2">"channel_url"</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+</span><span data-line="291">            <span class="s2">"model"</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">scorer</span><span class="p">,</span> <span class="s2">"model_id"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="n">model</span><span class="p">,</span>
+</span><span data-line="292">            <span class="s2">"times"</span><span class="p">:</span> <span class="n">times</span><span class="p">,</span>
+</span><span data-line="293">            <span class="s2">"vectors"</span><span class="p">:</span> <span class="p">[[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">v</span><span class="p">]</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vectors</span><span class="p">],</span>
+</span><span data-line="294">        <span class="p">}</span>
+</span><span data-line="295">        <span class="n">report</span><span class="p">[</span><span class="s2">"indexed"</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">identity</span><span class="p">)</span>
+</span><span data-line="296">        <span class="n">report</span><span class="p">[</span><span class="s2">"frames"</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
+</span><span data-line="297">    <span class="k">return</span> <span class="n">report</span></div>
+
+</span><span data-line="298">
+</span><span data-line="299">
+<div class="viewcode-block" id="search_frames">
+<a class="viewcode-back" href="../../_autosummary/illustration.frames.html#illustration.search_frames">[docs]</a>
+</span><span data-line="300"><span class="k">def</span><span class="w"> </span><span class="nf">search_frames</span><span class="p">(</span>
+</span><span data-line="301">    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="302">    <span class="o">*</span><span class="p">,</span>
+</span><span data-line="303">    <span class="n">store</span><span class="p">:</span> <span class="s2">"MutableMapping[str, Any] | None"</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="304">    <span class="n">scorer</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="305">    <span class="n">model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="306">    <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+</span><span data-line="307">    <span class="n">per_video</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DFLT_PER_VIDEO</span><span class="p">,</span>
+</span><span data-line="308">    <span class="n">min_gap_s</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">DFLT_MIN_GAP_S</span><span class="p">,</span>
+</span><span data-line="309">    <span class="n">videos</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="310"><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">FrameHit</span><span class="p">]:</span>
+</span><span data-line="311"><span class="w">    </span><span class="sd">"""The ``k`` frames that best match ``text``, best first.</span>
+</span><span data-line="312">
+</span><span data-line="313"><span class="sd">    Diversified, because the next frame of a match is usually a match too: at</span>
+</span><span data-line="314"><span class="sd">    most ``per_video`` hits per video, and two hits closer than ``min_gap_s``</span>
+</span><span data-line="315"><span class="sd">    in one video are one scene (the better one is kept). ``videos`` limits the</span>
+</span><span data-line="316"><span class="sd">    search to those video ids (or URLs, for a video that has no id). Videos</span>
+</span><span data-line="317"><span class="sd">    indexed with another embedding model are skipped, with a warning.</span>
+</span><span data-line="318"><span class="sd">    """</span>
+</span><span data-line="319">    <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span data-line="320">
+</span><span data-line="321">    <span class="n">model</span> <span class="o">=</span> <span class="n">_model_name</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+</span><span data-line="322">    <span class="n">store</span> <span class="o">=</span> <span class="n">default_frame_store</span><span class="p">(</span><span class="n">model</span><span class="p">)</span> <span class="k">if</span> <span class="n">store</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">store</span>
+</span><span data-line="323">    <span class="n">scorer</span> <span class="o">=</span> <span class="n">_default_scorer</span><span class="p">(</span><span class="n">model</span><span class="p">)</span> <span class="k">if</span> <span class="n">scorer</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">scorer</span>
+</span><span data-line="324">    <span class="n">using</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">scorer</span><span class="p">,</span> <span class="s2">"model_id"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="n">model</span>
+</span><span data-line="325">    <span class="n">query</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">scorer</span><span class="o">.</span><span class="n">embed_text</span><span class="p">(</span><span class="n">text</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">"float32"</span><span class="p">)</span>
+</span><span data-line="326">    <span class="n">wanted</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">videos</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">set</span><span class="p">(</span><span class="n">videos</span><span class="p">)</span>
+</span><span data-line="327">    <span class="n">scored</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="328">    <span class="n">other_model</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="329">    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">store</span><span class="p">:</span>
+</span><span data-line="330">        <span class="n">entry</span> <span class="o">=</span> <span class="n">store</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+</span><span data-line="331">        <span class="n">identity</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"id"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">entry</span><span class="p">[</span><span class="s2">"video_id"</span><span class="p">]</span> <span class="ow">or</span> <span class="n">entry</span><span class="p">[</span><span class="s2">"url"</span><span class="p">]</span>
+</span><span data-line="332">        <span class="k">if</span> <span class="n">wanted</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">identity</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">wanted</span><span class="p">:</span>
+</span><span data-line="333">            <span class="k">continue</span>
+</span><span data-line="334">        <span class="k">if</span> <span class="ow">not</span> <span class="n">entry</span><span class="p">[</span><span class="s2">"vectors"</span><span class="p">]:</span>
+</span><span data-line="335">            <span class="k">continue</span>
+</span><span data-line="336">        <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"model"</span><span class="p">,</span> <span class="n">using</span><span class="p">)</span> <span class="o">!=</span> <span class="n">using</span><span class="p">:</span>
+</span><span data-line="337">            <span class="n">other_model</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">identity</span><span class="p">)</span>
+</span><span data-line="338">            <span class="k">continue</span>
+</span><span data-line="339">        <span class="n">sims</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="s2">"vectors"</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">"float32"</span><span class="p">)</span> <span class="o">@</span> <span class="n">query</span>
+</span><span data-line="340">        <span class="n">scored</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+</span><span data-line="341">            <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">entry</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">sims</span><span class="p">,</span> <span class="n">entry</span><span class="p">[</span><span class="s2">"times"</span><span class="p">])</span>
+</span><span data-line="342">        <span class="p">)</span>
+</span><span data-line="343">    <span class="k">if</span> <span class="n">other_model</span><span class="p">:</span>
+</span><span data-line="344">        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+</span><span data-line="345">            <span class="sa">f</span><span class="s2">"search_frames: skipped </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">other_model</span><span class="p">)</span><span class="si">}</span><span class="s2"> video(s) indexed with another "</span>
+</span><span data-line="346">            <span class="sa">f</span><span class="s2">"model than </span><span class="si">{</span><span class="n">using</span><span class="si">!r}</span><span class="s2"> (their vectors are not comparable): "</span>
+</span><span data-line="347">            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">other_model</span><span class="p">)[:</span><span class="mi">5</span><span class="p">]</span><span class="si">}</span><span class="s2">; re-index them with refresh=True"</span><span class="p">,</span>
+</span><span data-line="348">            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+</span><span data-line="349">        <span class="p">)</span>
+</span><span data-line="350">    <span class="n">scored</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="o">-</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</span><span data-line="351">    <span class="n">picked</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">FrameHit</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="352">    <span class="n">count</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span data-line="353">    <span class="n">seen</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="354">    <span class="k">for</span> <span class="n">score</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">scored</span><span class="p">:</span>
+</span><span data-line="355">        <span class="n">vid</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"id"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">entry</span><span class="p">[</span><span class="s2">"video_id"</span><span class="p">]</span> <span class="ow">or</span> <span class="n">entry</span><span class="p">[</span><span class="s2">"url"</span><span class="p">]</span>
+</span><span data-line="356">        <span class="k">if</span> <span class="n">count</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vid</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">per_video</span><span class="p">:</span>
+</span><span data-line="357">            <span class="k">continue</span>
+</span><span data-line="358">        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">v</span> <span class="o">==</span> <span class="n">vid</span> <span class="ow">and</span> <span class="nb">abs</span><span class="p">(</span><span class="n">pt</span> <span class="o">-</span> <span class="n">t</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">min_gap_s</span> <span class="k">for</span> <span class="n">v</span><span class="p">,</span> <span class="n">pt</span> <span class="ow">in</span> <span class="n">seen</span><span class="p">):</span>
+</span><span data-line="359">            <span class="k">continue</span>
+</span><span data-line="360">        <span class="n">code</span> <span class="o">=</span> <span class="n">frame_license</span><span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"license"</span><span class="p">))</span>
+</span><span data-line="361">        <span class="n">picked</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+</span><span data-line="362">            <span class="n">FrameHit</span><span class="p">(</span>
+</span><span data-line="363">                <span class="n">video_id</span><span class="o">=</span><span class="n">entry</span><span class="p">[</span><span class="s2">"video_id"</span><span class="p">]</span> <span class="ow">or</span> <span class="n">vid</span><span class="p">,</span>
+</span><span data-line="364">                <span class="n">video_url</span><span class="o">=</span><span class="n">entry</span><span class="p">[</span><span class="s2">"url"</span><span class="p">],</span>
+</span><span data-line="365">                <span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">,</span>
+</span><span data-line="366">                <span class="n">score</span><span class="o">=</span><span class="n">score</span> <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">score</span><span class="p">)</span> <span class="k">else</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span>
+</span><span data-line="367">                <span class="n">title</span><span class="o">=</span><span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"title"</span><span class="p">),</span>
+</span><span data-line="368">                <span class="n">license</span><span class="o">=</span><span class="n">code</span><span class="p">,</span>
+</span><span data-line="369">                <span class="n">license_raw</span><span class="o">=</span><span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"license"</span><span class="p">),</span>
+</span><span data-line="370">                <span class="n">license_url</span><span class="o">=</span><span class="n">_LICENSE_URLS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">code</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">),</span>
+</span><span data-line="371">                <span class="n">attribution</span><span class="o">=</span><span class="n">_attribution</span><span class="p">(</span>
+</span><span data-line="372">                    <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"title"</span><span class="p">),</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"author"</span><span class="p">),</span> <span class="n">code</span><span class="p">,</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"license"</span><span class="p">)</span>
+</span><span data-line="373">                <span class="p">),</span>
+</span><span data-line="374">                <span class="n">author</span><span class="o">=</span><span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"author"</span><span class="p">),</span>
+</span><span data-line="375">                <span class="n">author_url</span><span class="o">=</span><span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"author_url"</span><span class="p">),</span>
+</span><span data-line="376">            <span class="p">)</span>
+</span><span data-line="377">        <span class="p">)</span>
+</span><span data-line="378">        <span class="n">seen</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">vid</span><span class="p">,</span> <span class="n">t</span><span class="p">))</span>
+</span><span data-line="379">        <span class="n">count</span><span class="p">[</span><span class="n">vid</span><span class="p">]</span> <span class="o">=</span> <span class="n">count</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vid</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+</span><span data-line="380">        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">picked</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">k</span><span class="p">:</span>
+</span><span data-line="381">            <span class="k">break</span>
+</span><span data-line="382">    <span class="k">return</span> <span class="n">picked</span></div>
+
+</span></pre></div>
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright">
+  <p>
+    Made with
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+  <a href="https://github.com/thorwhalen/illustration" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div>
+    </div>
+  </div>
+</footer>
+      <script src="../../_static/documentation_options.js?v=5d650c58"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=fd10adb8"></script>
+      <script src="../../_static/shibuya.js?v=50760d75"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+
+
+
+
+const initStyles = () => {
+    const defaultStyle = document.createElement('style');
+    defaultStyle.textContent = "pre.mermaid {\n    /* Same as .mermaid-container > pre */\n    display: block;\n    width: 100%;\n}\n\npre.mermaid > svg {\n    /* Same as .mermaid-container > pre > svg */\n    height: 500px;\n    width: 100%;\n    max-width: 100% !important;\n}";
+    document.head.appendChild(defaultStyle);
+
+    const fullscreenStyle = document.createElement('style');
+    fullscreenStyle.textContent = ".mermaid-container {\n    position: relative;\n    display: flex;\n    flex-direction: row;\n    width: 100%;\n}\n\n.mermaid-container > pre {\n    display: block;\n    width: 100%;\n}\n\n.mermaid-container > pre > svg {\n    height: 500px;\n    width: 100%;\n    max-width: 100% !important;\n}\n\n.mermaid-fullscreen-btn {\n    position: absolute;\n    width: 28px;\n    height: 28px;\n    background: rgba(255, 255, 255, 0.95);\n    border: 1px solid rgba(0, 0, 0, 0.3);\n    border-radius: 4px;\n    cursor: pointer;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    transition: all 0.2s;\n    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);\n    font-size: 14px;\n    line-height: 1;\n    padding: 0;\n    color: #333;\n}\n\n.mermaid-fullscreen-btn:hover {\n    opacity: 100% !important;\n    background: rgba(255, 255, 255, 1);\n    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);\n    transform: scale(1.1);\n}\n\n.mermaid-fullscreen-btn.dark-theme {\n    background: rgba(50, 50, 50, 0.95);\n    border: 1px solid rgba(255, 255, 255, 0.3);\n    color: #e0e0e0;\n}\n\n.mermaid-fullscreen-btn.dark-theme:hover {\n    background: rgba(60, 60, 60, 1);\n    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);\n}\n\n.mermaid-fullscreen-modal {\n    display: none;\n    position: fixed !important;\n    top: 0 !important;\n    left: 0 !important;\n    width: 95vw;\n    height: 100vh;\n    background: rgba(255, 255, 255, 0.98);\n    z-index: 9999;\n    padding: 20px;\n    overflow: auto;\n}\n\n.mermaid-fullscreen-modal.dark-theme {\n    background: rgba(0, 0, 0, 0.98);\n}\n\n.mermaid-fullscreen-modal.active {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.mermaid-container-fullscreen {\n    position: relative;\n    width: 95vw;\n    height: 90vh;\n    max-width: 95vw;\n    max-height: 90vh;\n    background: white;\n    border-radius: 8px;\n    padding: 20px;\n    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);\n    overflow: auto;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.mermaid-container-fullscreen.dark-theme {\n    background: #1a1a1a;\n    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);\n}\n\n.mermaid-container-fullscreen pre.mermaid {\n    width: 100%;\n    height: 100%;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.mermaid-container-fullscreen .mermaid svg {\n    height: 100% !important;\n    width: 100% !important;\n    cursor: grab;\n}\n\n.mermaid-fullscreen-close {\n    position: fixed !important;\n    top: 20px !important;\n    right: 20px !important;\n    width: 40px;\n    height: 40px;\n    background: rgba(255, 255, 255, 0.95);\n    border: 1px solid rgba(0, 0, 0, 0.2);\n    border-radius: 50%;\n    cursor: pointer;\n    z-index: 10000;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);\n    transition: all 0.2s;\n    font-size: 24px;\n    line-height: 1;\n    color: #333;\n}\n\n.mermaid-fullscreen-close:hover {\n    background: white;\n    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);\n    transform: scale(1.1);\n}\n\n.mermaid-fullscreen-close.dark-theme {\n    background: rgba(50, 50, 50, 0.95);\n    border: 1px solid rgba(255, 255, 255, 0.2);\n    color: #e0e0e0;\n}\n\n.mermaid-fullscreen-close.dark-theme:hover {\n    background: rgba(60, 60, 60, 1);\n    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);\n}\n\n.mermaid-fullscreen-modal .mermaid-fullscreen-btn {\n    display: none !important;\n}";
+    document.head.appendChild(fullscreenStyle);
+}
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    // We use a set of heuristics:
+    // 1. Check for common dark mode classes or attributes
+    // 2. Check computed background color brightness
+    if (document.documentElement.classList.contains('dark') ||
+        document.documentElement.getAttribute('data-theme') === 'dark' ||
+        document.body.classList.contains('dark') ||
+        document.body.getAttribute('data-theme') === 'dark') {
+        // console.log("Dark theme detected via class/attribute");
+        return true;
+    }
+    if (document.documentElement.classList.contains('light') ||
+        document.documentElement.getAttribute('data-theme') === 'light' ||
+        document.body.classList.contains('light') ||
+        document.body.getAttribute('data-theme') === 'light') {
+        // console.log("Light theme detected via class/attribute");
+        return false;
+    }
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        // console.log("Dark theme detected via prefers-color-scheme");
+        return true;
+    }
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        // console.log("Background color brightness:", brightness);
+        return brightness < 128;
+    }
+    // console.log("No dark or light theme detected, defaulting to light theme");
+    return false;
+};
+
+let darkTheme = isDarkTheme();
+let modal = null;
+let modalContent = null;
+let previousScrollOffset = [window.scrollX, window.scrollY];
+let _lazyObserver = null;
+let _renderQueue = Promise.resolve();
+let closeModal = () => {};
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal?.classList.contains('active')) {
+        closeModal();
+    }
+});
+
+// Apply d3 zoom to each SVG. Idempotent: an SVG already wrapped is skipped,
+// so this is safe to call both for the initial batch and for diagrams that
+// render lazily once they become visible.
+const addZoomToSvgs = (svgs) => {
+    svgs.each(function() {
+        if (this.getAttribute('data-zoom-applied') === 'true') return;
+        var svg = d3.select(this);
+        svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+        var inner = svg.select("g");
+        var zoom = d3.zoom().on("zoom", function(event) {
+            inner.attr("transform", event.transform);
+        });
+        svg.call(zoom);
+        this.setAttribute('data-zoom-applied', 'true');
+    });
+};
+
+const runMermaid = async (rerun) => {
+    console.log("Running mermaid diagrams, rerun =", rerun);
+    // clear all existing mermaid charts
+    let all_mermaids = document.querySelectorAll(".mermaid");
+
+    if (rerun) {
+        // Disconnect any previous lazy rendering observer
+        if (_lazyObserver) {
+            _lazyObserver.disconnect();
+            _lazyObserver = null;
+        }
+
+        all_mermaids.forEach((el) => {
+            el.removeAttribute('data-mermaid-deferred');
+            el.removeAttribute('data-mermaid-render-failed');
+            if(!el.hasAttribute("data-original-code")) {
+                // store original code
+                // console.log(`Storing original code for first run: `, el.innerHTML);
+                el.setAttribute('data-original-code', el.innerHTML);
+            }
+            if(el.getAttribute("data-processed") === "true") {
+                // remove and restore original
+                el.removeAttribute("data-processed");
+                // console.log(`Restoring original code for re-run: `, el.getAttribute('data-original-code'));
+                el.innerHTML = el.getAttribute('data-original-code');
+            } else {
+                // store original code
+                // console.log(`Storing original code for re-run: `, el.innerHTML);
+                el.setAttribute('data-original-code', el.innerHTML);
+            }
+        });
+
+        // Separate visible and hidden elements. Mermaid's layout engine measures
+        // text dimensions via the DOM, which fails for elements hidden by a parent
+        // (e.g., Reveal.js non-active slides, sphinx-design unopened tabs),
+        // producing broken SVGs. Render visible elements now, defer hidden ones.
+        const visible = [];
+        const hidden = [];
+        all_mermaids.forEach((el) => {
+            // offsetParent is null for display:none ancestors.
+            // getClientRects().length > 0 catches position:fixed elements
+            // (which also have null offsetParent but are still visible).
+            if (el.offsetParent !== null || el.getClientRects().length > 0) {
+                visible.push(el);
+            } else {
+                hidden.push(el);
+                el.setAttribute('data-mermaid-deferred', 'true');
+            }
+        });
+
+        if (visible.length > 0) {
+            try {
+                await mermaid.run({ nodes: visible });
+            } catch (e) {
+                console.error("Mermaid rendering failed:", e);
+            }
+        }
+
+        // Lazily render hidden elements when they become visible.
+        // Uses a promise chain (_renderQueue) to serialize rendering,
+        // since IntersectionObserver may report multiple entries at once
+        // and mermaid.run() is not safe to call concurrently.
+        if (hidden.length > 0) {
+            if (typeof IntersectionObserver === 'undefined') {
+                console.warn("IntersectionObserver not available; hidden mermaid diagrams will not render.");
+            } else {
+                _renderQueue = Promise.resolve();
+                _lazyObserver = new IntersectionObserver((entries) => {
+                    for (const entry of entries) {
+                        if (entry.isIntersecting && entry.target.getAttribute("data-processed") !== "true") {
+                            _lazyObserver.unobserve(entry.target);
+                            const el = entry.target;
+                            _renderQueue = _renderQueue.then(async () => {
+                                try {
+                                    await mermaid.run({ nodes: [el] });
+                                    el.removeAttribute('data-mermaid-deferred');
+                                    // Apply zoom to the now-rendered diagram, matching
+                                    // the decoration visible diagrams receive.
+                                    if (false) {
+                                        addZoomToSvgs(d3.selectAll("").select(function() {
+                                            return this.querySelector("svg");
+                                        }));
+                                    }
+                                } catch (e) {
+                                    console.error("Mermaid deferred rendering failed:", e);
+                                    el.removeAttribute('data-mermaid-deferred');
+                                    el.setAttribute('data-mermaid-render-failed', 'true');
+                                }
+                            });
+                        }
+                    }
+                });
+                hidden.forEach((el) => _lazyObserver.observe(el));
+            }
+        }
+    }
+
+    all_mermaids = document.querySelectorAll(".mermaid");
+    // Exclude deferred (hidden) and render-failed elements from completion checks
+    const mermaids_active = document.querySelectorAll(".mermaid:not([data-mermaid-deferred]):not([data-mermaid-render-failed])");
+    const mermaids_processed = document.querySelectorAll(".mermaid:not([data-mermaid-deferred]):not([data-mermaid-render-failed])[data-processed='true']");
+
+    if (false) {
+        const mermaids_to_add_zoom = 0 === -1 ? mermaids_active.length : 0;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll("").select(function() {
+                return this.querySelector("svg");
+            });
+            // Wait until every active (visible) diagram has rendered. Deferred
+            // diagrams are excluded, so a fixed d3_node_count that counts a
+            // hidden diagram no longer loops forever waiting for its SVG.
+            if(mermaids_active.length !== mermaids_processed.length) {
+                setTimeout(() => runMermaid(false), 200);
+                return;
+            }
+            addZoomToSvgs(svgs);
+        }
+    } else if(mermaids_active.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(() => runMermaid(false), 200);
+        return;
+    }
+
+    // Stop here if not adding fullscreen capability
+    if (!true) return;
+
+    if (modal !== null ) {
+        // Destroy existing modal
+        modal.remove();
+        modal = null;
+        modalContent = null;
+    }
+
+    modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            // Already processed, adjust button class if needed
+            const existingBtn = mermaidDiv.parentNode.querySelector('.mermaid-fullscreen-btn');
+            if (existingBtn) {
+                existingBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+            }
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = "\u26f6";
+        fullscreenBtn.style.opacity = "50%";
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scrollX, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.display = 'block';
+
+                if (false) {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        container.appendChild(fullscreenBtn);
+    });
+};
+
+
+
+const load = async () => {
+    initStyles();
+
+
+    await runMermaid(true);
+
+    const reRunIfThemeChanges = async () => {
+        const newDarkTheme = isDarkTheme();
+        if (newDarkTheme !== darkTheme) {
+            darkTheme = newDarkTheme;
+            console.log("Theme change detected, re-running mermaid with", darkTheme ? "dark" : "default", "theme");
+            await mermaid.initialize(
+                {...{"startOnLoad": false},
+                ...{ darkMode: darkTheme, theme: darkTheme ? "dark" : "default" },
+                }
+            );
+            await runMermaid(true);
+        }
+    };
+
+    // Update theme classes when theme changes
+    const themeObserver = new MutationObserver(reRunIfThemeChanges);
+    themeObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    themeObserver.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+};
+
+
+
+
+
+console.log("Initializing mermaid with", darkTheme ? "dark" : "default", "theme");
+mermaid.initialize(
+    {...{"startOnLoad": false},
+    ...{ darkMode: darkTheme, theme: darkTheme ? "dark" : "default" },
+    }
+);
+
+window.addEventListener("load", load);
+window.runMermaid = runMermaid;</script></body>
+</html>

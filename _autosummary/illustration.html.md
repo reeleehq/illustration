@@ -83,36 +83,39 @@ See `misc/docs/design/illustration_design.md` for the full design.
 | [`resolve_selection`](#illustration.resolve_selection)(store, beat_index)               | The *active* selection body for a beat — the latest annotation wins.                                                                  |
 | [`resolved_selections`](#illustration.resolved_selections)(store)                         | The active selection body per beat index (resolved over all overrides).                                                               |
 | [`export_otio`](#illustration.export_otio)(store[, target])                       | Export the annotation store to OpenTimelineIO (needs `lacing[otio]`).                                                                 |
+| [`index_video_frames`](#illustration.index_video_frames)(videos, \*[, store, ...])       | Embed every frame of `videos` into the corpus; return what happened.                                                                  |
+| [`search_frames`](#illustration.search_frames)(text, \*[, store, scorer, ...])      | The `k` frames that best match `text`, best first.                                                                                    |
 | [`render_sequence_video`](#illustration.render_sequence_video)(selections, \*, saveas)      | Render chosen images into a single Ken-Burns film via `burns`.                                                                        |
 | [`to_walkthru_document`](#illustration.to_walkthru_document)(selections, \*[, ...])        | Build a `walkthru.DemoDocument` from the selections (pure data, no render).                                                           |
 
 ### Classes
 
-| [`ImageResult`](#illustration.ImageResult)(\*, provider, id, url[, ...])          | One normalized image hit from any provider.                                  |
-|-----------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------|
-| [`VideoResult`](#illustration.VideoResult)(\*, provider, id, url[, ...])          | One normalized video hit from any provider.                                  |
-| [`MediaResult`](#illustration.MediaResult)(\*, provider, id, url[, ...])          | What every normalized hit from any provider carries, whatever the media.     |
-| [`Rendition`](#illustration.Rendition)(\*, url[, mime_type, video_codec, ...])  | One playable encoding of a video, as a provider offers it.                   |
-| [`TimeSpan`](#illustration.TimeSpan)(\*, start, end)                           | A span of a media file, in seconds.                                          |
-| [`RetrievalSource`](#illustration.RetrievalSource)(\*[, session])                     | Abstract base for a pure image-search provider.                              |
-| [`SourceInfo`](#illustration.SourceInfo)(name[, description, ...])               | Static, human-facing metadata about a source (for discovery + the gate).     |
-| [`SourcesView`](#illustration.SourcesView)()                                      | A live `Mapping` over the registry with dict- *and* attribute-access.        |
-| [`SearchCache`](#illustration.SearchCache)([store])                               | A thin read/write facade over an injectable `MutableMapping` store.          |
-| [`CurationResult`](#illustration.CurationResult)(\*, beat, best, accepted, ...)      | The outcome of curating one beat.                                            |
-| [`Candidate`](#illustration.Candidate)(\*, result[, score, caption, ...])       | One scored (and optionally inspected) candidate.                             |
-| [`Budget`](#illustration.Budget)([max_iter, max_search_calls, ...])          | Hard loop bounds — the safety net, enforced in controller code (R2).         |
-| [`Grade`](#illustration.Grade)(\*values)                                    | CRAG's three-way retrieval grade (R2 §1).                                    |
-| [`IterationRecord`](#illustration.IterationRecord)(\*, iteration, queries, ...)       | One iteration of the loop — the run-log R2 requires for observability.       |
-| [`PrefilterResult`](#illustration.PrefilterResult)(passed, reports)                   | The outcome of pre-filtering a candidate set.                                |
-| [`PrefilterReport`](#illustration.PrefilterReport)(\*, provider, id, passed[, ...])   | Per-candidate pre-filter verdict (the R2 PREFILTER stage record).            |
-| [`InspectReport`](#illustration.InspectReport)(\*, provider, id, mode[, ...])       | A VLM inspection of one candidate (caption or judge mode; R2 INSPECT).       |
-| [`RubricScore`](#illustration.RubricScore)(\*[, subject, action, setting, ...])   | A pointwise VLM judgement of one candidate (R2 §4 rubric dimensions).        |
-| [`SequenceSelection`](#illustration.SequenceSelection)(\*[, selections, ...])           | One image chosen per beat, optimized for the cross-shot objective.           |
-| [`SequenceResult`](#illustration.SequenceResult)(\*, beats, selection)               | The result of curating a whole sequence of beats.                            |
-| [`BeatSelection`](#illustration.BeatSelection)(\*, beat_index, chosen[, ...])       | The chosen image (and why) for one beat in a sequence.                       |
-| [`DuplicateGroup`](#illustration.DuplicateGroup)(members[, signature])               | Images judged to be the same subject, best first.                            |
-| [`DuplicateSignature`](#illustration.DuplicateSignature)                                 |                                                                              |
-| [`SelectionBody`](#illustration.SelectionBody)(\*, beat, beat_index, source[, ...]) | The typed body of an illustration selection annotation (lacing body schema). |
+| [`ImageResult`](#illustration.ImageResult)(\*, provider, id, url[, ...])          | One normalized image hit from any provider.                                                                                                                                                                              |
+|-----------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [`VideoResult`](#illustration.VideoResult)(\*, provider, id, url[, ...])          | One normalized video hit from any provider.                                                                                                                                                                              |
+| [`MediaResult`](#illustration.MediaResult)(\*, provider, id, url[, ...])          | What every normalized hit from any provider carries, whatever the media.                                                                                                                                                 |
+| [`Rendition`](#illustration.Rendition)(\*, url[, mime_type, video_codec, ...])  | One playable encoding of a video, as a provider offers it.                                                                                                                                                               |
+| [`TimeSpan`](#illustration.TimeSpan)(\*, start, end)                           | A span of a media file, in seconds.                                                                                                                                                                                      |
+| [`RetrievalSource`](#illustration.RetrievalSource)(\*[, session])                     | Abstract base for a pure image-search provider.                                                                                                                                                                          |
+| [`SourceInfo`](#illustration.SourceInfo)(name[, description, ...])               | Static, human-facing metadata about a source (for discovery + the gate).                                                                                                                                                 |
+| [`SourcesView`](#illustration.SourcesView)()                                      | A live `Mapping` over the registry with dict- *and* attribute-access.                                                                                                                                                    |
+| [`SearchCache`](#illustration.SearchCache)([store])                               | A thin read/write facade over an injectable `MutableMapping` store.                                                                                                                                                      |
+| [`CurationResult`](#illustration.CurationResult)(\*, beat, best, accepted, ...)      | The outcome of curating one beat.                                                                                                                                                                                        |
+| [`Candidate`](#illustration.Candidate)(\*, result[, score, caption, ...])       | One scored (and optionally inspected) candidate.                                                                                                                                                                         |
+| [`Budget`](#illustration.Budget)([max_iter, max_search_calls, ...])          | Hard loop bounds — the safety net, enforced in controller code (R2).                                                                                                                                                     |
+| [`Grade`](#illustration.Grade)(\*values)                                    | CRAG's three-way retrieval grade (R2 §1).                                                                                                                                                                                |
+| [`IterationRecord`](#illustration.IterationRecord)(\*, iteration, queries, ...)       | One iteration of the loop — the run-log R2 requires for observability.                                                                                                                                                   |
+| [`PrefilterResult`](#illustration.PrefilterResult)(passed, reports)                   | The outcome of pre-filtering a candidate set.                                                                                                                                                                            |
+| [`PrefilterReport`](#illustration.PrefilterReport)(\*, provider, id, passed[, ...])   | Per-candidate pre-filter verdict (the R2 PREFILTER stage record).                                                                                                                                                        |
+| [`InspectReport`](#illustration.InspectReport)(\*, provider, id, mode[, ...])       | A VLM inspection of one candidate (caption or judge mode; R2 INSPECT).                                                                                                                                                   |
+| [`RubricScore`](#illustration.RubricScore)(\*[, subject, action, setting, ...])   | A pointwise VLM judgement of one candidate (R2 §4 rubric dimensions).                                                                                                                                                    |
+| [`SequenceSelection`](#illustration.SequenceSelection)(\*[, selections, ...])           | One image chosen per beat, optimized for the cross-shot objective.                                                                                                                                                       |
+| [`SequenceResult`](#illustration.SequenceResult)(\*, beats, selection)               | The result of curating a whole sequence of beats.                                                                                                                                                                        |
+| [`BeatSelection`](#illustration.BeatSelection)(\*, beat_index, chosen[, ...])       | The chosen image (and why) for one beat in a sequence.                                                                                                                                                                   |
+| [`DuplicateGroup`](#illustration.DuplicateGroup)(members[, signature])               | Images judged to be the same subject, best first.                                                                                                                                                                        |
+| [`DuplicateSignature`](#illustration.DuplicateSignature)                                 |                                                                                                                                                                                                                          |
+| [`SelectionBody`](#illustration.SelectionBody)(\*, beat, beat_index, source[, ...]) | The typed body of an illustration selection annotation (lacing body schema).                                                                                                                                             |
+| [`FrameHit`](#illustration.FrameHit)(video_id, video_url, t, score[, ...])     | One frame that matches a query: which video, when, how well, and the rights record ([`illustration.schema.RIGHTS_FIELDS`](illustration.schema.html.md#illustration.schema.RIGHTS_FIELDS)) of that video. |
 
 ### Exceptions
 
@@ -231,6 +234,35 @@ The member a consumer should get — highest quality of the group.
 ### illustration.DuplicateSignature
 
 alias of [`Signature`](illustration.duplicates.html.md#illustration.duplicates.Signature)
+
+### *class* illustration.FrameHit(video_id, video_url, t, score, title=None, license=None, license_raw=None, license_url=None, attribution=None, author=None, author_url=None, cacheable=False)
+
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
+
+One frame that matches a query: which video, when, how well, and the
+rights record ([`illustration.schema.RIGHTS_FIELDS`](illustration.schema.html.md#illustration.schema.RIGHTS_FIELDS)) of that video.
+
+#### *property* rights *: [dict](https://docs.python.org/3/builtins/stdtypes.html#dict)*
+
+The rights record, by [`illustration.schema.RIGHTS_FIELDS`](illustration.schema.html.md#illustration.schema.RIGHTS_FIELDS)’ names.
+
+#### *property* source_page_url *: [str](https://docs.python.org/3/builtins/stdtypes.html#str)*
+
+the video at this moment ([`watch_url`](#illustration.FrameHit.watch_url)).
+
+* **Type:**
+  The page the frame is on
+
+#### *property* watch_url *: [str](https://docs.python.org/3/builtins/stdtypes.html#str)*
+
+The video URL opening at this frame (whole seconds).
+
+```pycon
+>>> FrameHit("v", "https://www.youtube.com/watch?v=v", 75.4, 0.2).watch_url
+'https://www.youtube.com/watch?v=v&t=75s'
+>>> FrameHit("v", "https://youtu.be/v", 9.0, 0.2).watch_url
+'https://youtu.be/v?t=9s'
+```
 
 ### *class* illustration.Grade(\*values)
 
@@ -950,6 +982,25 @@ Number of differing bits between two perceptual hashes.
 * **Return type:**
   [`int`](https://docs.python.org/3/builtins/functions.html#int)
 
+### illustration.index_video_frames(videos, \*, store=None, sampler=<function storyboard_sampler>, scorer=None, model=None, refresh=False, batch=64)
+
+Embed every frame of `videos` into the corpus; return what happened.
+
+A video already in the store is skipped unless `refresh=True` (for a
+YouTube URL, without fetching anything), so indexing a channel again only
+does the new videos. A video that cannot be read or embedded (no
+storyboard, unavailable, a corrupt sheet, a scorer error) is recorded in
+`failed` with the reason, nothing is written for it, and the others go
+on. Frames are embedded `batch` at a time as they are read, so a long
+video never sits in memory whole.
+
+* **Returns:**
+  [ids], “skipped”: [ids], “failed”: {url: why},
+  “frames”: number of frames embedded}\`\`; a video’s id is its
+  `video_id`, else its URL.
+* **Return type:**
+  [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)
+
 ### illustration.inspect_candidate(query, result, , mode='caption', describe=None, model=None, max_tokens=None)
 
 Inspect one candidate: a cheap caption (default) or a full rubric judge.
@@ -1395,6 +1446,19 @@ share a key.
 * **Return type:**
   [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
+### illustration.search_frames(text, , store=None, scorer=None, model=None, k=10, per_video=3, min_gap_s=12.0, videos=None)
+
+The `k` frames that best match `text`, best first.
+
+Diversified, because the next frame of a match is usually a match too: at
+most `per_video` hits per video, and two hits closer than `min_gap_s`
+in one video are one scene (the better one is kept). `videos` limits the
+search to those video ids (or URLs, for a video that has no id). Videos
+indexed with another embedding model are skipped, with a warning.
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`FrameHit`](illustration.frames.html.md#illustration.frames.FrameHit)]
+
 ### illustration.select_sequence(per_beat_candidates, , relevance=None, embed=None, hasher=None, shortlist=None, alpha=0.3, beta=0.5, phash_threshold=6, signature=None)
 
 Choose one image per beat optimizing relevance + coherence − redundancy.
@@ -1504,6 +1568,7 @@ through). Bindings nest: an inner block overlays the outer.
 | [`errors`](illustration.errors.html.md#module-illustration.errors)               | The package exception hierarchy.                                                                                  |
 | [`expansion`](illustration.expansion.html.md#module-illustration.expansion)         | Query expansion & refinement — the first node of the curation loop (R2 §1).                                       |
 | [`facade`](illustration.facade.html.md#module-illustration.facade)               | The façade: [`search()`](#illustration.search) — one call over any registered provider(s). |
+| [`frames`](illustration.frames.html.md#module-illustration.frames)               | Text-to-frame search over a video corpus: find *where* in a set of videos something is.                           |
 | [`inspection`](illustration.inspection.html.md#module-illustration.inspection)       | Candidate inspection — classical-CV pre-filters + VLM caption/judge (R2 §2-3).                                    |
 | [`licensing`](illustration.licensing.html.md#module-illustration.licensing)         | Licence-code normalisation — one vocabulary for four provider vocabularies.                                       |
 | [`persistence`](illustration.persistence.html.md#module-illustration.persistence)     | Persist curation/selection decisions as `lacing` standoff annotations (R2 §6).                                    |

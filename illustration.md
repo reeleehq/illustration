@@ -1,4 +1,4 @@
-> built 2026-11-23 05:01 UTC from 450a652 (main) · illustration 0.0.24. Details: build_info.json
+> built 2026-11-23 05:12 UTC from 733283f (main) · illustration 0.0.25. Details: build_info.json
 
 # index.html.md
 
@@ -1863,6 +1863,202 @@ True
 ```
 
 
+# _autosummary/illustration.frames.html.md
+
+# illustration.frames
+
+Text-to-frame search over a video corpus: find *where* in a set of videos something is.
+
+“A cartoon wall clock”, “a bedroom at night”, “Tokyo Tower”: instead of
+scrubbing, index the videos’ frames once with SigLIP, then ask in words. One
+more illustration source, where an “image” is `(video, t)` (#46).
+
+```pycon
+>>> from illustration.frames import index_video_frames, search_frames
+>>> index_video_frames(["https://youtu.be/<id>", ...])
+>>> for hit in search_frames("a cartoon wall clock", k=12):
+...     print(hit.watch_url, round(hit.score, 3), hit.license)
+```
+
+**Three seams, with working defaults.**
+
+- `sampler`: a video URL to its frames. The default,
+  [`storyboard_sampler()`](_autosummary/illustration.frames.html.md#illustration.frames.storyboard_sampler), reads YouTube’s storyboard (the seek-bar
+  > thumbnails, 320x180, one every few seconds) through
+  > `yb.download.youtube_storyboard`: no video download, and it works where
+  > video downloads hit a bot wall. Anything returning an object with
+  > `video_id`, `url`, `title`, `duration`, `license` and `frames()`
+  > (`(t, PIL image)` pairs) fits, e.g. frames sampled from a local file.
+- `scorer`: what embeds the frames and the query. The default is the
+  package’s SigLIP 2 scorer ([`illustration.reranking.SiglipScorer`](_autosummary/illustration.reranking.html.md#illustration.reranking.SiglipScorer),
+  the `[rerank]` extra); anything with `embed_text(text)` and
+  `embed_pil_images(images, *, batch)` fits (an ONNX text encoder on a
+  machine without torch, for instance), and its `model_id` (if it has one)
+  is recorded with the corpus: a search with another model skips those videos
+  and warns, since their vectors are not comparable.
+- `store`: where the corpus lives, one entry per video (its times, its
+  vectors, its title and licence). Default: JSON files under the cache dir, per
+  model, since a corpus is regenerable.
+
+**Limits to know.** A storyboard frame stands for a few seconds and can lag
+the moment it shows by about a second, so cut the real frame from a few
+candidate times around a hit (`yb.download`’s `start`/`end`). At 320x180
+it finds scenes, not small props; a caption track can find what the picture
+cannot (search both).
+
+**Licence.** A hit carries the package’s full rights record
+([`illustration.schema.RIGHTS_FIELDS`](_autosummary/illustration.schema.html.md#illustration.schema.RIGHTS_FIELDS)): the licence as the canonical
+code of [`illustration.licensing.normalize_license()`](_autosummary/illustration.licensing.html.md#illustration.licensing.normalize_license) (YouTube’s Creative
+Commons licence is `by`; its standard licence, which is all rights reserved,
+is `youtube-standard-license`; `None` when the sampler did not say), the
+licence URL, an attribution line, the author and their page, the source page
+(the video at that moment), and `cacheable=False` (the frames are never
+stored, only their embeddings). Fine to find and study; republishing follows
+the licence.
+
+### Module Attributes
+
+| [`DFLT_PER_VIDEO`](_autosummary/illustration.frames.html.md#illustration.frames.DFLT_PER_VIDEO)   | At most this many hits from one video, so one long video cannot fill the list.   |
+|-------------------------------------------------------------------|----------------------------------------------------------------------------------|
+| [`DFLT_MIN_GAP_S`](_autosummary/illustration.frames.html.md#illustration.frames.DFLT_MIN_GAP_S)   | keep the best.                                                                   |
+
+### Functions
+
+| [`index_video_frames`](_autosummary/illustration.frames.html.md#illustration.frames.index_video_frames)(videos, \*[, store, ...])   | Embed every frame of `videos` into the corpus; return what happened.                                                                                                                                         |
+|-------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [`search_frames`](_autosummary/illustration.frames.html.md#illustration.frames.search_frames)(text, \*[, store, scorer, ...])  | The `k` frames that best match `text`, best first.                                                                                                                                                           |
+| [`storyboard_sampler`](_autosummary/illustration.frames.html.md#illustration.frames.storyboard_sampler)(url, \*\*kwargs)            | A video's YouTube storyboard (`yb.download.youtube_storyboard`).                                                                                                                                             |
+| [`default_frame_store`](_autosummary/illustration.frames.html.md#illustration.frames.default_frame_store)(model)                     | JSON files under the cache dir, one per video, per embedding model.                                                                                                                                          |
+| [`frame_license`](_autosummary/illustration.frames.html.md#illustration.frames.frame_license)(raw)                             | A video licence as the package's canonical code ([`illustration.licensing.normalize_license()`](_autosummary/illustration.licensing.html.md#illustration.licensing.normalize_license)); `None` when unknown. |
+| [`youtube_video_id`](_autosummary/illustration.frames.html.md#illustration.frames.youtube_video_id)(url)                          | The video id in a YouTube URL, or `None`: lets indexing skip a video it already has without fetching anything.                                                                                               |
+
+### Classes
+
+| [`FrameHit`](_autosummary/illustration.frames.html.md#illustration.frames.FrameHit)(video_id, video_url, t, score[, ...])   | One frame that matches a query: which video, when, how well, and the rights record ([`illustration.schema.RIGHTS_FIELDS`](_autosummary/illustration.schema.html.md#illustration.schema.RIGHTS_FIELDS)) of that video.   |
+|---------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+
+### illustration.frames.DFLT_MIN_GAP_S *= 12.0*
+
+keep the best.
+
+* **Type:**
+  Two hits in one video closer than this (seconds) are one scene
+
+### illustration.frames.DFLT_PER_VIDEO *= 3*
+
+At most this many hits from one video, so one long video cannot fill the list.
+
+### *class* illustration.frames.FrameHit(video_id, video_url, t, score, title=None, license=None, license_raw=None, license_url=None, attribution=None, author=None, author_url=None, cacheable=False)
+
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
+
+One frame that matches a query: which video, when, how well, and the
+rights record ([`illustration.schema.RIGHTS_FIELDS`](_autosummary/illustration.schema.html.md#illustration.schema.RIGHTS_FIELDS)) of that video.
+
+#### *property* rights *: [dict](https://docs.python.org/3/builtins/stdtypes.html#dict)*
+
+The rights record, by [`illustration.schema.RIGHTS_FIELDS`](_autosummary/illustration.schema.html.md#illustration.schema.RIGHTS_FIELDS)’ names.
+
+#### *property* source_page_url *: [str](https://docs.python.org/3/builtins/stdtypes.html#str)*
+
+the video at this moment ([`watch_url`](_autosummary/illustration.frames.html.md#illustration.frames.FrameHit.watch_url)).
+
+* **Type:**
+  The page the frame is on
+
+#### *property* watch_url *: [str](https://docs.python.org/3/builtins/stdtypes.html#str)*
+
+The video URL opening at this frame (whole seconds).
+
+```pycon
+>>> FrameHit("v", "https://www.youtube.com/watch?v=v", 75.4, 0.2).watch_url
+'https://www.youtube.com/watch?v=v&t=75s'
+>>> FrameHit("v", "https://youtu.be/v", 9.0, 0.2).watch_url
+'https://youtu.be/v?t=9s'
+```
+
+### illustration.frames.default_frame_store(model)
+
+JSON files under the cache dir, one per video, per embedding model.
+
+* **Return type:**
+  [`MutableMapping`](https://docs.python.org/3/library/typing.html#typing.MutableMapping)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Any`](https://docs.python.org/3/library/typing.html#typing.Any)]
+
+### illustration.frames.frame_license(raw)
+
+A video licence as the package’s canonical code
+([`illustration.licensing.normalize_license()`](_autosummary/illustration.licensing.html.md#illustration.licensing.normalize_license)); `None` when unknown.
+
+```pycon
+>>> frame_license("Creative Commons Attribution license (reuse allowed)")
+'by'
+>>> frame_license(YOUTUBE_STANDARD_LICENSE), frame_license(None)
+('youtube-standard-license', None)
+>>> frame_license("CC BY-NC 4.0")  # a custom sampler's licence keeps its NC
+'by-nc'
+```
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
+
+### illustration.frames.index_video_frames(videos, \*, store=None, sampler=<function storyboard_sampler>, scorer=None, model=None, refresh=False, batch=64)
+
+Embed every frame of `videos` into the corpus; return what happened.
+
+A video already in the store is skipped unless `refresh=True` (for a
+YouTube URL, without fetching anything), so indexing a channel again only
+does the new videos. A video that cannot be read or embedded (no
+storyboard, unavailable, a corrupt sheet, a scorer error) is recorded in
+`failed` with the reason, nothing is written for it, and the others go
+on. Frames are embedded `batch` at a time as they are read, so a long
+video never sits in memory whole.
+
+* **Returns:**
+  [ids], “skipped”: [ids], “failed”: {url: why},
+  “frames”: number of frames embedded}\`\`; a video’s id is its
+  `video_id`, else its URL.
+* **Return type:**
+  [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)
+
+### illustration.frames.search_frames(text, , store=None, scorer=None, model=None, k=10, per_video=3, min_gap_s=12.0, videos=None)
+
+The `k` frames that best match `text`, best first.
+
+Diversified, because the next frame of a match is usually a match too: at
+most `per_video` hits per video, and two hits closer than `min_gap_s`
+in one video are one scene (the better one is kept). `videos` limits the
+search to those video ids (or URLs, for a video that has no id). Videos
+indexed with another embedding model are skipped, with a warning.
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`FrameHit`](_autosummary/illustration.frames.html.md#illustration.frames.FrameHit)]
+
+### illustration.frames.storyboard_sampler(url, \*\*kwargs)
+
+A video’s YouTube storyboard (`yb.download.youtube_storyboard`).
+
+A YouTube video with no licence reported is under YouTube’s standard
+licence, so that is what it records (`YOUTUBE_STANDARD_LICENSE`).
+
+* **Return type:**
+  [`Any`](https://docs.python.org/3/library/typing.html#typing.Any)
+
+### illustration.frames.youtube_video_id(url)
+
+The video id in a YouTube URL, or `None`: lets indexing skip a video it
+already has without fetching anything.
+
+```pycon
+>>> youtube_video_id("https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=3")
+'dQw4w9WgXcQ'
+>>> youtube_video_id("https://youtu.be/a-b_cdefghi"), youtube_video_id("/films/a.mp4")
+('a-b_cdefghi', None)
+```
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
+
+
 # _autosummary/illustration.html.md
 
 # illustration
@@ -1950,36 +2146,39 @@ See `misc/docs/design/illustration_design.md` for the full design.
 | [`resolve_selection`](_autosummary/illustration.html.md#illustration.resolve_selection)(store, beat_index)               | The *active* selection body for a beat — the latest annotation wins.                                                                  |
 | [`resolved_selections`](_autosummary/illustration.html.md#illustration.resolved_selections)(store)                         | The active selection body per beat index (resolved over all overrides).                                                               |
 | [`export_otio`](_autosummary/illustration.html.md#illustration.export_otio)(store[, target])                       | Export the annotation store to OpenTimelineIO (needs `lacing[otio]`).                                                                 |
+| [`index_video_frames`](_autosummary/illustration.html.md#illustration.index_video_frames)(videos, \*[, store, ...])       | Embed every frame of `videos` into the corpus; return what happened.                                                                  |
+| [`search_frames`](_autosummary/illustration.html.md#illustration.search_frames)(text, \*[, store, scorer, ...])      | The `k` frames that best match `text`, best first.                                                                                    |
 | [`render_sequence_video`](_autosummary/illustration.html.md#illustration.render_sequence_video)(selections, \*, saveas)      | Render chosen images into a single Ken-Burns film via `burns`.                                                                        |
 | [`to_walkthru_document`](_autosummary/illustration.html.md#illustration.to_walkthru_document)(selections, \*[, ...])        | Build a `walkthru.DemoDocument` from the selections (pure data, no render).                                                           |
 
 ### Classes
 
-| [`ImageResult`](_autosummary/illustration.html.md#illustration.ImageResult)(\*, provider, id, url[, ...])          | One normalized image hit from any provider.                                  |
-|-----------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------|
-| [`VideoResult`](_autosummary/illustration.html.md#illustration.VideoResult)(\*, provider, id, url[, ...])          | One normalized video hit from any provider.                                  |
-| [`MediaResult`](_autosummary/illustration.html.md#illustration.MediaResult)(\*, provider, id, url[, ...])          | What every normalized hit from any provider carries, whatever the media.     |
-| [`Rendition`](_autosummary/illustration.html.md#illustration.Rendition)(\*, url[, mime_type, video_codec, ...])  | One playable encoding of a video, as a provider offers it.                   |
-| [`TimeSpan`](_autosummary/illustration.html.md#illustration.TimeSpan)(\*, start, end)                           | A span of a media file, in seconds.                                          |
-| [`RetrievalSource`](_autosummary/illustration.html.md#illustration.RetrievalSource)(\*[, session])                     | Abstract base for a pure image-search provider.                              |
-| [`SourceInfo`](_autosummary/illustration.html.md#illustration.SourceInfo)(name[, description, ...])               | Static, human-facing metadata about a source (for discovery + the gate).     |
-| [`SourcesView`](_autosummary/illustration.html.md#illustration.SourcesView)()                                      | A live `Mapping` over the registry with dict- *and* attribute-access.        |
-| [`SearchCache`](_autosummary/illustration.html.md#illustration.SearchCache)([store])                               | A thin read/write facade over an injectable `MutableMapping` store.          |
-| [`CurationResult`](_autosummary/illustration.html.md#illustration.CurationResult)(\*, beat, best, accepted, ...)      | The outcome of curating one beat.                                            |
-| [`Candidate`](_autosummary/illustration.html.md#illustration.Candidate)(\*, result[, score, caption, ...])       | One scored (and optionally inspected) candidate.                             |
-| [`Budget`](_autosummary/illustration.html.md#illustration.Budget)([max_iter, max_search_calls, ...])          | Hard loop bounds — the safety net, enforced in controller code (R2).         |
-| [`Grade`](_autosummary/illustration.html.md#illustration.Grade)(\*values)                                    | CRAG's three-way retrieval grade (R2 §1).                                    |
-| [`IterationRecord`](_autosummary/illustration.html.md#illustration.IterationRecord)(\*, iteration, queries, ...)       | One iteration of the loop — the run-log R2 requires for observability.       |
-| [`PrefilterResult`](_autosummary/illustration.html.md#illustration.PrefilterResult)(passed, reports)                   | The outcome of pre-filtering a candidate set.                                |
-| [`PrefilterReport`](_autosummary/illustration.html.md#illustration.PrefilterReport)(\*, provider, id, passed[, ...])   | Per-candidate pre-filter verdict (the R2 PREFILTER stage record).            |
-| [`InspectReport`](_autosummary/illustration.html.md#illustration.InspectReport)(\*, provider, id, mode[, ...])       | A VLM inspection of one candidate (caption or judge mode; R2 INSPECT).       |
-| [`RubricScore`](_autosummary/illustration.html.md#illustration.RubricScore)(\*[, subject, action, setting, ...])   | A pointwise VLM judgement of one candidate (R2 §4 rubric dimensions).        |
-| [`SequenceSelection`](_autosummary/illustration.html.md#illustration.SequenceSelection)(\*[, selections, ...])           | One image chosen per beat, optimized for the cross-shot objective.           |
-| [`SequenceResult`](_autosummary/illustration.html.md#illustration.SequenceResult)(\*, beats, selection)               | The result of curating a whole sequence of beats.                            |
-| [`BeatSelection`](_autosummary/illustration.html.md#illustration.BeatSelection)(\*, beat_index, chosen[, ...])       | The chosen image (and why) for one beat in a sequence.                       |
-| [`DuplicateGroup`](_autosummary/illustration.html.md#illustration.DuplicateGroup)(members[, signature])               | Images judged to be the same subject, best first.                            |
-| [`DuplicateSignature`](_autosummary/illustration.html.md#illustration.DuplicateSignature)                                 |                                                                              |
-| [`SelectionBody`](_autosummary/illustration.html.md#illustration.SelectionBody)(\*, beat, beat_index, source[, ...]) | The typed body of an illustration selection annotation (lacing body schema). |
+| [`ImageResult`](_autosummary/illustration.html.md#illustration.ImageResult)(\*, provider, id, url[, ...])          | One normalized image hit from any provider.                                                                                                                                                                              |
+|-----------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [`VideoResult`](_autosummary/illustration.html.md#illustration.VideoResult)(\*, provider, id, url[, ...])          | One normalized video hit from any provider.                                                                                                                                                                              |
+| [`MediaResult`](_autosummary/illustration.html.md#illustration.MediaResult)(\*, provider, id, url[, ...])          | What every normalized hit from any provider carries, whatever the media.                                                                                                                                                 |
+| [`Rendition`](_autosummary/illustration.html.md#illustration.Rendition)(\*, url[, mime_type, video_codec, ...])  | One playable encoding of a video, as a provider offers it.                                                                                                                                                               |
+| [`TimeSpan`](_autosummary/illustration.html.md#illustration.TimeSpan)(\*, start, end)                           | A span of a media file, in seconds.                                                                                                                                                                                      |
+| [`RetrievalSource`](_autosummary/illustration.html.md#illustration.RetrievalSource)(\*[, session])                     | Abstract base for a pure image-search provider.                                                                                                                                                                          |
+| [`SourceInfo`](_autosummary/illustration.html.md#illustration.SourceInfo)(name[, description, ...])               | Static, human-facing metadata about a source (for discovery + the gate).                                                                                                                                                 |
+| [`SourcesView`](_autosummary/illustration.html.md#illustration.SourcesView)()                                      | A live `Mapping` over the registry with dict- *and* attribute-access.                                                                                                                                                    |
+| [`SearchCache`](_autosummary/illustration.html.md#illustration.SearchCache)([store])                               | A thin read/write facade over an injectable `MutableMapping` store.                                                                                                                                                      |
+| [`CurationResult`](_autosummary/illustration.html.md#illustration.CurationResult)(\*, beat, best, accepted, ...)      | The outcome of curating one beat.                                                                                                                                                                                        |
+| [`Candidate`](_autosummary/illustration.html.md#illustration.Candidate)(\*, result[, score, caption, ...])       | One scored (and optionally inspected) candidate.                                                                                                                                                                         |
+| [`Budget`](_autosummary/illustration.html.md#illustration.Budget)([max_iter, max_search_calls, ...])          | Hard loop bounds — the safety net, enforced in controller code (R2).                                                                                                                                                     |
+| [`Grade`](_autosummary/illustration.html.md#illustration.Grade)(\*values)                                    | CRAG's three-way retrieval grade (R2 §1).                                                                                                                                                                                |
+| [`IterationRecord`](_autosummary/illustration.html.md#illustration.IterationRecord)(\*, iteration, queries, ...)       | One iteration of the loop — the run-log R2 requires for observability.                                                                                                                                                   |
+| [`PrefilterResult`](_autosummary/illustration.html.md#illustration.PrefilterResult)(passed, reports)                   | The outcome of pre-filtering a candidate set.                                                                                                                                                                            |
+| [`PrefilterReport`](_autosummary/illustration.html.md#illustration.PrefilterReport)(\*, provider, id, passed[, ...])   | Per-candidate pre-filter verdict (the R2 PREFILTER stage record).                                                                                                                                                        |
+| [`InspectReport`](_autosummary/illustration.html.md#illustration.InspectReport)(\*, provider, id, mode[, ...])       | A VLM inspection of one candidate (caption or judge mode; R2 INSPECT).                                                                                                                                                   |
+| [`RubricScore`](_autosummary/illustration.html.md#illustration.RubricScore)(\*[, subject, action, setting, ...])   | A pointwise VLM judgement of one candidate (R2 §4 rubric dimensions).                                                                                                                                                    |
+| [`SequenceSelection`](_autosummary/illustration.html.md#illustration.SequenceSelection)(\*[, selections, ...])           | One image chosen per beat, optimized for the cross-shot objective.                                                                                                                                                       |
+| [`SequenceResult`](_autosummary/illustration.html.md#illustration.SequenceResult)(\*, beats, selection)               | The result of curating a whole sequence of beats.                                                                                                                                                                        |
+| [`BeatSelection`](_autosummary/illustration.html.md#illustration.BeatSelection)(\*, beat_index, chosen[, ...])       | The chosen image (and why) for one beat in a sequence.                                                                                                                                                                   |
+| [`DuplicateGroup`](_autosummary/illustration.html.md#illustration.DuplicateGroup)(members[, signature])               | Images judged to be the same subject, best first.                                                                                                                                                                        |
+| [`DuplicateSignature`](_autosummary/illustration.html.md#illustration.DuplicateSignature)                                 |                                                                                                                                                                                                                          |
+| [`SelectionBody`](_autosummary/illustration.html.md#illustration.SelectionBody)(\*, beat, beat_index, source[, ...]) | The typed body of an illustration selection annotation (lacing body schema).                                                                                                                                             |
+| [`FrameHit`](_autosummary/illustration.html.md#illustration.FrameHit)(video_id, video_url, t, score[, ...])     | One frame that matches a query: which video, when, how well, and the rights record ([`illustration.schema.RIGHTS_FIELDS`](_autosummary/illustration.schema.html.md#illustration.schema.RIGHTS_FIELDS)) of that video. |
 
 ### Exceptions
 
@@ -2098,6 +2297,35 @@ The member a consumer should get — highest quality of the group.
 ### illustration.DuplicateSignature
 
 alias of [`Signature`](_autosummary/illustration.duplicates.html.md#illustration.duplicates.Signature)
+
+### *class* illustration.FrameHit(video_id, video_url, t, score, title=None, license=None, license_raw=None, license_url=None, attribution=None, author=None, author_url=None, cacheable=False)
+
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
+
+One frame that matches a query: which video, when, how well, and the
+rights record ([`illustration.schema.RIGHTS_FIELDS`](_autosummary/illustration.schema.html.md#illustration.schema.RIGHTS_FIELDS)) of that video.
+
+#### *property* rights *: [dict](https://docs.python.org/3/builtins/stdtypes.html#dict)*
+
+The rights record, by [`illustration.schema.RIGHTS_FIELDS`](_autosummary/illustration.schema.html.md#illustration.schema.RIGHTS_FIELDS)’ names.
+
+#### *property* source_page_url *: [str](https://docs.python.org/3/builtins/stdtypes.html#str)*
+
+the video at this moment ([`watch_url`](_autosummary/illustration.html.md#illustration.FrameHit.watch_url)).
+
+* **Type:**
+  The page the frame is on
+
+#### *property* watch_url *: [str](https://docs.python.org/3/builtins/stdtypes.html#str)*
+
+The video URL opening at this frame (whole seconds).
+
+```pycon
+>>> FrameHit("v", "https://www.youtube.com/watch?v=v", 75.4, 0.2).watch_url
+'https://www.youtube.com/watch?v=v&t=75s'
+>>> FrameHit("v", "https://youtu.be/v", 9.0, 0.2).watch_url
+'https://youtu.be/v?t=9s'
+```
 
 ### *class* illustration.Grade(\*values)
 
@@ -2817,6 +3045,25 @@ Number of differing bits between two perceptual hashes.
 * **Return type:**
   [`int`](https://docs.python.org/3/builtins/functions.html#int)
 
+### illustration.index_video_frames(videos, \*, store=None, sampler=<function storyboard_sampler>, scorer=None, model=None, refresh=False, batch=64)
+
+Embed every frame of `videos` into the corpus; return what happened.
+
+A video already in the store is skipped unless `refresh=True` (for a
+YouTube URL, without fetching anything), so indexing a channel again only
+does the new videos. A video that cannot be read or embedded (no
+storyboard, unavailable, a corrupt sheet, a scorer error) is recorded in
+`failed` with the reason, nothing is written for it, and the others go
+on. Frames are embedded `batch` at a time as they are read, so a long
+video never sits in memory whole.
+
+* **Returns:**
+  [ids], “skipped”: [ids], “failed”: {url: why},
+  “frames”: number of frames embedded}\`\`; a video’s id is its
+  `video_id`, else its URL.
+* **Return type:**
+  [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)
+
 ### illustration.inspect_candidate(query, result, , mode='caption', describe=None, model=None, max_tokens=None)
 
 Inspect one candidate: a cheap caption (default) or a full rubric judge.
@@ -3262,6 +3509,19 @@ share a key.
 * **Return type:**
   [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
+### illustration.search_frames(text, , store=None, scorer=None, model=None, k=10, per_video=3, min_gap_s=12.0, videos=None)
+
+The `k` frames that best match `text`, best first.
+
+Diversified, because the next frame of a match is usually a match too: at
+most `per_video` hits per video, and two hits closer than `min_gap_s`
+in one video are one scene (the better one is kept). `videos` limits the
+search to those video ids (or URLs, for a video that has no id). Videos
+indexed with another embedding model are skipped, with a warning.
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`FrameHit`](_autosummary/illustration.frames.html.md#illustration.frames.FrameHit)]
+
 ### illustration.select_sequence(per_beat_candidates, , relevance=None, embed=None, hasher=None, shortlist=None, alpha=0.3, beta=0.5, phash_threshold=6, signature=None)
 
 Choose one image per beat optimizing relevance + coherence − redundancy.
@@ -3371,6 +3631,7 @@ through). Bindings nest: an inner block overlays the outer.
 | [`errors`](_autosummary/illustration.errors.html.md#module-illustration.errors)               | The package exception hierarchy.                                                                                  |
 | [`expansion`](_autosummary/illustration.expansion.html.md#module-illustration.expansion)         | Query expansion & refinement — the first node of the curation loop (R2 §1).                                       |
 | [`facade`](_autosummary/illustration.facade.html.md#module-illustration.facade)               | The façade: [`search()`](_autosummary/illustration.html.md#illustration.search) — one call over any registered provider(s). |
+| [`frames`](_autosummary/illustration.frames.html.md#module-illustration.frames)               | Text-to-frame search over a video corpus: find *where* in a set of videos something is.                           |
 | [`inspection`](_autosummary/illustration.inspection.html.md#module-illustration.inspection)       | Candidate inspection — classical-CV pre-filters + VLM caption/judge (R2 §2-3).                                    |
 | [`licensing`](_autosummary/illustration.licensing.html.md#module-illustration.licensing)         | Licence-code normalisation — one vocabulary for four provider vocabularies.                                       |
 | [`persistence`](_autosummary/illustration.persistence.html.md#module-illustration.persistence)     | Persist curation/selection decisions as `lacing` standoff annotations (R2 §6).                                    |
@@ -3705,7 +3966,7 @@ the recorded spelling rather than the normalised code.
 | [`mentions_license`](_autosummary/illustration.licensing.html.md#illustration.licensing.mentions_license)(attribution)                 | Whether `attribution` appears to name a licence or rights status.                                                                                                              |
 | [`licenses_named`](_autosummary/illustration.licensing.html.md#illustration.licensing.licenses_named)(text)                          | The canonical codes (as [`normalize_license()`](_autosummary/illustration.licensing.html.md#illustration.licensing.normalize_license) spells them) of every Creative Commons / public-domain licence that `text` names. |
 
-### illustration.licensing.LICENSE_ALIASES *= {'cc-0': 'cc0', 'cc-pdm': 'pdm', 'cc-publicdomain': 'pdm', 'cc-zero': 'cc0', 'pd': 'pdm', 'pdm-owner': 'pdm', 'public-domain': 'pdm', 'public-domain-mark': 'pdm', 'publicdomain': 'pdm', 'zero': 'cc0'}*
+### illustration.licensing.LICENSE_ALIASES *= {'cc-0': 'cc0', 'cc-pdm': 'pdm', 'cc-publicdomain': 'pdm', 'cc-zero': 'cc0', 'creative-commons-attribution-license-(reuse-allowed)': 'by', 'pd': 'pdm', 'pdm-owner': 'pdm', 'public-domain': 'pdm', 'public-domain-mark': 'pdm', 'publicdomain': 'pdm', 'zero': 'cc0'}*
 
 Whole-code spellings that no mechanical rule can fold, mapped by hand. Kept
 deliberately short: every entry is a judgement that two strings name the same
@@ -4681,6 +4942,21 @@ addressed (keyed by model + image URL) in an injectable `dol` store, so a
 re-rank of overlapping candidates is cheap. A candidate whose image can’t be
 fetched/embedded scores `-1.0` (sorted to the bottom) rather than failing.
 
+#### embed_pil_images(images, , batch=64)
+
+L2-normalized SigLIP embeddings of in-memory images (PIL), in order.
+
+For images that have no URL to cache by, such as frames cut from a
+video ([`illustration.frames`](_autosummary/illustration.frames.html.md#module-illustration.frames)), which keeps its own store. Batched,
+so a channel’s worth of frames is a few forward passes per thousand.
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)
+
+#### embed_text(text)
+
+The L2-normalized SigLIP embedding of `text` (a query).
+
 #### image_embeddings(results)
 
 L2-normalized image embeddings (cached) for `results`; `None` per failure.
@@ -5489,16 +5765,18 @@ Beats with no chosen image are skipped. Needs the `[video]` extra.
 
 # About this build
 
-This documentation was built on **2026-11-23 05:01 UTC** from commit <a href="https://github.com/reeleehq/illustration/commit/450a65261c56cb47f1a9182ab5f1569c6e564de2"><code>450a652</code></a> on branch <code>main</code>, for **illustration 0.0.24** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-11-23 05:12 UTC** from commit <a href="https://github.com/reeleehq/illustration/commit/733283fb457ae4c016aa869ac01d0b8e84268121"><code>733283f</code></a> on branch <code>main</code>, for **illustration 0.0.25** (from <code>pyproject.toml</code>).
 
-#### NOTE
-Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
+#### WARNING
+The documentation and the package may be misaligned:
+
+- The documented version (0.0.25) is behind the latest release on PyPI (0.0.26): `pip install illustration` gives newer code than these docs describe.
 
 ## Source
 
 |                     |                                                                                                                                                              |
 |---------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/reeleehq/illustration/commit/450a65261c56cb47f1a9182ab5f1569c6e564de2"><code>450a65261c56cb47f1a9182ab5f1569c6e564de2</code></a> |
+| Commit              | <a href="https://github.com/reeleehq/illustration/commit/733283fb457ae4c016aa869ac01d0b8e84268121"><code>733283fb457ae4c016aa869ac01d0b8e84268121</code></a> |
 | Branch              | <code>main</code>                                                                                                                                            |
 | Tags at this commit | none                                                                                                                                                         |
 | Working tree        | clean                                                                                                                                                        |
@@ -5509,9 +5787,9 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 |              |                                                                                             |
 |--------------|---------------------------------------------------------------------------------------------|
 | Repository   | <code>reeleehq/illustration</code>                                                          |
-| Run          | <a href="https://github.com/reeleehq/illustration/actions/runs/45115018003">45115018003</a> |
+| Run          | <a href="https://github.com/reeleehq/illustration/actions/runs/45116166801">45116166801</a> |
 | Ref          | <code>refs/heads/main</code>                                                                |
-| Event commit | <code>450a65261c56cb47f1a9182ab5f1569c6e564de2</code> (in the history of the built commit)  |
+| Event commit | <code>733283fb457ae4c016aa869ac01d0b8e84268121</code> (in the history of the built commit)  |
 
 ## Tools
 
@@ -5536,13 +5814,13 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/illustration/0.0.24/">0.0.24</a>, the same as the documented version.
+Latest release: <a href="https://pypi.org/project/illustration/0.0.26/">0.0.26</a>, newer than the documented version (0.0.25).
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/reeleehq/illustration && cd illustration
-git checkout 450a65261c56cb47f1a9182ab5f1569c6e564de2
+git checkout 733283fb457ae4c016aa869ac01d0b8e84268121
 pip install "epythet==0.2.23"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```

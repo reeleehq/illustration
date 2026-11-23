@@ -16,6 +16,7 @@
 - [illustration.errors](illustration.errors.html.md): The package exception hierarchy.
 - [illustration.expansion](illustration.expansion.html.md): Query expansion &amp; refinement — the first node of the curation loop (R2 §1).
 - [illustration.facade](illustration.facade.html.md): The façade: &#96;search()&#96; — one call over any registered provider(s).
+- [illustration.frames](illustration.frames.html.md): Text-to-frame search over a video corpus: find &#42;where&#42; in a set of videos something is.
 - [illustration.inspection](illustration.inspection.html.md): Candidate inspection — classical-CV pre-filters + VLM caption/judge (R2 §2-3).
 - [illustration.licensing](illustration.licensing.html.md): Licence-code normalisation — one vocabulary for four provider vocabularies.
 - [illustration.persistence](illustration.persistence.html.md): Persist curation/selection decisions as &#96;lacing&#96; standoff annotations (R2 §6).

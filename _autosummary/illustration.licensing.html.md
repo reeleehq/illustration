@@ -50,7 +50,7 @@ the recorded spelling rather than the normalised code.
 | [`mentions_license`](#illustration.licensing.mentions_license)(attribution)                 | Whether `attribution` appears to name a licence or rights status.                                                                                                              |
 | [`licenses_named`](#illustration.licensing.licenses_named)(text)                          | The canonical codes (as [`normalize_license()`](#illustration.licensing.normalize_license) spells them) of every Creative Commons / public-domain licence that `text` names. |
 
-### illustration.licensing.LICENSE_ALIASES *= {'cc-0': 'cc0', 'cc-pdm': 'pdm', 'cc-publicdomain': 'pdm', 'cc-zero': 'cc0', 'pd': 'pdm', 'pdm-owner': 'pdm', 'public-domain': 'pdm', 'public-domain-mark': 'pdm', 'publicdomain': 'pdm', 'zero': 'cc0'}*
+### illustration.licensing.LICENSE_ALIASES *= {'cc-0': 'cc0', 'cc-pdm': 'pdm', 'cc-publicdomain': 'pdm', 'cc-zero': 'cc0', 'creative-commons-attribution-license-(reuse-allowed)': 'by', 'pd': 'pdm', 'pdm-owner': 'pdm', 'public-domain': 'pdm', 'public-domain-mark': 'pdm', 'publicdomain': 'pdm', 'zero': 'cc0'}*
 
 Whole-code spellings that no mechanical rule can fold, mapped by hand. Kept
 deliberately short: every entry is a judgement that two strings name the same
