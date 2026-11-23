@@ -2,7 +2,7 @@
 <html lang="en" data-accent-color="cyan" data-content_root="../">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>illustration.frames - illustration</title><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="illustration.inspection" href="illustration.inspection.html" /><link rel="prev" title="illustration.facade" href="illustration.facade.html" /><script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>illustration.frames - illustration</title><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="illustration.frames_sources" href="illustration.frames_sources.html" /><link rel="prev" title="illustration.facade" href="illustration.facade.html" /><script>
     function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
     setColorMode(localStorage._theme||"auto");
   </script><link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d88b86f9" />
@@ -77,6 +77,7 @@ data-aria-dark="Switch to auto color mode">
 <li class="toctree-l3"><a class="reference internal" href="illustration.expansion.html">illustration.expansion</a></li>
 <li class="toctree-l3"><a class="reference internal" href="illustration.facade.html">illustration.facade</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">illustration.frames</a></li>
+<li class="toctree-l3"><a class="reference internal" href="illustration.frames_sources.html">illustration.frames_sources</a></li>
 <li class="toctree-l3"><a class="reference internal" href="illustration.inspection.html">illustration.inspection</a></li>
 <li class="toctree-l3"><a class="reference internal" href="illustration.licensing.html">illustration.licensing</a></li>
 <li class="toctree-l3"><a class="reference internal" href="illustration.persistence.html">illustration.persistence</a></li>
@@ -117,6 +118,10 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#illustration.frames.FrameHit.rights"><code class="docutils literal notranslate"><span class="pre">FrameHit.rights</span></code></a></li>
 <li><a class="reference internal" href="#illustration.frames.FrameHit.source_page_url"><code class="docutils literal notranslate"><span class="pre">FrameHit.source_page_url</span></code></a></li>
 <li><a class="reference internal" href="#illustration.frames.FrameHit.watch_url"><code class="docutils literal notranslate"><span class="pre">FrameHit.watch_url</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#illustration.frames.FrameIndex"><code class="docutils literal notranslate"><span class="pre">FrameIndex</span></code></a><ul>
+<li><a class="reference internal" href="#illustration.frames.FrameIndex.candidates"><code class="docutils literal notranslate"><span class="pre">FrameIndex.candidates()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#illustration.frames.default_frame_store"><code class="docutils literal notranslate"><span class="pre">default_frame_store()</span></code></a></li>
@@ -257,6 +262,9 @@ the licence.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#illustration.frames.FrameHit" title="illustration.frames.FrameHit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FrameHit</span></code></a>(video_id, video_url, t, score[, ...])</p></td>
 <td><p>One frame that matches a query: which video, when, how well, and the rights record (<a class="reference internal" href="illustration.schema.html#illustration.schema.RIGHTS_FIELDS" title="illustration.schema.RIGHTS_FIELDS"><code class="xref py py-data docutils literal notranslate"><span class="pre">illustration.schema.RIGHTS_FIELDS</span></code></a>) of that video.</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#illustration.frames.FrameIndex" title="illustration.frames.FrameIndex"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FrameIndex</span></code></a>(entries, matrix, rows, model, ...)</p></td>
+<td><p>The corpus as one stacked float32 matrix, so a query is one matrix product.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -312,6 +320,36 @@ rights record (<a class="reference internal" href="illustration.schema.html#illu
 </span><span data-line="4"><span class="go">'https://youtu.be/v?t=9s'</span>
 </span></pre></div>
 </div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="illustration.frames.FrameIndex">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">illustration.frames.</span></span><span class="sig-name descname"><span class="pre">FrameIndex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entries</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rows</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other_model</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/frames.html#FrameIndex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.frames.FrameIndex" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>The corpus as one stacked float32 matrix, so a query is one matrix product.</p>
+<p><a class="reference internal" href="#illustration.frames.search_frames" title="illustration.frames.search_frames"><code class="xref py py-func docutils literal notranslate"><span class="pre">search_frames()</span></code></a> over a store reads and parses every video’s entry per
+query, so latency grows with the corpus. Build a <code class="docutils literal notranslate"><span class="pre">FrameIndex</span></code> once and
+pass it as <code class="docutils literal notranslate"><span class="pre">index=</span></code>: the queries then cost one <code class="docutils literal notranslate"><span class="pre">(frames</span> <span class="pre">x</span> <span class="pre">dim)</span> <span class="pre">&#64;</span> <span class="pre">(dim,)</span></code>
+product and the per-hit work only for the few that are kept. Rebuild it
+(<code class="docutils literal notranslate"><span class="pre">FrameIndex.from_store</span></code> again) after indexing more videos. Videos indexed
+with another model than <code class="docutils literal notranslate"><span class="pre">model</span></code> are left out and listed in <code class="docutils literal notranslate"><span class="pre">other_model</span></code>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="n">FrameIndex</span><span class="o">.</span><span class="n">from_store</span><span class="p">({},</span> <span class="n">model</span><span class="o">=</span><span class="s2">"m"</span><span class="p">)</span><span class="o">.</span><span class="n">frames</span>
+</span><span data-line="2"><span class="go">0</span>
+</span></pre></div>
+</div>
+<dl class="field-list simple">
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="illustration.frames.FrameIndex.candidates">
+<span class="sig-name descname"><span class="pre">candidates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wanted</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/frames.html#FrameIndex.candidates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.frames.FrameIndex.candidates" title="Link to this definition">#</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">(score,</span> <span class="pre">t,</span> <span class="pre">entry)</span></code> for every frame, as <a class="reference internal" href="#illustration.frames.search_frames" title="illustration.frames.search_frames"><code class="xref py py-func docutils literal notranslate"><span class="pre">search_frames()</span></code></a> ranks them.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a></span></p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -372,13 +410,15 @@ video never sits in memory whole.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="illustration.frames.search_frames">
-<span class="sig-prename descclassname"><span class="pre">illustration.frames.</span></span><span class="sig-name descname"><span class="pre">search_frames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">store</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scorer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">per_video</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_gap_s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">12.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">videos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/frames.html#search_frames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.frames.search_frames" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">illustration.frames.</span></span><span class="sig-name descname"><span class="pre">search_frames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">store</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scorer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">per_video</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_gap_s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">12.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">videos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/frames.html#search_frames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.frames.search_frames" title="Link to this definition">#</a></dt>
 <dd><p>The <code class="docutils literal notranslate"><span class="pre">k</span></code> frames that best match <code class="docutils literal notranslate"><span class="pre">text</span></code>, best first.</p>
 <p>Diversified, because the next frame of a match is usually a match too: at
 most <code class="docutils literal notranslate"><span class="pre">per_video</span></code> hits per video, and two hits closer than <code class="docutils literal notranslate"><span class="pre">min_gap_s</span></code>
 in one video are one scene (the better one is kept). <code class="docutils literal notranslate"><span class="pre">videos</span></code> limits the
 search to those video ids (or URLs, for a video that has no id). Videos
-indexed with another embedding model are skipped, with a warning.</p>
+indexed with another embedding model are skipped, with a warning. Pass
+<code class="docutils literal notranslate"><span class="pre">index=FrameIndex.from_store(store)</span></code> to search a prebuilt stacked matrix
+instead of reading the store (<code class="docutils literal notranslate"><span class="pre">store</span></code> is then not read).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference internal" href="#illustration.frames.FrameHit" title="illustration.frames.FrameHit"><code class="xref py py-class docutils literal notranslate"><span class="pre">FrameHit</span></code></a>]</span></p>
@@ -431,10 +471,10 @@ already has without fetching anything.</p>
         <span>Previous</span><div class="title">illustration.facade</div></div>
     </a>
   </div><div class="navigation-next">
-    <a href="illustration.inspection.html">
+    <a href="illustration.frames_sources.html">
       <div class="page-info">
         <span>Next</span>
-        <div class="title">illustration.inspection</div>
+        <div class="title">illustration.frames_sources</div>
       </div>
       <i class="i-lucide chevron-right"></i>
     </a>
@@ -459,7 +499,7 @@ already has without fetching anything.</p>
     </div>
   </div>
 </footer>
-      <script src="../_static/documentation_options.js?v=6a9d8632"></script>
+      <script src="../_static/documentation_options.js?v=cee5022b"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>

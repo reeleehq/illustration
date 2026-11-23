@@ -1,4 +1,4 @@
-> built 2026-11-23 06:37 UTC from 4e37bc2 (main) · illustration 0.0.26. Details: build_info.json
+> built 2026-11-23 08:30 UTC from 3d56204 (main) · illustration 0.0.27. Details: build_info.json
 
 # index.html.md
 
@@ -1834,6 +1834,7 @@ the licence.
 
 | [`FrameHit`](_autosummary/illustration.frames.html.md#illustration.frames.FrameHit)(video_id, video_url, t, score[, ...])   | One frame that matches a query: which video, when, how well, and the rights record ([`illustration.schema.RIGHTS_FIELDS`](_autosummary/illustration.schema.html.md#illustration.schema.RIGHTS_FIELDS)) of that video.   |
 |---------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [`FrameIndex`](_autosummary/illustration.frames.html.md#illustration.frames.FrameIndex)(entries, matrix, rows, model, ...)    | The corpus as one stacked float32 matrix, so a query is one matrix product.                                                                                                                                                |
 
 ### illustration.frames.DFLT_MIN_GAP_S *= 12.0*
 
@@ -1874,6 +1875,31 @@ The video URL opening at this frame (whole seconds).
 >>> FrameHit("v", "https://youtu.be/v", 9.0, 0.2).watch_url
 'https://youtu.be/v?t=9s'
 ```
+
+### *class* illustration.frames.FrameIndex(entries, matrix, rows, model, other_model)
+
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
+
+The corpus as one stacked float32 matrix, so a query is one matrix product.
+
+[`search_frames()`](_autosummary/illustration.frames.html.md#illustration.frames.search_frames) over a store reads and parses every video’s entry per
+query, so latency grows with the corpus. Build a `FrameIndex` once and
+pass it as `index=`: the queries then cost one `(frames x dim) @ (dim,)`
+product and the per-hit work only for the few that are kept. Rebuild it
+(`FrameIndex.from_store` again) after indexing more videos. Videos indexed
+with another model than `model` are left out and listed in `other_model`.
+
+```pycon
+>>> FrameIndex.from_store({}, model="m").frames
+0
+```
+
+#### candidates(query, wanted=None)
+
+`(score, t, entry)` for every frame, as [`search_frames()`](_autosummary/illustration.frames.html.md#illustration.frames.search_frames) ranks them.
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)
 
 ### illustration.frames.default_frame_store(model)
 
@@ -1918,7 +1944,7 @@ video never sits in memory whole.
 * **Return type:**
   [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)
 
-### illustration.frames.search_frames(text, , store=None, scorer=None, model=None, k=10, per_video=3, min_gap_s=12.0, videos=None)
+### illustration.frames.search_frames(text, , store=None, scorer=None, model=None, k=10, per_video=3, min_gap_s=12.0, videos=None, index=None)
 
 The `k` frames that best match `text`, best first.
 
@@ -1926,7 +1952,9 @@ Diversified, because the next frame of a match is usually a match too: at
 most `per_video` hits per video, and two hits closer than `min_gap_s`
 in one video are one scene (the better one is kept). `videos` limits the
 search to those video ids (or URLs, for a video that has no id). Videos
-indexed with another embedding model are skipped, with a warning.
+indexed with another embedding model are skipped, with a warning. Pass
+`index=FrameIndex.from_store(store)` to search a prebuilt stacked matrix
+instead of reading the store (`store` is then not read).
 
 * **Return type:**
   [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`FrameHit`](_autosummary/illustration.frames.html.md#illustration.frames.FrameHit)]
@@ -1955,6 +1983,89 @@ already has without fetching anything.
 
 * **Return type:**
   [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
+
+
+# _autosummary/illustration.frames_sources.html.md
+
+# illustration.frames_sources
+
+More ways into the frame corpus: frames from a local file, and a video’s captions (#59).
+
+Both fit the seams [`illustration.frames`](_autosummary/illustration.frames.html.md#module-illustration.frames) already has, so nothing there changes.
+
+- [`file_sampler()`](_autosummary/illustration.frames_sources.html.md#illustration.frames_sources.file_sampler): an every-N-seconds sampler for a local video, a `sampler=`
+  for [`illustration.frames.index_video_frames()`](_autosummary/illustration.frames.html.md#illustration.frames.index_video_frames). Its identity is the file’s
+  absolute path (the same keying as any id-less video since #56). Needs `ffmpeg`
+  on the `PATH` and the `[frames]` extra’s pillow.
+- [`search_captions()`](_autosummary/illustration.frames_sources.html.md#illustration.frames_sources.search_captions): search a video’s subtitle cues beside its frames and get
+  back the same [`FrameHit`](_autosummary/illustration.frames.html.md#illustration.frames.FrameHit), whose `t` is the cue’s
+  start. A caption finds what a 320x180 storyboard frame cannot (a held mug that
+  is only mentioned). Scoring is lexical, on purpose: SigLIP embeds pictures and
+  short captions, not a sentence of speech. The cue source is a seam
+  (`loader=`), by default [`youtube_caption_loader()`](_autosummary/illustration.frames_sources.html.md#illustration.frames_sources.youtube_caption_loader) (`yb`).
+  ```pycon
+  >>> parse_cues("WEBVTT\n\n00:00:01.000 --> 00:00:03.500\nhello <c>there</c>\n")
+  [(1.0, 'hello there')]
+  ```
+
+### Module Attributes
+
+| [`DFLT_EVERY_S`](_autosummary/illustration.frames_sources.html.md#illustration.frames_sources.DFLT_EVERY_S)   | Seconds between sampled frames of a local video.   |
+|-----------------------------------------------------------------|----------------------------------------------------|
+
+### Functions
+
+| [`file_sampler`](_autosummary/illustration.frames_sources.html.md#illustration.frames_sources.file_sampler)(path, \*[, every_s, ffmpeg])        | A local video sampled every `every_s` seconds: `index_video_frames([...], sampler=file_sampler)`.   |
+|---------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
+| [`parse_cues`](_autosummary/illustration.frames_sources.html.md#illustration.frames_sources.parse_cues)(text)                                 | `(start seconds, text)` per cue of a WebVTT or SRT file, markup removed.                            |
+| [`search_captions`](_autosummary/illustration.frames_sources.html.md#illustration.frames_sources.search_captions)(text, videos, \*[, loader, ...]) | The `k` caption cues that best match `text`, best first, as `FrameHit`.                             |
+| [`youtube_caption_loader`](_autosummary/illustration.frames_sources.html.md#illustration.frames_sources.youtube_caption_loader)(url, \*[, langs])         | `(meta, cues)` for a YouTube video, through `yb.download.download_youtube_subtitles`.               |
+
+### illustration.frames_sources.DFLT_EVERY_S *= 5.0*
+
+Seconds between sampled frames of a local video.
+
+### illustration.frames_sources.file_sampler(path, , every_s=5.0, ffmpeg='ffmpeg')
+
+A local video sampled every `every_s` seconds: `index_video_frames([...], sampler=file_sampler)`.
+
+Use `functools.partial(file_sampler, every_s=2)` for another interval. Raises
+`FileNotFoundError` for a missing file, so indexing reports it as a failure
+and goes on.
+
+* **Return type:**
+  `FileVideo`
+
+### illustration.frames_sources.parse_cues(text)
+
+`(start seconds, text)` per cue of a WebVTT or SRT file, markup removed.
+
+Auto-generated captions repeat each line as it grows; a cue whose text equals
+the previous one is dropped.
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`float`](https://docs.python.org/3/builtins/functions.html#float), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]]
+
+### illustration.frames_sources.search_captions(text, videos, \*, loader=<function youtube_caption_loader>, k=10, per_video=3, min_gap_s=12.0)
+
+The `k` caption cues that best match `text`, best first, as `FrameHit`.
+
+A cue scores the fraction of the query’s words it contains, plus 0.5 when it
+holds the whole phrase; cues with no query word are not hits. Diversified as
+[`illustration.frames.search_frames()`](_autosummary/illustration.frames.html.md#illustration.frames.search_frames) is (`per_video`, `min_gap_s`).
+`loader(url)` returns `(meta, cues)`: `meta` may carry `video_id`,
+`title`, `license`, `author`, `author_url`; a video it cannot read is
+skipped.
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`FrameHit`](_autosummary/illustration.frames.html.md#illustration.frames.FrameHit)]
+
+### illustration.frames_sources.youtube_caption_loader(url, , langs=('en',))
+
+`(meta, cues)` for a YouTube video, through `yb.download.download_youtube_subtitles`.
+
+* **Return type:**
+  [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict), [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`float`](https://docs.python.org/3/builtins/functions.html#float), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]]]
 
 
 # _autosummary/illustration.html.md
@@ -3407,7 +3518,7 @@ share a key.
 * **Return type:**
   [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
-### illustration.search_frames(text, , store=None, scorer=None, model=None, k=10, per_video=3, min_gap_s=12.0, videos=None)
+### illustration.search_frames(text, , store=None, scorer=None, model=None, k=10, per_video=3, min_gap_s=12.0, videos=None, index=None)
 
 The `k` frames that best match `text`, best first.
 
@@ -3415,7 +3526,9 @@ Diversified, because the next frame of a match is usually a match too: at
 most `per_video` hits per video, and two hits closer than `min_gap_s`
 in one video are one scene (the better one is kept). `videos` limits the
 search to those video ids (or URLs, for a video that has no id). Videos
-indexed with another embedding model are skipped, with a warning.
+indexed with another embedding model are skipped, with a warning. Pass
+`index=FrameIndex.from_store(store)` to search a prebuilt stacked matrix
+instead of reading the store (`store` is then not read).
 
 * **Return type:**
   [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`FrameHit`](_autosummary/illustration.frames.html.md#illustration.frames.FrameHit)]
@@ -3518,29 +3631,30 @@ through). Bindings nest: an inner block overlays the outer.
 
 ### Modules
 
-| [`base`](_autosummary/illustration.base.html.md#module-illustration.base)                   | The provider plugin contract: [`RetrievalSource`](_autosummary/illustration.html.md#illustration.RetrievalSource).                   |
-|--------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------|
-| [`caching`](_autosummary/illustration.caching.html.md#module-illustration.caching)             | SHA-256 content-addressed caching of search results (the `falaw` recipe).                                         |
-| [`cli`](_autosummary/illustration.cli.html.md#module-illustration.cli)                     | Command-line surface (thin `cw` wrappers over the library functions).                                             |
-| [`config`](_autosummary/illustration.config.html.md#module-illustration.config)               | Configuration: XDG directories and package-wide defaults (the SSOT).                                              |
-| [`credentials`](_autosummary/illustration.credentials.html.md#module-illustration.credentials)     | API-key resolution (the `aix` credentials idiom + `falaw` BYO-key seam).                                          |
-| [`curation`](_autosummary/illustration.curation.html.md#module-illustration.curation)           | The bounded corrective-retrieval (CRAG) loop — Layer 2's heart (R2 §1).                                           |
-| [`duplicates`](_autosummary/illustration.duplicates.html.md#module-illustration.duplicates)       | Group images that are the same **subject**, and keep the best one of each group.                                  |
-| [`errors`](_autosummary/illustration.errors.html.md#module-illustration.errors)               | The package exception hierarchy.                                                                                  |
-| [`expansion`](_autosummary/illustration.expansion.html.md#module-illustration.expansion)         | Query expansion & refinement — the first node of the curation loop (R2 §1).                                       |
-| [`facade`](_autosummary/illustration.facade.html.md#module-illustration.facade)               | The façade: [`search()`](_autosummary/illustration.html.md#illustration.search) — one call over any registered provider(s). |
-| [`frames`](_autosummary/illustration.frames.html.md#module-illustration.frames)               | Text-to-frame search over a video corpus: find *where* in a set of videos something is.                           |
-| [`inspection`](_autosummary/illustration.inspection.html.md#module-illustration.inspection)       | Candidate inspection — classical-CV pre-filters + VLM caption/judge (R2 §2-3).                                    |
-| [`licensing`](_autosummary/illustration.licensing.html.md#module-illustration.licensing)         | Licence-code normalisation — one vocabulary for four provider vocabularies.                                       |
-| [`persistence`](_autosummary/illustration.persistence.html.md#module-illustration.persistence)     | Persist curation/selection decisions as `lacing` standoff annotations (R2 §6).                                    |
-| [`providers`](_autosummary/illustration.providers.html.md#module-illustration.providers)         | Built-in provider sources, registered on import.                                                                  |
-| [`registry`](_autosummary/illustration.registry.html.md#module-illustration.registry)           | The open-closed source registry and the `sources` view.                                                           |
-| [`reranking`](_autosummary/illustration.reranking.html.md#module-illustration.reranking)         | Local cross-modal rerank — the precision stage (research report R1 §3).                                           |
-| [`schema`](_autosummary/illustration.schema.html.md#module-illustration.schema)               | The normalized result schema — the single source of truth (Pydantic v2).                                          |
-| [`schema_export`](_autosummary/illustration.schema_export.html.md#module-illustration.schema_export) | Export the Python SSOT as committed JSON for the TypeScript twin (`ts/`).                                         |
-| [`sequence`](_autosummary/illustration.sequence.html.md#module-illustration.sequence)           | Sequence-level selection — the M4 domain core (research report R2 §5).                                            |
-| [`translation`](_autosummary/illustration.translation.html.md#module-illustration.translation)     | Canonical → native parameter translation (the `denote` `param_map` idiom).                                        |
-| [`video`](_autosummary/illustration.video.html.md#module-illustration.video)                 | Narration → Ken-Burns video hook — the M4 integration seam.                                                       |
+| [`base`](_autosummary/illustration.base.html.md#module-illustration.base)                     | The provider plugin contract: [`RetrievalSource`](_autosummary/illustration.html.md#illustration.RetrievalSource).                   |
+|----------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------|
+| [`caching`](_autosummary/illustration.caching.html.md#module-illustration.caching)               | SHA-256 content-addressed caching of search results (the `falaw` recipe).                                         |
+| [`cli`](_autosummary/illustration.cli.html.md#module-illustration.cli)                       | Command-line surface (thin `cw` wrappers over the library functions).                                             |
+| [`config`](_autosummary/illustration.config.html.md#module-illustration.config)                 | Configuration: XDG directories and package-wide defaults (the SSOT).                                              |
+| [`credentials`](_autosummary/illustration.credentials.html.md#module-illustration.credentials)       | API-key resolution (the `aix` credentials idiom + `falaw` BYO-key seam).                                          |
+| [`curation`](_autosummary/illustration.curation.html.md#module-illustration.curation)             | The bounded corrective-retrieval (CRAG) loop — Layer 2's heart (R2 §1).                                           |
+| [`duplicates`](_autosummary/illustration.duplicates.html.md#module-illustration.duplicates)         | Group images that are the same **subject**, and keep the best one of each group.                                  |
+| [`errors`](_autosummary/illustration.errors.html.md#module-illustration.errors)                 | The package exception hierarchy.                                                                                  |
+| [`expansion`](_autosummary/illustration.expansion.html.md#module-illustration.expansion)           | Query expansion & refinement — the first node of the curation loop (R2 §1).                                       |
+| [`facade`](_autosummary/illustration.facade.html.md#module-illustration.facade)                 | The façade: [`search()`](_autosummary/illustration.html.md#illustration.search) — one call over any registered provider(s). |
+| [`frames`](_autosummary/illustration.frames.html.md#module-illustration.frames)                 | Text-to-frame search over a video corpus: find *where* in a set of videos something is.                           |
+| [`frames_sources`](_autosummary/illustration.frames_sources.html.md#module-illustration.frames_sources) | More ways into the frame corpus: frames from a local file, and a video's captions (#59).                          |
+| [`inspection`](_autosummary/illustration.inspection.html.md#module-illustration.inspection)         | Candidate inspection — classical-CV pre-filters + VLM caption/judge (R2 §2-3).                                    |
+| [`licensing`](_autosummary/illustration.licensing.html.md#module-illustration.licensing)           | Licence-code normalisation — one vocabulary for four provider vocabularies.                                       |
+| [`persistence`](_autosummary/illustration.persistence.html.md#module-illustration.persistence)       | Persist curation/selection decisions as `lacing` standoff annotations (R2 §6).                                    |
+| [`providers`](_autosummary/illustration.providers.html.md#module-illustration.providers)           | Built-in provider sources, registered on import.                                                                  |
+| [`registry`](_autosummary/illustration.registry.html.md#module-illustration.registry)             | The open-closed source registry and the `sources` view.                                                           |
+| [`reranking`](_autosummary/illustration.reranking.html.md#module-illustration.reranking)           | Local cross-modal rerank — the precision stage (research report R1 §3).                                           |
+| [`schema`](_autosummary/illustration.schema.html.md#module-illustration.schema)                 | The normalized result schema — the single source of truth (Pydantic v2).                                          |
+| [`schema_export`](_autosummary/illustration.schema_export.html.md#module-illustration.schema_export)   | Export the Python SSOT as committed JSON for the TypeScript twin (`ts/`).                                         |
+| [`sequence`](_autosummary/illustration.sequence.html.md#module-illustration.sequence)             | Sequence-level selection — the M4 domain core (research report R2 §5).                                            |
+| [`translation`](_autosummary/illustration.translation.html.md#module-illustration.translation)       | Canonical → native parameter translation (the `denote` `param_map` idiom).                                        |
+| [`video`](_autosummary/illustration.video.html.md#module-illustration.video)                   | Narration → Ken-Burns video hook — the M4 integration seam.                                                       |
 
 
 # _autosummary/illustration.inspection.html.md
@@ -5663,16 +5777,18 @@ Beats with no chosen image are skipped. Needs the `[video]` extra.
 
 # About this build
 
-This documentation was built on **2026-11-23 06:37 UTC** from commit <a href="https://github.com/reeleehq/illustration/commit/4e37bc2bd1b97e9aecae58059b9869516bd95dc8"><code>4e37bc2</code></a> on branch <code>main</code>, for **illustration 0.0.26** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-11-23 08:30 UTC** from commit <a href="https://github.com/reeleehq/illustration/commit/3d562041e60def924f2a47c2e9639107d094f9f7"><code>3d56204</code></a> on branch <code>main</code>, for **illustration 0.0.27** (from <code>pyproject.toml</code>).
 
-#### NOTE
-Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
+#### WARNING
+The documentation and the package may be misaligned:
+
+- The documented version (0.0.27) is behind the latest release on PyPI (0.0.28): `pip install illustration` gives newer code than these docs describe.
 
 ## Source
 
 |                     |                                                                                                                                                              |
 |---------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/reeleehq/illustration/commit/4e37bc2bd1b97e9aecae58059b9869516bd95dc8"><code>4e37bc2bd1b97e9aecae58059b9869516bd95dc8</code></a> |
+| Commit              | <a href="https://github.com/reeleehq/illustration/commit/3d562041e60def924f2a47c2e9639107d094f9f7"><code>3d562041e60def924f2a47c2e9639107d094f9f7</code></a> |
 | Branch              | <code>main</code>                                                                                                                                            |
 | Tags at this commit | none                                                                                                                                                         |
 | Working tree        | clean                                                                                                                                                        |
@@ -5683,15 +5799,15 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 |              |                                                                                             |
 |--------------|---------------------------------------------------------------------------------------------|
 | Repository   | <code>reeleehq/illustration</code>                                                          |
-| Run          | <a href="https://github.com/reeleehq/illustration/actions/runs/45125208309">45125208309</a> |
+| Run          | <a href="https://github.com/reeleehq/illustration/actions/runs/45138981573">45138981573</a> |
 | Ref          | <code>refs/heads/main</code>                                                                |
-| Event commit | <code>4e37bc2bd1b97e9aecae58059b9869516bd95dc8</code> (in the history of the built commit)  |
+| Event commit | <code>3d562041e60def924f2a47c2e9639107d094f9f7</code> (in the history of the built commit)  |
 
 ## Tools
 
 |          |         |
 |----------|---------|
-| epythet  | 0.2.23  |
+| epythet  | 0.2.25  |
 | Sphinx   | 9.1.1   |
 | docutils | 0.22.4  |
 | Python   | 3.12.16 |
@@ -5710,14 +5826,14 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/illustration/0.0.26/">0.0.26</a>, the same as the documented version.
+Latest release: <a href="https://pypi.org/project/illustration/0.0.28/">0.0.28</a>, newer than the documented version (0.0.27).
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/reeleehq/illustration && cd illustration
-git checkout 4e37bc2bd1b97e9aecae58059b9869516bd95dc8
-pip install "epythet==0.2.23"
+git checkout 3d562041e60def924f2a47c2e9639107d094f9f7
+pip install "epythet==0.2.25"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```
 

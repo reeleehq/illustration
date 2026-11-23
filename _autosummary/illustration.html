@@ -77,6 +77,7 @@ data-aria-dark="Switch to auto color mode">
 <li class="toctree-l3"><a class="reference internal" href="illustration.expansion.html">illustration.expansion</a></li>
 <li class="toctree-l3"><a class="reference internal" href="illustration.facade.html">illustration.facade</a></li>
 <li class="toctree-l3"><a class="reference internal" href="illustration.frames.html">illustration.frames</a></li>
+<li class="toctree-l3"><a class="reference internal" href="illustration.frames_sources.html">illustration.frames_sources</a></li>
 <li class="toctree-l3"><a class="reference internal" href="illustration.inspection.html">illustration.inspection</a></li>
 <li class="toctree-l3"><a class="reference internal" href="illustration.licensing.html">illustration.licensing</a></li>
 <li class="toctree-l3"><a class="reference internal" href="illustration.persistence.html">illustration.persistence</a></li>
@@ -2274,13 +2275,15 @@ share a key.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="illustration.search_frames">
-<span class="sig-prename descclassname"><span class="pre">illustration.</span></span><span class="sig-name descname"><span class="pre">search_frames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">store</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scorer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">per_video</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_gap_s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">12.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">videos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/frames.html#search_frames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.search_frames" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">illustration.</span></span><span class="sig-name descname"><span class="pre">search_frames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">store</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scorer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">per_video</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_gap_s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">12.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">videos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/illustration/frames.html#search_frames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#illustration.search_frames" title="Link to this definition">#</a></dt>
 <dd><p>The <code class="docutils literal notranslate"><span class="pre">k</span></code> frames that best match <code class="docutils literal notranslate"><span class="pre">text</span></code>, best first.</p>
 <p>Diversified, because the next frame of a match is usually a match too: at
 most <code class="docutils literal notranslate"><span class="pre">per_video</span></code> hits per video, and two hits closer than <code class="docutils literal notranslate"><span class="pre">min_gap_s</span></code>
 in one video are one scene (the better one is kept). <code class="docutils literal notranslate"><span class="pre">videos</span></code> limits the
 search to those video ids (or URLs, for a video that has no id). Videos
-indexed with another embedding model are skipped, with a warning.</p>
+indexed with another embedding model are skipped, with a warning. Pass
+<code class="docutils literal notranslate"><span class="pre">index=FrameIndex.from_store(store)</span></code> to search a prebuilt stacked matrix
+instead of reading the store (<code class="docutils literal notranslate"><span class="pre">store</span></code> is then not read).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference internal" href="illustration.frames.html#illustration.frames.FrameHit" title="illustration.frames.FrameHit"><code class="xref py py-class docutils literal notranslate"><span class="pre">FrameHit</span></code></a>]</span></p>
@@ -2435,37 +2438,40 @@ through). Bindings nest: an inner block overlays the outer.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="illustration.frames.html#module-illustration.frames" title="illustration.frames"><code class="xref py py-obj docutils literal notranslate"><span class="pre">frames</span></code></a></p></td>
 <td><p>Text-to-frame search over a video corpus: find <em>where</em> in a set of videos something is.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="illustration.inspection.html#module-illustration.inspection" title="illustration.inspection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inspection</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="illustration.frames_sources.html#module-illustration.frames_sources" title="illustration.frames_sources"><code class="xref py py-obj docutils literal notranslate"><span class="pre">frames_sources</span></code></a></p></td>
+<td><p>More ways into the frame corpus: frames from a local file, and a video's captions (#59).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="illustration.inspection.html#module-illustration.inspection" title="illustration.inspection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inspection</span></code></a></p></td>
 <td><p>Candidate inspection — classical-CV pre-filters + VLM caption/judge (R2 §2-3).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="illustration.licensing.html#module-illustration.licensing" title="illustration.licensing"><code class="xref py py-obj docutils literal notranslate"><span class="pre">licensing</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="illustration.licensing.html#module-illustration.licensing" title="illustration.licensing"><code class="xref py py-obj docutils literal notranslate"><span class="pre">licensing</span></code></a></p></td>
 <td><p>Licence-code normalisation — one vocabulary for four provider vocabularies.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="illustration.persistence.html#module-illustration.persistence" title="illustration.persistence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">persistence</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="illustration.persistence.html#module-illustration.persistence" title="illustration.persistence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">persistence</span></code></a></p></td>
 <td><p>Persist curation/selection decisions as <code class="docutils literal notranslate"><span class="pre">lacing</span></code> standoff annotations (R2 §6).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="illustration.providers.html#module-illustration.providers" title="illustration.providers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">providers</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="illustration.providers.html#module-illustration.providers" title="illustration.providers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">providers</span></code></a></p></td>
 <td><p>Built-in provider sources, registered on import.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="illustration.registry.html#module-illustration.registry" title="illustration.registry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">registry</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="illustration.registry.html#module-illustration.registry" title="illustration.registry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">registry</span></code></a></p></td>
 <td><p>The open-closed source registry and the <code class="docutils literal notranslate"><span class="pre">sources</span></code> view.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="illustration.reranking.html#module-illustration.reranking" title="illustration.reranking"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reranking</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="illustration.reranking.html#module-illustration.reranking" title="illustration.reranking"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reranking</span></code></a></p></td>
 <td><p>Local cross-modal rerank — the precision stage (research report R1 §3).</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="illustration.schema.html#module-illustration.schema" title="illustration.schema"><code class="xref py py-obj docutils literal notranslate"><span class="pre">schema</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="illustration.schema.html#module-illustration.schema" title="illustration.schema"><code class="xref py py-obj docutils literal notranslate"><span class="pre">schema</span></code></a></p></td>
 <td><p>The normalized result schema — the single source of truth (Pydantic v2).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="illustration.schema_export.html#module-illustration.schema_export" title="illustration.schema_export"><code class="xref py py-obj docutils literal notranslate"><span class="pre">schema_export</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="illustration.schema_export.html#module-illustration.schema_export" title="illustration.schema_export"><code class="xref py py-obj docutils literal notranslate"><span class="pre">schema_export</span></code></a></p></td>
 <td><p>Export the Python SSOT as committed JSON for the TypeScript twin (<code class="docutils literal notranslate"><span class="pre">ts/</span></code>).</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="illustration.sequence.html#module-illustration.sequence" title="illustration.sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sequence</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="illustration.sequence.html#module-illustration.sequence" title="illustration.sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sequence</span></code></a></p></td>
 <td><p>Sequence-level selection — the M4 domain core (research report R2 §5).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="illustration.translation.html#module-illustration.translation" title="illustration.translation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translation</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="illustration.translation.html#module-illustration.translation" title="illustration.translation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translation</span></code></a></p></td>
 <td><p>Canonical → native parameter translation (the <code class="docutils literal notranslate"><span class="pre">denote</span></code> <code class="docutils literal notranslate"><span class="pre">param_map</span></code> idiom).</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="illustration.video.html#module-illustration.video" title="illustration.video"><code class="xref py py-obj docutils literal notranslate"><span class="pre">video</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="illustration.video.html#module-illustration.video" title="illustration.video"><code class="xref py py-obj docutils literal notranslate"><span class="pre">video</span></code></a></p></td>
 <td><p>Narration → Ken-Burns video hook — the M4 integration seam.</p></td>
 </tr>
 </tbody>
@@ -2513,7 +2519,7 @@ through). Bindings nest: an inner block overlays the outer.</p>
     </div>
   </div>
 </footer>
-      <script src="../_static/documentation_options.js?v=6a9d8632"></script>
+      <script src="../_static/documentation_options.js?v=cee5022b"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>

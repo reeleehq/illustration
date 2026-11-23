@@ -1446,7 +1446,7 @@ share a key.
 * **Return type:**
   [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
-### illustration.search_frames(text, , store=None, scorer=None, model=None, k=10, per_video=3, min_gap_s=12.0, videos=None)
+### illustration.search_frames(text, , store=None, scorer=None, model=None, k=10, per_video=3, min_gap_s=12.0, videos=None, index=None)
 
 The `k` frames that best match `text`, best first.
 
@@ -1454,7 +1454,9 @@ Diversified, because the next frame of a match is usually a match too: at
 most `per_video` hits per video, and two hits closer than `min_gap_s`
 in one video are one scene (the better one is kept). `videos` limits the
 search to those video ids (or URLs, for a video that has no id). Videos
-indexed with another embedding model are skipped, with a warning.
+indexed with another embedding model are skipped, with a warning. Pass
+`index=FrameIndex.from_store(store)` to search a prebuilt stacked matrix
+instead of reading the store (`store` is then not read).
 
 * **Return type:**
   [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`FrameHit`](illustration.frames.html.md#illustration.frames.FrameHit)]
@@ -1557,26 +1559,27 @@ through). Bindings nest: an inner block overlays the outer.
 
 ### Modules
 
-| [`base`](illustration.base.html.md#module-illustration.base)                   | The provider plugin contract: [`RetrievalSource`](#illustration.RetrievalSource).                   |
-|--------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------|
-| [`caching`](illustration.caching.html.md#module-illustration.caching)             | SHA-256 content-addressed caching of search results (the `falaw` recipe).                                         |
-| [`cli`](illustration.cli.html.md#module-illustration.cli)                     | Command-line surface (thin `cw` wrappers over the library functions).                                             |
-| [`config`](illustration.config.html.md#module-illustration.config)               | Configuration: XDG directories and package-wide defaults (the SSOT).                                              |
-| [`credentials`](illustration.credentials.html.md#module-illustration.credentials)     | API-key resolution (the `aix` credentials idiom + `falaw` BYO-key seam).                                          |
-| [`curation`](illustration.curation.html.md#module-illustration.curation)           | The bounded corrective-retrieval (CRAG) loop — Layer 2's heart (R2 §1).                                           |
-| [`duplicates`](illustration.duplicates.html.md#module-illustration.duplicates)       | Group images that are the same **subject**, and keep the best one of each group.                                  |
-| [`errors`](illustration.errors.html.md#module-illustration.errors)               | The package exception hierarchy.                                                                                  |
-| [`expansion`](illustration.expansion.html.md#module-illustration.expansion)         | Query expansion & refinement — the first node of the curation loop (R2 §1).                                       |
-| [`facade`](illustration.facade.html.md#module-illustration.facade)               | The façade: [`search()`](#illustration.search) — one call over any registered provider(s). |
-| [`frames`](illustration.frames.html.md#module-illustration.frames)               | Text-to-frame search over a video corpus: find *where* in a set of videos something is.                           |
-| [`inspection`](illustration.inspection.html.md#module-illustration.inspection)       | Candidate inspection — classical-CV pre-filters + VLM caption/judge (R2 §2-3).                                    |
-| [`licensing`](illustration.licensing.html.md#module-illustration.licensing)         | Licence-code normalisation — one vocabulary for four provider vocabularies.                                       |
-| [`persistence`](illustration.persistence.html.md#module-illustration.persistence)     | Persist curation/selection decisions as `lacing` standoff annotations (R2 §6).                                    |
-| [`providers`](illustration.providers.html.md#module-illustration.providers)         | Built-in provider sources, registered on import.                                                                  |
-| [`registry`](illustration.registry.html.md#module-illustration.registry)           | The open-closed source registry and the `sources` view.                                                           |
-| [`reranking`](illustration.reranking.html.md#module-illustration.reranking)         | Local cross-modal rerank — the precision stage (research report R1 §3).                                           |
-| [`schema`](illustration.schema.html.md#module-illustration.schema)               | The normalized result schema — the single source of truth (Pydantic v2).                                          |
-| [`schema_export`](illustration.schema_export.html.md#module-illustration.schema_export) | Export the Python SSOT as committed JSON for the TypeScript twin (`ts/`).                                         |
-| [`sequence`](illustration.sequence.html.md#module-illustration.sequence)           | Sequence-level selection — the M4 domain core (research report R2 §5).                                            |
-| [`translation`](illustration.translation.html.md#module-illustration.translation)     | Canonical → native parameter translation (the `denote` `param_map` idiom).                                        |
-| [`video`](illustration.video.html.md#module-illustration.video)                 | Narration → Ken-Burns video hook — the M4 integration seam.                                                       |
+| [`base`](illustration.base.html.md#module-illustration.base)                     | The provider plugin contract: [`RetrievalSource`](#illustration.RetrievalSource).                   |
+|----------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------|
+| [`caching`](illustration.caching.html.md#module-illustration.caching)               | SHA-256 content-addressed caching of search results (the `falaw` recipe).                                         |
+| [`cli`](illustration.cli.html.md#module-illustration.cli)                       | Command-line surface (thin `cw` wrappers over the library functions).                                             |
+| [`config`](illustration.config.html.md#module-illustration.config)                 | Configuration: XDG directories and package-wide defaults (the SSOT).                                              |
+| [`credentials`](illustration.credentials.html.md#module-illustration.credentials)       | API-key resolution (the `aix` credentials idiom + `falaw` BYO-key seam).                                          |
+| [`curation`](illustration.curation.html.md#module-illustration.curation)             | The bounded corrective-retrieval (CRAG) loop — Layer 2's heart (R2 §1).                                           |
+| [`duplicates`](illustration.duplicates.html.md#module-illustration.duplicates)         | Group images that are the same **subject**, and keep the best one of each group.                                  |
+| [`errors`](illustration.errors.html.md#module-illustration.errors)                 | The package exception hierarchy.                                                                                  |
+| [`expansion`](illustration.expansion.html.md#module-illustration.expansion)           | Query expansion & refinement — the first node of the curation loop (R2 §1).                                       |
+| [`facade`](illustration.facade.html.md#module-illustration.facade)                 | The façade: [`search()`](#illustration.search) — one call over any registered provider(s). |
+| [`frames`](illustration.frames.html.md#module-illustration.frames)                 | Text-to-frame search over a video corpus: find *where* in a set of videos something is.                           |
+| [`frames_sources`](illustration.frames_sources.html.md#module-illustration.frames_sources) | More ways into the frame corpus: frames from a local file, and a video's captions (#59).                          |
+| [`inspection`](illustration.inspection.html.md#module-illustration.inspection)         | Candidate inspection — classical-CV pre-filters + VLM caption/judge (R2 §2-3).                                    |
+| [`licensing`](illustration.licensing.html.md#module-illustration.licensing)           | Licence-code normalisation — one vocabulary for four provider vocabularies.                                       |
+| [`persistence`](illustration.persistence.html.md#module-illustration.persistence)       | Persist curation/selection decisions as `lacing` standoff annotations (R2 §6).                                    |
+| [`providers`](illustration.providers.html.md#module-illustration.providers)           | Built-in provider sources, registered on import.                                                                  |
+| [`registry`](illustration.registry.html.md#module-illustration.registry)             | The open-closed source registry and the `sources` view.                                                           |
+| [`reranking`](illustration.reranking.html.md#module-illustration.reranking)           | Local cross-modal rerank — the precision stage (research report R1 §3).                                           |
+| [`schema`](illustration.schema.html.md#module-illustration.schema)                 | The normalized result schema — the single source of truth (Pydantic v2).                                          |
+| [`schema_export`](illustration.schema_export.html.md#module-illustration.schema_export)   | Export the Python SSOT as committed JSON for the TypeScript twin (`ts/`).                                         |
+| [`sequence`](illustration.sequence.html.md#module-illustration.sequence)             | Sequence-level selection — the M4 domain core (research report R2 §5).                                            |
+| [`translation`](illustration.translation.html.md#module-illustration.translation)       | Canonical → native parameter translation (the `denote` `param_map` idiom).                                        |
+| [`video`](illustration.video.html.md#module-illustration.video)                   | Narration → Ken-Burns video hook — the M4 integration seam.                                                       |

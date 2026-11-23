@@ -77,6 +77,7 @@ data-aria-dark="Switch to auto color mode">
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/illustration.expansion.html">illustration.expansion</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/illustration.facade.html">illustration.facade</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/illustration.frames.html">illustration.frames</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/illustration.frames_sources.html">illustration.frames_sources</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/illustration.inspection.html">illustration.inspection</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/illustration.licensing.html">illustration.licensing</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/illustration.persistence.html">illustration.persistence</a></li>
@@ -196,7 +197,7 @@ data-aria-dark="Switch to auto color mode">
 <li><p><strong>The provider façade</strong> — one unified <code class="docutils literal notranslate"><span class="pre">search()</span></code> over many heterogeneous image-search backends (Openverse, Pexels, …), normalizing every result into one schema with license/attribution/cacheability first-class.</p></li>
 <li><p><strong>An agentic curation layer</strong> — query expansion, multi-provider search, classical-CV + vision-LM inspection, reranking, a bounded corrective loop that returns one vetted image per beat (<code class="docutils literal notranslate"><span class="pre">illustration.curate</span></code>), and <strong>sequence-level selection</strong> across a whole storyboard with cross-shot coherence + near-duplicate suppression (<code class="docutils literal notranslate"><span class="pre">illustration.curate_sequence</span></code>). Built on the <code class="docutils literal notranslate"><span class="pre">aix</span></code> AI façade and <code class="docutils literal notranslate"><span class="pre">ir</span></code> retrieval substrate; the narrated-video and persistence hooks reuse the <code class="docutils literal notranslate"><span class="pre">burns</span></code> / <code class="docutils literal notranslate"><span class="pre">walkthru</span></code> / <code class="docutils literal notranslate"><span class="pre">lacing</span></code> ecosystem packages rather than reinventing them.</p></li>
 </ol>
-<p>The design — provider comparison, canonical parameter mapping, escape-hatch design, result schema, and roadmap — is in <a class="reference internal" href="#misc/docs/design/illustration_design.md"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">misc/docs/design/illustration_design.md</span></code></span></a>. AI agents: <a class="reference internal" href="#.claude/skills/illustration/SKILL.md"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">.claude/skills/illustration/SKILL.md</span></code></span></a> is the condensed usage guide (including the licence/attribution obligations); <a class="reference internal" href="#CLAUDE.md"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">CLAUDE.md</span></code></span></a> is the contributor’s map of the package.</p>
+<p>The design — provider comparison, canonical parameter mapping, escape-hatch design, result schema, and roadmap — is in <a class="reference external" href="https://github.com/thorwhalen/illustration/blob/HEAD/misc/docs/design/illustration_design.md"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">misc/docs/design/illustration_design.md</span></code></span></a>. AI agents: <a class="reference external" href="https://github.com/thorwhalen/illustration/blob/HEAD/.claude/skills/illustration/SKILL.md"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">.claude/skills/illustration/SKILL.md</span></code></span></a> is the condensed usage guide (including the licence/attribution obligations); <a class="reference external" href="https://github.com/thorwhalen/illustration/blob/HEAD/CLAUDE.md"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">CLAUDE.md</span></code></span></a> is the contributor’s map of the package.</p>
 </section>
 <section id="install">
 <h2>Install<a class="headerlink" href="#install" title="Link to this heading">#</a></h2>
@@ -208,7 +209,7 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="2"><span class="kd">const</span><span class="w"> </span><span class="nx">hits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">search</span><span class="p">(</span><span class="s1">'stormy harbour at dusk'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">n</span><span class="o">:</span><span class="w"> </span><span class="kt">5</span><span class="w"> </span><span class="p">});</span><span class="w">  </span><span class="c1">// Openverse, no key</span>
 </span></pre></div>
 </div>
-<p>See <a class="reference internal" href="#ts/README.md"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">ts/README.md</span></code></span></a>.</p>
+<p>See <a class="reference external" href="https://github.com/thorwhalen/illustration/blob/HEAD/ts/README.md"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">ts/README.md</span></code></span></a>.</p>
 </section>
 </section>
 <section id="the-result-schema">
@@ -524,7 +525,7 @@ data-aria-dark="Switch to auto color mode">
 </section>
 </section>
 
-<p class="epythet-provenance" style="font-size:.8em;opacity:.65;margin-top:2.5em;text-align:right">built 2026-11-23 06:37 UTC from <a href="https://github.com/reeleehq/illustration/commit/4e37bc2bd1b97e9aecae58059b9869516bd95dc8">4e37bc2</a> (main) · illustration 0.0.26 · <a href="about-this-build.html">about this build</a></p>
+<p class="epythet-provenance" style="font-size:.8em;opacity:.65;margin-top:2.5em;text-align:right">built 2026-11-23 08:30 UTC from <a href="https://github.com/reeleehq/illustration/commit/3d562041e60def924f2a47c2e9639107d094f9f7">3d56204</a> (main) · illustration 0.0.27 · <a href="about-this-build.html">about this build</a></p>
         </article><button class="back-to-top" type="button">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
     <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
@@ -559,7 +560,7 @@ data-aria-dark="Switch to auto color mode">
     </div>
   </div>
 </footer>
-      <script src="_static/documentation_options.js?v=6a9d8632"></script>
+      <script src="_static/documentation_options.js?v=cee5022b"></script>
       <script src="_static/doctools.js?v=fd6eb6e6"></script>
       <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="_static/clipboard.min.js?v=a7894cd8"></script>

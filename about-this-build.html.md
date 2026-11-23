@@ -2,16 +2,18 @@
 
 # About this build
 
-This documentation was built on **2026-11-23 06:37 UTC** from commit <a href="https://github.com/reeleehq/illustration/commit/4e37bc2bd1b97e9aecae58059b9869516bd95dc8"><code>4e37bc2</code></a> on branch <code>main</code>, for **illustration 0.0.26** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-11-23 08:30 UTC** from commit <a href="https://github.com/reeleehq/illustration/commit/3d562041e60def924f2a47c2e9639107d094f9f7"><code>3d56204</code></a> on branch <code>main</code>, for **illustration 0.0.27** (from <code>pyproject.toml</code>).
 
-#### NOTE
-Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
+#### WARNING
+The documentation and the package may be misaligned:
+
+- The documented version (0.0.27) is behind the latest release on PyPI (0.0.28): `pip install illustration` gives newer code than these docs describe.
 
 ## Source
 
 |                     |                                                                                                                                                              |
 |---------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/reeleehq/illustration/commit/4e37bc2bd1b97e9aecae58059b9869516bd95dc8"><code>4e37bc2bd1b97e9aecae58059b9869516bd95dc8</code></a> |
+| Commit              | <a href="https://github.com/reeleehq/illustration/commit/3d562041e60def924f2a47c2e9639107d094f9f7"><code>3d562041e60def924f2a47c2e9639107d094f9f7</code></a> |
 | Branch              | <code>main</code>                                                                                                                                            |
 | Tags at this commit | none                                                                                                                                                         |
 | Working tree        | clean                                                                                                                                                        |
@@ -22,15 +24,15 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 |              |                                                                                             |
 |--------------|---------------------------------------------------------------------------------------------|
 | Repository   | <code>reeleehq/illustration</code>                                                          |
-| Run          | <a href="https://github.com/reeleehq/illustration/actions/runs/45125208309">45125208309</a> |
+| Run          | <a href="https://github.com/reeleehq/illustration/actions/runs/45138981573">45138981573</a> |
 | Ref          | <code>refs/heads/main</code>                                                                |
-| Event commit | <code>4e37bc2bd1b97e9aecae58059b9869516bd95dc8</code> (in the history of the built commit)  |
+| Event commit | <code>3d562041e60def924f2a47c2e9639107d094f9f7</code> (in the history of the built commit)  |
 
 ## Tools
 
 |          |         |
 |----------|---------|
-| epythet  | 0.2.23  |
+| epythet  | 0.2.25  |
 | Sphinx   | 9.1.1   |
 | docutils | 0.22.4  |
 | Python   | 3.12.16 |
@@ -49,14 +51,14 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/illustration/0.0.26/">0.0.26</a>, the same as the documented version.
+Latest release: <a href="https://pypi.org/project/illustration/0.0.28/">0.0.28</a>, newer than the documented version (0.0.27).
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/reeleehq/illustration && cd illustration
-git checkout 4e37bc2bd1b97e9aecae58059b9869516bd95dc8
-pip install "epythet==0.2.23"
+git checkout 3d562041e60def924f2a47c2e9639107d094f9f7
+pip install "epythet==0.2.25"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```
 

@@ -1,0 +1,21 @@
+illustration.frames\_sources
+============================
+
+.. automodule:: illustration.frames_sources
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      DFLT_EVERY_S
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      file_sampler
+      parse_cues
+      search_captions
+      youtube_caption_loader
+   

@@ -27,4 +27,5 @@ illustration.frames
    .. autosummary::
    
       FrameHit
+      FrameIndex
    

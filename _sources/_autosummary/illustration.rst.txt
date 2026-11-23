@@ -126,6 +126,7 @@
    expansion
    facade
    frames
+   frames_sources
    inspection
    licensing
    persistence

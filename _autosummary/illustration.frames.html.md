@@ -69,6 +69,7 @@ the licence.
 
 | [`FrameHit`](#illustration.frames.FrameHit)(video_id, video_url, t, score[, ...])   | One frame that matches a query: which video, when, how well, and the rights record ([`illustration.schema.RIGHTS_FIELDS`](illustration.schema.html.md#illustration.schema.RIGHTS_FIELDS)) of that video.   |
 |---------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [`FrameIndex`](#illustration.frames.FrameIndex)(entries, matrix, rows, model, ...)    | The corpus as one stacked float32 matrix, so a query is one matrix product.                                                                                                                                                |
 
 ### illustration.frames.DFLT_MIN_GAP_S *= 12.0*
 
@@ -109,6 +110,31 @@ The video URL opening at this frame (whole seconds).
 >>> FrameHit("v", "https://youtu.be/v", 9.0, 0.2).watch_url
 'https://youtu.be/v?t=9s'
 ```
+
+### *class* illustration.frames.FrameIndex(entries, matrix, rows, model, other_model)
+
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
+
+The corpus as one stacked float32 matrix, so a query is one matrix product.
+
+[`search_frames()`](#illustration.frames.search_frames) over a store reads and parses every video’s entry per
+query, so latency grows with the corpus. Build a `FrameIndex` once and
+pass it as `index=`: the queries then cost one `(frames x dim) @ (dim,)`
+product and the per-hit work only for the few that are kept. Rebuild it
+(`FrameIndex.from_store` again) after indexing more videos. Videos indexed
+with another model than `model` are left out and listed in `other_model`.
+
+```pycon
+>>> FrameIndex.from_store({}, model="m").frames
+0
+```
+
+#### candidates(query, wanted=None)
+
+`(score, t, entry)` for every frame, as [`search_frames()`](#illustration.frames.search_frames) ranks them.
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)
 
 ### illustration.frames.default_frame_store(model)
 
@@ -153,7 +179,7 @@ video never sits in memory whole.
 * **Return type:**
   [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)
 
-### illustration.frames.search_frames(text, , store=None, scorer=None, model=None, k=10, per_video=3, min_gap_s=12.0, videos=None)
+### illustration.frames.search_frames(text, , store=None, scorer=None, model=None, k=10, per_video=3, min_gap_s=12.0, videos=None, index=None)
 
 The `k` frames that best match `text`, best first.
 
@@ -161,7 +187,9 @@ Diversified, because the next frame of a match is usually a match too: at
 most `per_video` hits per video, and two hits closer than `min_gap_s`
 in one video are one scene (the better one is kept). `videos` limits the
 search to those video ids (or URLs, for a video that has no id). Videos
-indexed with another embedding model are skipped, with a warning.
+indexed with another embedding model are skipped, with a warning. Pass
+`index=FrameIndex.from_store(store)` to search a prebuilt stacked matrix
+instead of reading the store (`store` is then not read).
 
 * **Return type:**
   [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`FrameHit`](#illustration.frames.FrameHit)]

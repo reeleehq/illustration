@@ -74,6 +74,7 @@ data-aria-dark="Switch to auto color mode">
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/illustration.expansion.html">illustration.expansion</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/illustration.facade.html">illustration.facade</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/illustration.frames.html">illustration.frames</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/illustration.frames_sources.html">illustration.frames_sources</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/illustration.inspection.html">illustration.inspection</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/illustration.licensing.html">illustration.licensing</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/illustration.persistence.html">illustration.persistence</a></li>
@@ -202,346 +203,410 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="59">
 </span><span data-line="60"><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
 </span><span data-line="61">    <span class="s2">"FrameHit"</span><span class="p">,</span>
-</span><span data-line="62">    <span class="s2">"index_video_frames"</span><span class="p">,</span>
-</span><span data-line="63">    <span class="s2">"search_frames"</span><span class="p">,</span>
-</span><span data-line="64">    <span class="s2">"storyboard_sampler"</span><span class="p">,</span>
-</span><span data-line="65">    <span class="s2">"default_frame_store"</span><span class="p">,</span>
-</span><span data-line="66">    <span class="s2">"frame_license"</span><span class="p">,</span>
-</span><span data-line="67">    <span class="s2">"youtube_video_id"</span><span class="p">,</span>
-</span><span data-line="68">    <span class="s2">"DFLT_PER_VIDEO"</span><span class="p">,</span>
-</span><span data-line="69">    <span class="s2">"DFLT_MIN_GAP_S"</span><span class="p">,</span>
-</span><span data-line="70"><span class="p">]</span>
-</span><span data-line="71">
-</span><span data-line="72"><span class="c1">#: At most this many hits from one video, so one long video cannot fill the list.</span>
-</span><span data-line="73"><span class="n">DFLT_PER_VIDEO</span> <span class="o">=</span> <span class="mi">3</span>
-</span><span data-line="74"><span class="c1">#: Two hits in one video closer than this (seconds) are one scene: keep the best.</span>
-</span><span data-line="75"><span class="n">DFLT_MIN_GAP_S</span> <span class="o">=</span> <span class="mf">12.0</span>
-</span><span data-line="76"><span class="c1">#: Frames embedded per forward pass.</span>
-</span><span data-line="77"><span class="n">DFLT_BATCH</span> <span class="o">=</span> <span class="mi">64</span>
-</span><span data-line="78">
-</span><span data-line="79"><span class="c1">#: YouTube's standard licence, under which every video not marked Creative</span>
-</span><span data-line="80"><span class="c1">#: Commons is published (yt-dlp reports no ``license`` for it).</span>
-</span><span data-line="81"><span class="n">YOUTUBE_STANDARD_LICENSE</span> <span class="o">=</span> <span class="s2">"YouTube Standard License"</span>
-</span><span data-line="82">
-</span><span data-line="83"><span class="c1">#: Where each licence's terms are, by canonical code. YouTube's Creative Commons</span>
-</span><span data-line="84"><span class="c1">#: option is CC BY 3.0.</span>
-</span><span data-line="85"><span class="n">_LICENSE_URLS</span> <span class="o">=</span> <span class="p">{</span>
-</span><span data-line="86">    <span class="s2">"by"</span><span class="p">:</span> <span class="s2">"https://creativecommons.org/licenses/by/3.0/"</span><span class="p">,</span>
-</span><span data-line="87">    <span class="s2">"youtube-standard-license"</span><span class="p">:</span> <span class="s2">"https://www.youtube.com/t/terms"</span><span class="p">,</span>
-</span><span data-line="88"><span class="p">}</span>
-</span><span data-line="89">
+</span><span data-line="62">    <span class="s2">"FrameIndex"</span><span class="p">,</span>
+</span><span data-line="63">    <span class="s2">"index_video_frames"</span><span class="p">,</span>
+</span><span data-line="64">    <span class="s2">"search_frames"</span><span class="p">,</span>
+</span><span data-line="65">    <span class="s2">"storyboard_sampler"</span><span class="p">,</span>
+</span><span data-line="66">    <span class="s2">"default_frame_store"</span><span class="p">,</span>
+</span><span data-line="67">    <span class="s2">"frame_license"</span><span class="p">,</span>
+</span><span data-line="68">    <span class="s2">"youtube_video_id"</span><span class="p">,</span>
+</span><span data-line="69">    <span class="s2">"DFLT_PER_VIDEO"</span><span class="p">,</span>
+</span><span data-line="70">    <span class="s2">"DFLT_MIN_GAP_S"</span><span class="p">,</span>
+</span><span data-line="71"><span class="p">]</span>
+</span><span data-line="72">
+</span><span data-line="73"><span class="c1">#: At most this many hits from one video, so one long video cannot fill the list.</span>
+</span><span data-line="74"><span class="n">DFLT_PER_VIDEO</span> <span class="o">=</span> <span class="mi">3</span>
+</span><span data-line="75"><span class="c1">#: Two hits in one video closer than this (seconds) are one scene: keep the best.</span>
+</span><span data-line="76"><span class="n">DFLT_MIN_GAP_S</span> <span class="o">=</span> <span class="mf">12.0</span>
+</span><span data-line="77"><span class="c1">#: Frames embedded per forward pass.</span>
+</span><span data-line="78"><span class="n">DFLT_BATCH</span> <span class="o">=</span> <span class="mi">64</span>
+</span><span data-line="79">
+</span><span data-line="80"><span class="c1">#: YouTube's standard licence, under which every video not marked Creative</span>
+</span><span data-line="81"><span class="c1">#: Commons is published (yt-dlp reports no ``license`` for it).</span>
+</span><span data-line="82"><span class="n">YOUTUBE_STANDARD_LICENSE</span> <span class="o">=</span> <span class="s2">"YouTube Standard License"</span>
+</span><span data-line="83">
+</span><span data-line="84"><span class="c1">#: Where each licence's terms are, by canonical code. YouTube's Creative Commons</span>
+</span><span data-line="85"><span class="c1">#: option is CC BY 3.0.</span>
+</span><span data-line="86"><span class="n">_LICENSE_URLS</span> <span class="o">=</span> <span class="p">{</span>
+</span><span data-line="87">    <span class="s2">"by"</span><span class="p">:</span> <span class="s2">"https://creativecommons.org/licenses/by/3.0/"</span><span class="p">,</span>
+</span><span data-line="88">    <span class="s2">"youtube-standard-license"</span><span class="p">:</span> <span class="s2">"https://www.youtube.com/t/terms"</span><span class="p">,</span>
+</span><span data-line="89"><span class="p">}</span>
 </span><span data-line="90">
+</span><span data-line="91">
 <div class="viewcode-block" id="frame_license">
 <a class="viewcode-back" href="../../_autosummary/illustration.frames.html#illustration.frame_license">[docs]</a>
-</span><span data-line="91"><span class="k">def</span><span class="w"> </span><span class="nf">frame_license</span><span class="p">(</span><span class="n">raw</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="92"><span class="w">    </span><span class="sd">"""A video licence as the package's canonical code</span>
-</span><span data-line="93"><span class="sd">    (:func:`illustration.licensing.normalize_license`); ``None`` when unknown.</span>
-</span><span data-line="94">
-</span><span data-line="95"><span class="sd">    &gt;&gt;&gt; frame_license("Creative Commons Attribution license (reuse allowed)")</span>
-</span><span data-line="96"><span class="sd">    'by'</span>
-</span><span data-line="97"><span class="sd">    &gt;&gt;&gt; frame_license(YOUTUBE_STANDARD_LICENSE), frame_license(None)</span>
-</span><span data-line="98"><span class="sd">    ('youtube-standard-license', None)</span>
-</span><span data-line="99"><span class="sd">    &gt;&gt;&gt; frame_license("CC BY-NC 4.0")  # a custom sampler's licence keeps its NC</span>
-</span><span data-line="100"><span class="sd">    'by-nc'</span>
-</span><span data-line="101"><span class="sd">    """</span>
-</span><span data-line="102">    <span class="kn">from</span><span class="w"> </span><span class="nn">illustration.licensing</span><span class="w"> </span><span class="kn">import</span> <span class="n">normalize_license</span>
-</span><span data-line="103">
-</span><span data-line="104">    <span class="k">return</span> <span class="n">normalize_license</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span></div>
+</span><span data-line="92"><span class="k">def</span><span class="w"> </span><span class="nf">frame_license</span><span class="p">(</span><span class="n">raw</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="93"><span class="w">    </span><span class="sd">"""A video licence as the package's canonical code</span>
+</span><span data-line="94"><span class="sd">    (:func:`illustration.licensing.normalize_license`); ``None`` when unknown.</span>
+</span><span data-line="95">
+</span><span data-line="96"><span class="sd">    &gt;&gt;&gt; frame_license("Creative Commons Attribution license (reuse allowed)")</span>
+</span><span data-line="97"><span class="sd">    'by'</span>
+</span><span data-line="98"><span class="sd">    &gt;&gt;&gt; frame_license(YOUTUBE_STANDARD_LICENSE), frame_license(None)</span>
+</span><span data-line="99"><span class="sd">    ('youtube-standard-license', None)</span>
+</span><span data-line="100"><span class="sd">    &gt;&gt;&gt; frame_license("CC BY-NC 4.0")  # a custom sampler's licence keeps its NC</span>
+</span><span data-line="101"><span class="sd">    'by-nc'</span>
+</span><span data-line="102"><span class="sd">    """</span>
+</span><span data-line="103">    <span class="kn">from</span><span class="w"> </span><span class="nn">illustration.licensing</span><span class="w"> </span><span class="kn">import</span> <span class="n">normalize_license</span>
+</span><span data-line="104">
+</span><span data-line="105">    <span class="k">return</span> <span class="n">normalize_license</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span></div>
 
-</span><span data-line="105">
 </span><span data-line="106">
+</span><span data-line="107">
 <div class="viewcode-block" id="youtube_video_id">
 <a class="viewcode-back" href="../../_autosummary/illustration.frames.html#illustration.youtube_video_id">[docs]</a>
-</span><span data-line="107"><span class="k">def</span><span class="w"> </span><span class="nf">youtube_video_id</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="108"><span class="w">    </span><span class="sd">"""The video id in a YouTube URL, or ``None``: lets indexing skip a video it</span>
-</span><span data-line="109"><span class="sd">    already has without fetching anything.</span>
-</span><span data-line="110">
-</span><span data-line="111"><span class="sd">    &gt;&gt;&gt; youtube_video_id("https://www.youtube.com/watch?v=dQw4w9WgXcQ&amp;t=3")</span>
-</span><span data-line="112"><span class="sd">    'dQw4w9WgXcQ'</span>
-</span><span data-line="113"><span class="sd">    &gt;&gt;&gt; youtube_video_id("https://youtu.be/a-b_cdefghi"), youtube_video_id("/films/a.mp4")</span>
-</span><span data-line="114"><span class="sd">    ('a-b_cdefghi', None)</span>
-</span><span data-line="115"><span class="sd">    """</span>
-</span><span data-line="116">    <span class="n">found</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span>
-</span><span data-line="117">        <span class="sa">r</span><span class="s2">"(?:youtube\.com/(?:watch\?(?:.*&amp;)?v=|shorts/|embed/|live/)|youtu\.be/)"</span>
-</span><span data-line="118">        <span class="sa">r</span><span class="s2">"([A-Za-z0-9_-]{6,})"</span><span class="p">,</span>
-</span><span data-line="119">        <span class="n">url</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">,</span>
-</span><span data-line="120">    <span class="p">)</span>
-</span><span data-line="121">    <span class="k">return</span> <span class="n">found</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">found</span> <span class="k">else</span> <span class="kc">None</span></div>
+</span><span data-line="108"><span class="k">def</span><span class="w"> </span><span class="nf">youtube_video_id</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="109"><span class="w">    </span><span class="sd">"""The video id in a YouTube URL, or ``None``: lets indexing skip a video it</span>
+</span><span data-line="110"><span class="sd">    already has without fetching anything.</span>
+</span><span data-line="111">
+</span><span data-line="112"><span class="sd">    &gt;&gt;&gt; youtube_video_id("https://www.youtube.com/watch?v=dQw4w9WgXcQ&amp;t=3")</span>
+</span><span data-line="113"><span class="sd">    'dQw4w9WgXcQ'</span>
+</span><span data-line="114"><span class="sd">    &gt;&gt;&gt; youtube_video_id("https://youtu.be/a-b_cdefghi"), youtube_video_id("/films/a.mp4")</span>
+</span><span data-line="115"><span class="sd">    ('a-b_cdefghi', None)</span>
+</span><span data-line="116"><span class="sd">    """</span>
+</span><span data-line="117">    <span class="n">found</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span>
+</span><span data-line="118">        <span class="sa">r</span><span class="s2">"(?:youtube\.com/(?:watch\?(?:.*&amp;)?v=|shorts/|embed/|live/)|youtu\.be/)"</span>
+</span><span data-line="119">        <span class="sa">r</span><span class="s2">"([A-Za-z0-9_-]{6,})"</span><span class="p">,</span>
+</span><span data-line="120">        <span class="n">url</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">,</span>
+</span><span data-line="121">    <span class="p">)</span>
+</span><span data-line="122">    <span class="k">return</span> <span class="n">found</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">found</span> <span class="k">else</span> <span class="kc">None</span></div>
 
-</span><span data-line="122">
 </span><span data-line="123">
+</span><span data-line="124">
 <div class="viewcode-block" id="FrameHit">
 <a class="viewcode-back" href="../../_autosummary/illustration.frames.html#illustration.FrameHit">[docs]</a>
-</span><span data-line="124"><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span data-line="125"><span class="k">class</span><span class="w"> </span><span class="nc">FrameHit</span><span class="p">:</span>
-</span><span data-line="126"><span class="w">    </span><span class="sd">"""One frame that matches a query: which video, when, how well, and the</span>
-</span><span data-line="127"><span class="sd">    rights record (:data:`illustration.schema.RIGHTS_FIELDS`) of that video."""</span>
-</span><span data-line="128">
-</span><span data-line="129">    <span class="n">video_id</span><span class="p">:</span> <span class="nb">str</span>
-</span><span data-line="130">    <span class="n">video_url</span><span class="p">:</span> <span class="nb">str</span>
-</span><span data-line="131">    <span class="n">t</span><span class="p">:</span> <span class="nb">float</span>
-</span><span data-line="132">    <span class="n">score</span><span class="p">:</span> <span class="nb">float</span>
-</span><span data-line="133">    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span data-line="134">    <span class="n">license</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># canonical code; None: the sampler did not say</span>
-</span><span data-line="135">    <span class="n">license_raw</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span data-line="136">    <span class="n">license_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span data-line="137">    <span class="n">attribution</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span data-line="138">    <span class="n">author</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span data-line="139">    <span class="n">author_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span data-line="140">    <span class="n">cacheable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># only embeddings are kept, never the frames</span>
-</span><span data-line="141">
-</span><span data-line="142">    <span class="nd">@property</span>
-</span><span data-line="143">    <span class="k">def</span><span class="w"> </span><span class="nf">source_page_url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span data-line="144"><span class="w">        </span><span class="sd">"""The page the frame is on: the video at this moment (:attr:`watch_url`)."""</span>
-</span><span data-line="145">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">watch_url</span>
-</span><span data-line="146">
-</span><span data-line="147">    <span class="nd">@property</span>
-</span><span data-line="148">    <span class="k">def</span><span class="w"> </span><span class="nf">rights</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-</span><span data-line="149"><span class="w">        </span><span class="sd">"""The rights record, by :data:`illustration.schema.RIGHTS_FIELDS`' names."""</span>
-</span><span data-line="150">        <span class="kn">from</span><span class="w"> </span><span class="nn">illustration.schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">RIGHTS_FIELDS</span>
-</span><span data-line="151">
-</span><span data-line="152">        <span class="k">return</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">RIGHTS_FIELDS</span><span class="p">}</span>
-</span><span data-line="153">
-</span><span data-line="154">    <span class="nd">@property</span>
-</span><span data-line="155">    <span class="k">def</span><span class="w"> </span><span class="nf">watch_url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span data-line="156"><span class="w">        </span><span class="sd">"""The video URL opening at this frame (whole seconds).</span>
-</span><span data-line="157">
-</span><span data-line="158"><span class="sd">        &gt;&gt;&gt; FrameHit("v", "https://www.youtube.com/watch?v=v", 75.4, 0.2).watch_url</span>
-</span><span data-line="159"><span class="sd">        'https://www.youtube.com/watch?v=v&amp;t=75s'</span>
-</span><span data-line="160"><span class="sd">        &gt;&gt;&gt; FrameHit("v", "https://youtu.be/v", 9.0, 0.2).watch_url</span>
-</span><span data-line="161"><span class="sd">        'https://youtu.be/v?t=9s'</span>
-</span><span data-line="162"><span class="sd">        """</span>
-</span><span data-line="163">        <span class="n">sep</span> <span class="o">=</span> <span class="s2">"&amp;"</span> <span class="k">if</span> <span class="s2">"?"</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">video_url</span> <span class="k">else</span> <span class="s2">"?"</span>
-</span><span data-line="164">        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">video_url</span><span class="si">}{</span><span class="n">sep</span><span class="si">}</span><span class="s2">t=</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">)</span><span class="si">}</span><span class="s2">s"</span></div>
+</span><span data-line="125"><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="126"><span class="k">class</span><span class="w"> </span><span class="nc">FrameHit</span><span class="p">:</span>
+</span><span data-line="127"><span class="w">    </span><span class="sd">"""One frame that matches a query: which video, when, how well, and the</span>
+</span><span data-line="128"><span class="sd">    rights record (:data:`illustration.schema.RIGHTS_FIELDS`) of that video."""</span>
+</span><span data-line="129">
+</span><span data-line="130">    <span class="n">video_id</span><span class="p">:</span> <span class="nb">str</span>
+</span><span data-line="131">    <span class="n">video_url</span><span class="p">:</span> <span class="nb">str</span>
+</span><span data-line="132">    <span class="n">t</span><span class="p">:</span> <span class="nb">float</span>
+</span><span data-line="133">    <span class="n">score</span><span class="p">:</span> <span class="nb">float</span>
+</span><span data-line="134">    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="135">    <span class="n">license</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># canonical code; None: the sampler did not say</span>
+</span><span data-line="136">    <span class="n">license_raw</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="137">    <span class="n">license_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="138">    <span class="n">attribution</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="139">    <span class="n">author</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="140">    <span class="n">author_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="141">    <span class="n">cacheable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># only embeddings are kept, never the frames</span>
+</span><span data-line="142">
+</span><span data-line="143">    <span class="nd">@property</span>
+</span><span data-line="144">    <span class="k">def</span><span class="w"> </span><span class="nf">source_page_url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="145"><span class="w">        </span><span class="sd">"""The page the frame is on: the video at this moment (:attr:`watch_url`)."""</span>
+</span><span data-line="146">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">watch_url</span>
+</span><span data-line="147">
+</span><span data-line="148">    <span class="nd">@property</span>
+</span><span data-line="149">    <span class="k">def</span><span class="w"> </span><span class="nf">rights</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+</span><span data-line="150"><span class="w">        </span><span class="sd">"""The rights record, by :data:`illustration.schema.RIGHTS_FIELDS`' names."""</span>
+</span><span data-line="151">        <span class="kn">from</span><span class="w"> </span><span class="nn">illustration.schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">RIGHTS_FIELDS</span>
+</span><span data-line="152">
+</span><span data-line="153">        <span class="k">return</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">RIGHTS_FIELDS</span><span class="p">}</span>
+</span><span data-line="154">
+</span><span data-line="155">    <span class="nd">@property</span>
+</span><span data-line="156">    <span class="k">def</span><span class="w"> </span><span class="nf">watch_url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="157"><span class="w">        </span><span class="sd">"""The video URL opening at this frame (whole seconds).</span>
+</span><span data-line="158">
+</span><span data-line="159"><span class="sd">        &gt;&gt;&gt; FrameHit("v", "https://www.youtube.com/watch?v=v", 75.4, 0.2).watch_url</span>
+</span><span data-line="160"><span class="sd">        'https://www.youtube.com/watch?v=v&amp;t=75s'</span>
+</span><span data-line="161"><span class="sd">        &gt;&gt;&gt; FrameHit("v", "https://youtu.be/v", 9.0, 0.2).watch_url</span>
+</span><span data-line="162"><span class="sd">        'https://youtu.be/v?t=9s'</span>
+</span><span data-line="163"><span class="sd">        """</span>
+</span><span data-line="164">        <span class="n">sep</span> <span class="o">=</span> <span class="s2">"&amp;"</span> <span class="k">if</span> <span class="s2">"?"</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">video_url</span> <span class="k">else</span> <span class="s2">"?"</span>
+</span><span data-line="165">        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">video_url</span><span class="si">}{</span><span class="n">sep</span><span class="si">}</span><span class="s2">t=</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">)</span><span class="si">}</span><span class="s2">s"</span></div>
 
-</span><span data-line="165">
 </span><span data-line="166">
+</span><span data-line="167">
 <div class="viewcode-block" id="storyboard_sampler">
 <a class="viewcode-back" href="../../_autosummary/illustration.frames.html#illustration.storyboard_sampler">[docs]</a>
-</span><span data-line="167"><span class="k">def</span><span class="w"> </span><span class="nf">storyboard_sampler</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-</span><span data-line="168"><span class="w">    </span><span class="sd">"""A video's YouTube storyboard (``yb.download.youtube_storyboard``).</span>
-</span><span data-line="169">
-</span><span data-line="170"><span class="sd">    A YouTube video with no licence reported is under YouTube's standard</span>
-</span><span data-line="171"><span class="sd">    licence, so that is what it records (:data:`YOUTUBE_STANDARD_LICENSE`).</span>
-</span><span data-line="172"><span class="sd">    """</span>
-</span><span data-line="173">    <span class="k">try</span><span class="p">:</span>
-</span><span data-line="174">        <span class="kn">from</span><span class="w"> </span><span class="nn">yb.download</span><span class="w"> </span><span class="kn">import</span> <span class="n">youtube_storyboard</span>
-</span><span data-line="175">    <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>  <span class="c1"># pragma: no cover - the message is the point</span>
-</span><span data-line="176">        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
-</span><span data-line="177">            <span class="s2">"the storyboard sampler reads YouTube through yb: install the "</span>
-</span><span data-line="178">            <span class="s2">"[frames] extra, or pass sampler="</span>
-</span><span data-line="179">        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">error</span>
-</span><span data-line="180">    <span class="n">board</span> <span class="o">=</span> <span class="n">youtube_storyboard</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span data-line="181">    <span class="k">return</span> <span class="n">board</span> <span class="k">if</span> <span class="n">board</span><span class="o">.</span><span class="n">license</span> <span class="k">else</span> <span class="n">replace</span><span class="p">(</span><span class="n">board</span><span class="p">,</span> <span class="n">license</span><span class="o">=</span><span class="n">YOUTUBE_STANDARD_LICENSE</span><span class="p">)</span></div>
+</span><span data-line="168"><span class="k">def</span><span class="w"> </span><span class="nf">storyboard_sampler</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+</span><span data-line="169"><span class="w">    </span><span class="sd">"""A video's YouTube storyboard (``yb.download.youtube_storyboard``).</span>
+</span><span data-line="170">
+</span><span data-line="171"><span class="sd">    A YouTube video with no licence reported is under YouTube's standard</span>
+</span><span data-line="172"><span class="sd">    licence, so that is what it records (:data:`YOUTUBE_STANDARD_LICENSE`).</span>
+</span><span data-line="173"><span class="sd">    """</span>
+</span><span data-line="174">    <span class="k">try</span><span class="p">:</span>
+</span><span data-line="175">        <span class="kn">from</span><span class="w"> </span><span class="nn">yb.download</span><span class="w"> </span><span class="kn">import</span> <span class="n">youtube_storyboard</span>
+</span><span data-line="176">    <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>  <span class="c1"># pragma: no cover - the message is the point</span>
+</span><span data-line="177">        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+</span><span data-line="178">            <span class="s2">"the storyboard sampler reads YouTube through yb: install the "</span>
+</span><span data-line="179">            <span class="s2">"[frames] extra, or pass sampler="</span>
+</span><span data-line="180">        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">error</span>
+</span><span data-line="181">    <span class="n">board</span> <span class="o">=</span> <span class="n">youtube_storyboard</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span data-line="182">    <span class="k">return</span> <span class="n">board</span> <span class="k">if</span> <span class="n">board</span><span class="o">.</span><span class="n">license</span> <span class="k">else</span> <span class="n">replace</span><span class="p">(</span><span class="n">board</span><span class="p">,</span> <span class="n">license</span><span class="o">=</span><span class="n">YOUTUBE_STANDARD_LICENSE</span><span class="p">)</span></div>
 
-</span><span data-line="182">
 </span><span data-line="183">
+</span><span data-line="184">
 <div class="viewcode-block" id="default_frame_store">
 <a class="viewcode-back" href="../../_autosummary/illustration.frames.html#illustration.default_frame_store">[docs]</a>
-</span><span data-line="184"><span class="k">def</span><span class="w"> </span><span class="nf">default_frame_store</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"MutableMapping[str, Any]"</span><span class="p">:</span>
-</span><span data-line="185"><span class="w">    </span><span class="sd">"""JSON files under the cache dir, one per video, per embedding model."""</span>
-</span><span data-line="186">    <span class="kn">from</span><span class="w"> </span><span class="nn">dol</span><span class="w"> </span><span class="kn">import</span> <span class="n">JsonFiles</span>
-</span><span data-line="187">
-</span><span data-line="188">    <span class="kn">from</span><span class="w"> </span><span class="nn">illustration.reranking</span><span class="w"> </span><span class="kn">import</span> <span class="n">_slug</span>
-</span><span data-line="189">
-</span><span data-line="190">    <span class="n">root</span> <span class="o">=</span> <span class="n">cache_dir</span><span class="p">(</span><span class="n">ensure</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">/</span> <span class="s2">"frames"</span> <span class="o">/</span> <span class="n">_slug</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
-</span><span data-line="191">    <span class="n">root</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span data-line="192">    <span class="k">return</span> <span class="n">JsonFiles</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">root</span><span class="p">))</span></div>
+</span><span data-line="185"><span class="k">def</span><span class="w"> </span><span class="nf">default_frame_store</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"MutableMapping[str, Any]"</span><span class="p">:</span>
+</span><span data-line="186"><span class="w">    </span><span class="sd">"""JSON files under the cache dir, one per video, per embedding model."""</span>
+</span><span data-line="187">    <span class="kn">from</span><span class="w"> </span><span class="nn">dol</span><span class="w"> </span><span class="kn">import</span> <span class="n">JsonFiles</span>
+</span><span data-line="188">
+</span><span data-line="189">    <span class="kn">from</span><span class="w"> </span><span class="nn">illustration.reranking</span><span class="w"> </span><span class="kn">import</span> <span class="n">_slug</span>
+</span><span data-line="190">
+</span><span data-line="191">    <span class="n">root</span> <span class="o">=</span> <span class="n">cache_dir</span><span class="p">(</span><span class="n">ensure</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">/</span> <span class="s2">"frames"</span> <span class="o">/</span> <span class="n">_slug</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+</span><span data-line="192">    <span class="n">root</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="193">    <span class="k">return</span> <span class="n">JsonFiles</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">root</span><span class="p">))</span></div>
 
-</span><span data-line="193">
 </span><span data-line="194">
-</span><span data-line="195"><span class="k">def</span><span class="w"> </span><span class="nf">_default_scorer</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-</span><span data-line="196">    <span class="kn">from</span><span class="w"> </span><span class="nn">illustration.reranking</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_siglip_scorer</span>
-</span><span data-line="197">
-</span><span data-line="198">    <span class="k">return</span> <span class="n">make_siglip_scorer</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">)</span>
-</span><span data-line="199">
+</span><span data-line="195">
+</span><span data-line="196"><span class="k">def</span><span class="w"> </span><span class="nf">_default_scorer</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+</span><span data-line="197">    <span class="kn">from</span><span class="w"> </span><span class="nn">illustration.reranking</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_siglip_scorer</span>
+</span><span data-line="198">
+</span><span data-line="199">    <span class="k">return</span> <span class="n">make_siglip_scorer</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">)</span>
 </span><span data-line="200">
-</span><span data-line="201"><span class="k">def</span><span class="w"> </span><span class="nf">_model_name</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span data-line="202">    <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="203">        <span class="k">return</span> <span class="n">model</span>
-</span><span data-line="204">    <span class="kn">from</span><span class="w"> </span><span class="nn">illustration.reranking</span><span class="w"> </span><span class="kn">import</span> <span class="n">DFLT_RERANK_MODEL</span>
-</span><span data-line="205">
-</span><span data-line="206">    <span class="k">return</span> <span class="n">DFLT_RERANK_MODEL</span>
-</span><span data-line="207">
+</span><span data-line="201">
+</span><span data-line="202"><span class="k">def</span><span class="w"> </span><span class="nf">_model_name</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="203">    <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="204">        <span class="k">return</span> <span class="n">model</span>
+</span><span data-line="205">    <span class="kn">from</span><span class="w"> </span><span class="nn">illustration.reranking</span><span class="w"> </span><span class="kn">import</span> <span class="n">DFLT_RERANK_MODEL</span>
+</span><span data-line="206">
+</span><span data-line="207">    <span class="k">return</span> <span class="n">DFLT_RERANK_MODEL</span>
 </span><span data-line="208">
-</span><span data-line="209"><span class="k">def</span><span class="w"> </span><span class="nf">_entry_key</span><span class="p">(</span><span class="n">identity</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span data-line="210"><span class="w">    </span><span class="sd">"""One store key per video: a digest of its identity, so ids differing only</span>
-</span><span data-line="211"><span class="sd">    in ``-``/``_``, case or path separators never share an entry."""</span>
-</span><span data-line="212">    <span class="k">return</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">identity</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">))</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()[:</span><span class="mi">40</span><span class="p">]</span> <span class="o">+</span> <span class="s2">".json"</span>
-</span><span data-line="213">
+</span><span data-line="209">
+</span><span data-line="210"><span class="k">def</span><span class="w"> </span><span class="nf">_entry_key</span><span class="p">(</span><span class="n">identity</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="211"><span class="w">    </span><span class="sd">"""One store key per video: a digest of its identity, so ids differing only</span>
+</span><span data-line="212"><span class="sd">    in ``-``/``_``, case or path separators never share an entry."""</span>
+</span><span data-line="213">    <span class="k">return</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">identity</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">))</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()[:</span><span class="mi">40</span><span class="p">]</span> <span class="o">+</span> <span class="s2">".json"</span>
 </span><span data-line="214">
-</span><span data-line="215"><span class="k">def</span><span class="w"> </span><span class="nf">_attribution</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">author</span><span class="p">,</span> <span class="n">license_code</span><span class="p">,</span> <span class="n">license_raw</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="216">    <span class="kn">from</span><span class="w"> </span><span class="nn">illustration.licensing</span><span class="w"> </span><span class="kn">import</span> <span class="n">display_license</span>
-</span><span data-line="217">
-</span><span data-line="218">    <span class="n">what</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'"</span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s1">"'</span> <span class="k">if</span> <span class="n">title</span> <span class="k">else</span> <span class="s2">"Video"</span>
-</span><span data-line="219">    <span class="n">by</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">" by </span><span class="si">{</span><span class="n">author</span><span class="si">}</span><span class="s2">"</span> <span class="k">if</span> <span class="n">author</span> <span class="k">else</span> <span class="s2">""</span>
-</span><span data-line="220">    <span class="n">terms</span> <span class="o">=</span> <span class="n">display_license</span><span class="p">(</span><span class="n">license_code</span><span class="p">)</span> <span class="ow">or</span> <span class="n">license_raw</span>
-</span><span data-line="221">    <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">what</span><span class="si">}{</span><span class="n">by</span><span class="si">}</span><span class="s2">"</span> <span class="o">+</span> <span class="p">(</span><span class="sa">f</span><span class="s2">", </span><span class="si">{</span><span class="n">terms</span><span class="si">}</span><span class="s2">"</span> <span class="k">if</span> <span class="n">terms</span> <span class="k">else</span> <span class="s2">""</span><span class="p">)</span>
-</span><span data-line="222">
+</span><span data-line="215">
+</span><span data-line="216"><span class="k">def</span><span class="w"> </span><span class="nf">_attribution</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">author</span><span class="p">,</span> <span class="n">license_code</span><span class="p">,</span> <span class="n">license_raw</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="217">    <span class="kn">from</span><span class="w"> </span><span class="nn">illustration.licensing</span><span class="w"> </span><span class="kn">import</span> <span class="n">display_license</span>
+</span><span data-line="218">
+</span><span data-line="219">    <span class="n">what</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'"</span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s1">"'</span> <span class="k">if</span> <span class="n">title</span> <span class="k">else</span> <span class="s2">"Video"</span>
+</span><span data-line="220">    <span class="n">by</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">" by </span><span class="si">{</span><span class="n">author</span><span class="si">}</span><span class="s2">"</span> <span class="k">if</span> <span class="n">author</span> <span class="k">else</span> <span class="s2">""</span>
+</span><span data-line="221">    <span class="n">terms</span> <span class="o">=</span> <span class="n">display_license</span><span class="p">(</span><span class="n">license_code</span><span class="p">)</span> <span class="ow">or</span> <span class="n">license_raw</span>
+</span><span data-line="222">    <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">what</span><span class="si">}{</span><span class="n">by</span><span class="si">}</span><span class="s2">"</span> <span class="o">+</span> <span class="p">(</span><span class="sa">f</span><span class="s2">", </span><span class="si">{</span><span class="n">terms</span><span class="si">}</span><span class="s2">"</span> <span class="k">if</span> <span class="n">terms</span> <span class="k">else</span> <span class="s2">""</span><span class="p">)</span>
 </span><span data-line="223">
+</span><span data-line="224">
 <div class="viewcode-block" id="index_video_frames">
 <a class="viewcode-back" href="../../_autosummary/illustration.frames.html#illustration.index_video_frames">[docs]</a>
-</span><span data-line="224"><span class="k">def</span><span class="w"> </span><span class="nf">index_video_frames</span><span class="p">(</span>
-</span><span data-line="225">    <span class="n">videos</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-</span><span data-line="226">    <span class="o">*</span><span class="p">,</span>
-</span><span data-line="227">    <span class="n">store</span><span class="p">:</span> <span class="s2">"MutableMapping[str, Any] | None"</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="228">    <span class="n">sampler</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">storyboard_sampler</span><span class="p">,</span>
-</span><span data-line="229">    <span class="n">scorer</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="230">    <span class="n">model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="231">    <span class="n">refresh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-</span><span data-line="232">    <span class="n">batch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DFLT_BATCH</span><span class="p">,</span>
-</span><span data-line="233"><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-</span><span data-line="234"><span class="w">    </span><span class="sd">"""Embed every frame of ``videos`` into the corpus; return what happened.</span>
-</span><span data-line="235">
-</span><span data-line="236"><span class="sd">    A video already in the store is skipped unless ``refresh=True`` (for a</span>
-</span><span data-line="237"><span class="sd">    YouTube URL, without fetching anything), so indexing a channel again only</span>
-</span><span data-line="238"><span class="sd">    does the new videos. A video that cannot be read or embedded (no</span>
-</span><span data-line="239"><span class="sd">    storyboard, unavailable, a corrupt sheet, a scorer error) is recorded in</span>
-</span><span data-line="240"><span class="sd">    ``failed`` with the reason, nothing is written for it, and the others go</span>
-</span><span data-line="241"><span class="sd">    on. Frames are embedded ``batch`` at a time as they are read, so a long</span>
-</span><span data-line="242"><span class="sd">    video never sits in memory whole.</span>
-</span><span data-line="243">
-</span><span data-line="244"><span class="sd">    Returns:</span>
-</span><span data-line="245"><span class="sd">        ``{"indexed": [ids], "skipped": [ids], "failed": {url: why},</span>
-</span><span data-line="246"><span class="sd">        "frames": number of frames embedded}``; a video's id is its</span>
-</span><span data-line="247"><span class="sd">        ``video_id``, else its URL.</span>
-</span><span data-line="248"><span class="sd">    """</span>
-</span><span data-line="249">    <span class="n">model</span> <span class="o">=</span> <span class="n">_model_name</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
-</span><span data-line="250">    <span class="n">store</span> <span class="o">=</span> <span class="n">default_frame_store</span><span class="p">(</span><span class="n">model</span><span class="p">)</span> <span class="k">if</span> <span class="n">store</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">store</span>
-</span><span data-line="251">    <span class="n">report</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"indexed"</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">"skipped"</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">"failed"</span><span class="p">:</span> <span class="p">{},</span> <span class="s2">"frames"</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
-</span><span data-line="252">    <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">videos</span><span class="p">:</span>
-</span><span data-line="253">        <span class="n">known</span> <span class="o">=</span> <span class="n">youtube_video_id</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
-</span><span data-line="254">        <span class="k">if</span> <span class="n">known</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">refresh</span> <span class="ow">and</span> <span class="n">_entry_key</span><span class="p">(</span><span class="n">known</span><span class="p">)</span> <span class="ow">in</span> <span class="n">store</span><span class="p">:</span>
-</span><span data-line="255">            <span class="n">report</span><span class="p">[</span><span class="s2">"skipped"</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">known</span><span class="p">)</span>
-</span><span data-line="256">            <span class="k">continue</span>
-</span><span data-line="257">        <span class="k">try</span><span class="p">:</span>
-</span><span data-line="258">            <span class="n">video</span> <span class="o">=</span> <span class="n">sampler</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
-</span><span data-line="259">            <span class="n">identity</span> <span class="o">=</span> <span class="n">video</span><span class="o">.</span><span class="n">video_id</span> <span class="ow">or</span> <span class="n">video</span><span class="o">.</span><span class="n">url</span> <span class="ow">or</span> <span class="n">url</span>
-</span><span data-line="260">            <span class="n">key</span> <span class="o">=</span> <span class="n">_entry_key</span><span class="p">(</span><span class="n">identity</span><span class="p">)</span>
-</span><span data-line="261">            <span class="k">if</span> <span class="ow">not</span> <span class="n">refresh</span> <span class="ow">and</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">store</span><span class="p">:</span>
-</span><span data-line="262">                <span class="n">report</span><span class="p">[</span><span class="s2">"skipped"</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">identity</span><span class="p">)</span>
-</span><span data-line="263">                <span class="k">continue</span>
-</span><span data-line="264">            <span class="k">if</span> <span class="n">scorer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="265">                <span class="n">scorer</span> <span class="o">=</span> <span class="n">_default_scorer</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
-</span><span data-line="266">            <span class="n">times</span><span class="p">,</span> <span class="n">vectors</span><span class="p">,</span> <span class="n">pending</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
-</span><span data-line="267">
-</span><span data-line="268">            <span class="k">def</span><span class="w"> </span><span class="nf">flush</span><span class="p">():</span>
-</span><span data-line="269">                <span class="n">vectors</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">scorer</span><span class="o">.</span><span class="n">embed_pil_images</span><span class="p">(</span><span class="n">pending</span><span class="p">,</span> <span class="n">batch</span><span class="o">=</span><span class="n">batch</span><span class="p">))</span>
-</span><span data-line="270">                <span class="n">pending</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-</span><span data-line="271">
-</span><span data-line="272">            <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">video</span><span class="o">.</span><span class="n">frames</span><span class="p">():</span>
-</span><span data-line="273">                <span class="n">times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
-</span><span data-line="274">                <span class="n">pending</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
-</span><span data-line="275">                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pending</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">batch</span><span class="p">:</span>
-</span><span data-line="276">                    <span class="n">flush</span><span class="p">()</span>
-</span><span data-line="277">            <span class="k">if</span> <span class="n">pending</span><span class="p">:</span>
-</span><span data-line="278">                <span class="n">flush</span><span class="p">()</span>
-</span><span data-line="279">        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>  <span class="c1"># noqa: BLE001 - one bad video is a note, not the end</span>
-</span><span data-line="280">            <span class="n">report</span><span class="p">[</span><span class="s2">"failed"</span><span class="p">][</span><span class="n">url</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">error</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">"</span>
-</span><span data-line="281">            <span class="k">continue</span>
-</span><span data-line="282">        <span class="n">store</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-</span><span data-line="283">            <span class="s2">"id"</span><span class="p">:</span> <span class="n">identity</span><span class="p">,</span>
-</span><span data-line="284">            <span class="s2">"video_id"</span><span class="p">:</span> <span class="n">video</span><span class="o">.</span><span class="n">video_id</span><span class="p">,</span>
-</span><span data-line="285">            <span class="s2">"url"</span><span class="p">:</span> <span class="n">video</span><span class="o">.</span><span class="n">url</span> <span class="ow">or</span> <span class="n">url</span><span class="p">,</span>
-</span><span data-line="286">            <span class="s2">"title"</span><span class="p">:</span> <span class="n">video</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
-</span><span data-line="287">            <span class="s2">"duration"</span><span class="p">:</span> <span class="n">video</span><span class="o">.</span><span class="n">duration</span><span class="p">,</span>
-</span><span data-line="288">            <span class="s2">"license"</span><span class="p">:</span> <span class="n">video</span><span class="o">.</span><span class="n">license</span><span class="p">,</span>
-</span><span data-line="289">            <span class="s2">"author"</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">video</span><span class="p">,</span> <span class="s2">"uploader"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-</span><span data-line="290">            <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">video</span><span class="p">,</span> <span class="s2">"channel"</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
-</span><span data-line="291">            <span class="s2">"author_url"</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">video</span><span class="p">,</span> <span class="s2">"channel_url"</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
-</span><span data-line="292">            <span class="s2">"model"</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">scorer</span><span class="p">,</span> <span class="s2">"model_id"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="n">model</span><span class="p">,</span>
-</span><span data-line="293">            <span class="s2">"times"</span><span class="p">:</span> <span class="n">times</span><span class="p">,</span>
-</span><span data-line="294">            <span class="s2">"vectors"</span><span class="p">:</span> <span class="p">[[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">v</span><span class="p">]</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vectors</span><span class="p">],</span>
-</span><span data-line="295">        <span class="p">}</span>
-</span><span data-line="296">        <span class="n">report</span><span class="p">[</span><span class="s2">"indexed"</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">identity</span><span class="p">)</span>
-</span><span data-line="297">        <span class="n">report</span><span class="p">[</span><span class="s2">"frames"</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
-</span><span data-line="298">    <span class="k">return</span> <span class="n">report</span></div>
+</span><span data-line="225"><span class="k">def</span><span class="w"> </span><span class="nf">index_video_frames</span><span class="p">(</span>
+</span><span data-line="226">    <span class="n">videos</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+</span><span data-line="227">    <span class="o">*</span><span class="p">,</span>
+</span><span data-line="228">    <span class="n">store</span><span class="p">:</span> <span class="s2">"MutableMapping[str, Any] | None"</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="229">    <span class="n">sampler</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">storyboard_sampler</span><span class="p">,</span>
+</span><span data-line="230">    <span class="n">scorer</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="231">    <span class="n">model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="232">    <span class="n">refresh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span data-line="233">    <span class="n">batch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DFLT_BATCH</span><span class="p">,</span>
+</span><span data-line="234"><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+</span><span data-line="235"><span class="w">    </span><span class="sd">"""Embed every frame of ``videos`` into the corpus; return what happened.</span>
+</span><span data-line="236">
+</span><span data-line="237"><span class="sd">    A video already in the store is skipped unless ``refresh=True`` (for a</span>
+</span><span data-line="238"><span class="sd">    YouTube URL, without fetching anything), so indexing a channel again only</span>
+</span><span data-line="239"><span class="sd">    does the new videos. A video that cannot be read or embedded (no</span>
+</span><span data-line="240"><span class="sd">    storyboard, unavailable, a corrupt sheet, a scorer error) is recorded in</span>
+</span><span data-line="241"><span class="sd">    ``failed`` with the reason, nothing is written for it, and the others go</span>
+</span><span data-line="242"><span class="sd">    on. Frames are embedded ``batch`` at a time as they are read, so a long</span>
+</span><span data-line="243"><span class="sd">    video never sits in memory whole.</span>
+</span><span data-line="244">
+</span><span data-line="245"><span class="sd">    Returns:</span>
+</span><span data-line="246"><span class="sd">        ``{"indexed": [ids], "skipped": [ids], "failed": {url: why},</span>
+</span><span data-line="247"><span class="sd">        "frames": number of frames embedded}``; a video's id is its</span>
+</span><span data-line="248"><span class="sd">        ``video_id``, else its URL.</span>
+</span><span data-line="249"><span class="sd">    """</span>
+</span><span data-line="250">    <span class="n">model</span> <span class="o">=</span> <span class="n">_model_name</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+</span><span data-line="251">    <span class="n">store</span> <span class="o">=</span> <span class="n">default_frame_store</span><span class="p">(</span><span class="n">model</span><span class="p">)</span> <span class="k">if</span> <span class="n">store</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">store</span>
+</span><span data-line="252">    <span class="n">report</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"indexed"</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">"skipped"</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">"failed"</span><span class="p">:</span> <span class="p">{},</span> <span class="s2">"frames"</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+</span><span data-line="253">    <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">videos</span><span class="p">:</span>
+</span><span data-line="254">        <span class="n">known</span> <span class="o">=</span> <span class="n">youtube_video_id</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+</span><span data-line="255">        <span class="k">if</span> <span class="n">known</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">refresh</span> <span class="ow">and</span> <span class="n">_entry_key</span><span class="p">(</span><span class="n">known</span><span class="p">)</span> <span class="ow">in</span> <span class="n">store</span><span class="p">:</span>
+</span><span data-line="256">            <span class="n">report</span><span class="p">[</span><span class="s2">"skipped"</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">known</span><span class="p">)</span>
+</span><span data-line="257">            <span class="k">continue</span>
+</span><span data-line="258">        <span class="k">try</span><span class="p">:</span>
+</span><span data-line="259">            <span class="n">video</span> <span class="o">=</span> <span class="n">sampler</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+</span><span data-line="260">            <span class="n">identity</span> <span class="o">=</span> <span class="n">video</span><span class="o">.</span><span class="n">video_id</span> <span class="ow">or</span> <span class="n">video</span><span class="o">.</span><span class="n">url</span> <span class="ow">or</span> <span class="n">url</span>
+</span><span data-line="261">            <span class="n">key</span> <span class="o">=</span> <span class="n">_entry_key</span><span class="p">(</span><span class="n">identity</span><span class="p">)</span>
+</span><span data-line="262">            <span class="k">if</span> <span class="ow">not</span> <span class="n">refresh</span> <span class="ow">and</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">store</span><span class="p">:</span>
+</span><span data-line="263">                <span class="n">report</span><span class="p">[</span><span class="s2">"skipped"</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">identity</span><span class="p">)</span>
+</span><span data-line="264">                <span class="k">continue</span>
+</span><span data-line="265">            <span class="k">if</span> <span class="n">scorer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="266">                <span class="n">scorer</span> <span class="o">=</span> <span class="n">_default_scorer</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+</span><span data-line="267">            <span class="n">times</span><span class="p">,</span> <span class="n">vectors</span><span class="p">,</span> <span class="n">pending</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+</span><span data-line="268">
+</span><span data-line="269">            <span class="k">def</span><span class="w"> </span><span class="nf">flush</span><span class="p">():</span>
+</span><span data-line="270">                <span class="n">vectors</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">scorer</span><span class="o">.</span><span class="n">embed_pil_images</span><span class="p">(</span><span class="n">pending</span><span class="p">,</span> <span class="n">batch</span><span class="o">=</span><span class="n">batch</span><span class="p">))</span>
+</span><span data-line="271">                <span class="n">pending</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+</span><span data-line="272">
+</span><span data-line="273">            <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">video</span><span class="o">.</span><span class="n">frames</span><span class="p">():</span>
+</span><span data-line="274">                <span class="n">times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+</span><span data-line="275">                <span class="n">pending</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+</span><span data-line="276">                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pending</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">batch</span><span class="p">:</span>
+</span><span data-line="277">                    <span class="n">flush</span><span class="p">()</span>
+</span><span data-line="278">            <span class="k">if</span> <span class="n">pending</span><span class="p">:</span>
+</span><span data-line="279">                <span class="n">flush</span><span class="p">()</span>
+</span><span data-line="280">        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>  <span class="c1"># noqa: BLE001 - one bad video is a note, not the end</span>
+</span><span data-line="281">            <span class="n">report</span><span class="p">[</span><span class="s2">"failed"</span><span class="p">][</span><span class="n">url</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">error</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">"</span>
+</span><span data-line="282">            <span class="k">continue</span>
+</span><span data-line="283">        <span class="n">store</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+</span><span data-line="284">            <span class="s2">"id"</span><span class="p">:</span> <span class="n">identity</span><span class="p">,</span>
+</span><span data-line="285">            <span class="s2">"video_id"</span><span class="p">:</span> <span class="n">video</span><span class="o">.</span><span class="n">video_id</span><span class="p">,</span>
+</span><span data-line="286">            <span class="s2">"url"</span><span class="p">:</span> <span class="n">video</span><span class="o">.</span><span class="n">url</span> <span class="ow">or</span> <span class="n">url</span><span class="p">,</span>
+</span><span data-line="287">            <span class="s2">"title"</span><span class="p">:</span> <span class="n">video</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
+</span><span data-line="288">            <span class="s2">"duration"</span><span class="p">:</span> <span class="n">video</span><span class="o">.</span><span class="n">duration</span><span class="p">,</span>
+</span><span data-line="289">            <span class="s2">"license"</span><span class="p">:</span> <span class="n">video</span><span class="o">.</span><span class="n">license</span><span class="p">,</span>
+</span><span data-line="290">            <span class="s2">"author"</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">video</span><span class="p">,</span> <span class="s2">"uploader"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</span><span data-line="291">            <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">video</span><span class="p">,</span> <span class="s2">"channel"</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+</span><span data-line="292">            <span class="s2">"author_url"</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">video</span><span class="p">,</span> <span class="s2">"channel_url"</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+</span><span data-line="293">            <span class="s2">"model"</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">scorer</span><span class="p">,</span> <span class="s2">"model_id"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="n">model</span><span class="p">,</span>
+</span><span data-line="294">            <span class="s2">"times"</span><span class="p">:</span> <span class="n">times</span><span class="p">,</span>
+</span><span data-line="295">            <span class="s2">"vectors"</span><span class="p">:</span> <span class="p">[[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">v</span><span class="p">]</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vectors</span><span class="p">],</span>
+</span><span data-line="296">        <span class="p">}</span>
+</span><span data-line="297">        <span class="n">report</span><span class="p">[</span><span class="s2">"indexed"</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">identity</span><span class="p">)</span>
+</span><span data-line="298">        <span class="n">report</span><span class="p">[</span><span class="s2">"frames"</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
+</span><span data-line="299">    <span class="k">return</span> <span class="n">report</span></div>
 
-</span><span data-line="299">
 </span><span data-line="300">
+</span><span data-line="301">
+<div class="viewcode-block" id="FrameIndex">
+<a class="viewcode-back" href="../../_autosummary/illustration.frames.html#illustration.FrameIndex">[docs]</a>
+</span><span data-line="302"><span class="k">class</span><span class="w"> </span><span class="nc">FrameIndex</span><span class="p">:</span>
+</span><span data-line="303"><span class="w">    </span><span class="sd">"""The corpus as one stacked float32 matrix, so a query is one matrix product.</span>
+</span><span data-line="304">
+</span><span data-line="305"><span class="sd">    :func:`search_frames` over a store reads and parses every video's entry per</span>
+</span><span data-line="306"><span class="sd">    query, so latency grows with the corpus. Build a ``FrameIndex`` once and</span>
+</span><span data-line="307"><span class="sd">    pass it as ``index=``: the queries then cost one ``(frames x dim) @ (dim,)``</span>
+</span><span data-line="308"><span class="sd">    product and the per-hit work only for the few that are kept. Rebuild it</span>
+</span><span data-line="309"><span class="sd">    (``FrameIndex.from_store`` again) after indexing more videos. Videos indexed</span>
+</span><span data-line="310"><span class="sd">    with another model than ``model`` are left out and listed in ``other_model``.</span>
+</span><span data-line="311">
+</span><span data-line="312"><span class="sd">    &gt;&gt;&gt; FrameIndex.from_store({}, model="m").frames</span>
+</span><span data-line="313"><span class="sd">    0</span>
+</span><span data-line="314"><span class="sd">    """</span>
+</span><span data-line="315">
+</span><span data-line="316">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entries</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">matrix</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">rows</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">other_model</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+</span><span data-line="317">        <span class="bp">self</span><span class="o">.</span><span class="n">entries</span> <span class="o">=</span> <span class="n">entries</span>  <span class="c1"># one dict per video (without its vectors)</span>
+</span><span data-line="318">        <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">matrix</span>  <span class="c1"># (frames, dim) float32</span>
+</span><span data-line="319">        <span class="bp">self</span><span class="o">.</span><span class="n">rows</span> <span class="o">=</span> <span class="n">rows</span>  <span class="c1"># per matrix row: (index into entries, time)</span>
+</span><span data-line="320">        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+</span><span data-line="321">        <span class="bp">self</span><span class="o">.</span><span class="n">other_model</span> <span class="o">=</span> <span class="n">other_model</span>
+</span><span data-line="322">
+</span><span data-line="323">    <span class="nd">@property</span>
+</span><span data-line="324">    <span class="k">def</span><span class="w"> </span><span class="nf">frames</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span data-line="325">        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">)</span>
+</span><span data-line="326">
+</span><span data-line="327">    <span class="nd">@classmethod</span>
+</span><span data-line="328">    <span class="k">def</span><span class="w"> </span><span class="nf">from_store</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">store</span><span class="p">:</span> <span class="s2">"MutableMapping[str, Any]"</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"FrameIndex"</span><span class="p">:</span>
+</span><span data-line="329">        <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span data-line="330">
+</span><span data-line="331">        <span class="n">model</span> <span class="o">=</span> <span class="n">_model_name</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+</span><span data-line="332">        <span class="n">entries</span><span class="p">,</span> <span class="n">blocks</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">other</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+</span><span data-line="333">        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">store</span><span class="p">:</span>
+</span><span data-line="334">            <span class="n">entry</span> <span class="o">=</span> <span class="n">store</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+</span><span data-line="335">            <span class="n">identity</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"id"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">entry</span><span class="p">[</span><span class="s2">"video_id"</span><span class="p">]</span> <span class="ow">or</span> <span class="n">entry</span><span class="p">[</span><span class="s2">"url"</span><span class="p">]</span>
+</span><span data-line="336">            <span class="k">if</span> <span class="ow">not</span> <span class="n">entry</span><span class="p">[</span><span class="s2">"vectors"</span><span class="p">]:</span>
+</span><span data-line="337">                <span class="k">continue</span>
+</span><span data-line="338">            <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"model"</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span> <span class="o">!=</span> <span class="n">model</span><span class="p">:</span>
+</span><span data-line="339">                <span class="n">other</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">identity</span><span class="p">)</span>
+</span><span data-line="340">                <span class="k">continue</span>
+</span><span data-line="341">            <span class="n">light</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">entry</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"vectors"</span><span class="p">,</span> <span class="s2">"times"</span><span class="p">)}</span>
+</span><span data-line="342">            <span class="n">blocks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="s2">"vectors"</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">"float32"</span><span class="p">))</span>
+</span><span data-line="343">            <span class="n">rows</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">entries</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">t</span><span class="p">))</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">entry</span><span class="p">[</span><span class="s2">"times"</span><span class="p">])</span>
+</span><span data-line="344">            <span class="n">entries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">light</span><span class="p">)</span>
+</span><span data-line="345">        <span class="n">dim</span> <span class="o">=</span> <span class="n">blocks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">blocks</span> <span class="k">else</span> <span class="mi">0</span>
+</span><span data-line="346">        <span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">blocks</span><span class="p">)</span> <span class="k">if</span> <span class="n">blocks</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">dim</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">"float32"</span><span class="p">)</span>
+</span><span data-line="347">        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">entries</span><span class="p">,</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+</span><span data-line="348">
+<div class="viewcode-block" id="FrameIndex.candidates">
+<a class="viewcode-back" href="../../_autosummary/illustration.frames.html#illustration.FrameIndex.candidates">[docs]</a>
+</span><span data-line="349">    <span class="k">def</span><span class="w"> </span><span class="nf">candidates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">wanted</span><span class="p">:</span> <span class="s2">"set | None"</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+</span><span data-line="350"><span class="w">        </span><span class="sd">"""``(score, t, entry)`` for every frame, as :func:`search_frames` ranks them."""</span>
+</span><span data-line="351">        <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span data-line="352">
+</span><span data-line="353">        <span class="n">sims</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">"float32"</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span> <span class="k">else</span> <span class="p">[]</span>
+</span><span data-line="354">        <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="355">        <span class="k">for</span> <span class="n">score</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">sims</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">):</span>
+</span><span data-line="356">            <span class="n">entry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">entries</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+</span><span data-line="357">            <span class="k">if</span> <span class="n">wanted</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"id"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">entry</span><span class="p">[</span><span class="s2">"video_id"</span><span class="p">]</span> <span class="ow">or</span> <span class="n">entry</span><span class="p">[</span><span class="s2">"url"</span><span class="p">])</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">wanted</span><span class="p">:</span>
+</span><span data-line="358">                <span class="k">continue</span>
+</span><span data-line="359">            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="nb">float</span><span class="p">(</span><span class="n">score</span><span class="p">),</span> <span class="n">t</span><span class="p">,</span> <span class="n">entry</span><span class="p">))</span>
+</span><span data-line="360">        <span class="k">return</span> <span class="n">out</span></div>
+</div>
+
+</span><span data-line="361">
+</span><span data-line="362">
 <div class="viewcode-block" id="search_frames">
 <a class="viewcode-back" href="../../_autosummary/illustration.frames.html#illustration.search_frames">[docs]</a>
-</span><span data-line="301"><span class="k">def</span><span class="w"> </span><span class="nf">search_frames</span><span class="p">(</span>
-</span><span data-line="302">    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span data-line="303">    <span class="o">*</span><span class="p">,</span>
-</span><span data-line="304">    <span class="n">store</span><span class="p">:</span> <span class="s2">"MutableMapping[str, Any] | None"</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="305">    <span class="n">scorer</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="306">    <span class="n">model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="307">    <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
-</span><span data-line="308">    <span class="n">per_video</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DFLT_PER_VIDEO</span><span class="p">,</span>
-</span><span data-line="309">    <span class="n">min_gap_s</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">DFLT_MIN_GAP_S</span><span class="p">,</span>
-</span><span data-line="310">    <span class="n">videos</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="311"><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">FrameHit</span><span class="p">]:</span>
-</span><span data-line="312"><span class="w">    </span><span class="sd">"""The ``k`` frames that best match ``text``, best first.</span>
-</span><span data-line="313">
-</span><span data-line="314"><span class="sd">    Diversified, because the next frame of a match is usually a match too: at</span>
-</span><span data-line="315"><span class="sd">    most ``per_video`` hits per video, and two hits closer than ``min_gap_s``</span>
-</span><span data-line="316"><span class="sd">    in one video are one scene (the better one is kept). ``videos`` limits the</span>
-</span><span data-line="317"><span class="sd">    search to those video ids (or URLs, for a video that has no id). Videos</span>
-</span><span data-line="318"><span class="sd">    indexed with another embedding model are skipped, with a warning.</span>
-</span><span data-line="319"><span class="sd">    """</span>
-</span><span data-line="320">    <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-</span><span data-line="321">
-</span><span data-line="322">    <span class="n">model</span> <span class="o">=</span> <span class="n">_model_name</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
-</span><span data-line="323">    <span class="n">store</span> <span class="o">=</span> <span class="n">default_frame_store</span><span class="p">(</span><span class="n">model</span><span class="p">)</span> <span class="k">if</span> <span class="n">store</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">store</span>
-</span><span data-line="324">    <span class="n">scorer</span> <span class="o">=</span> <span class="n">_default_scorer</span><span class="p">(</span><span class="n">model</span><span class="p">)</span> <span class="k">if</span> <span class="n">scorer</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">scorer</span>
-</span><span data-line="325">    <span class="n">using</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">scorer</span><span class="p">,</span> <span class="s2">"model_id"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="n">model</span>
-</span><span data-line="326">    <span class="n">query</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">scorer</span><span class="o">.</span><span class="n">embed_text</span><span class="p">(</span><span class="n">text</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">"float32"</span><span class="p">)</span>
-</span><span data-line="327">    <span class="n">wanted</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">videos</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">set</span><span class="p">(</span><span class="n">videos</span><span class="p">)</span>
-</span><span data-line="328">    <span class="n">scored</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span data-line="329">    <span class="n">other_model</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span data-line="330">    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">store</span><span class="p">:</span>
-</span><span data-line="331">        <span class="n">entry</span> <span class="o">=</span> <span class="n">store</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-</span><span data-line="332">        <span class="n">identity</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"id"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">entry</span><span class="p">[</span><span class="s2">"video_id"</span><span class="p">]</span> <span class="ow">or</span> <span class="n">entry</span><span class="p">[</span><span class="s2">"url"</span><span class="p">]</span>
-</span><span data-line="333">        <span class="k">if</span> <span class="n">wanted</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">identity</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">wanted</span><span class="p">:</span>
-</span><span data-line="334">            <span class="k">continue</span>
-</span><span data-line="335">        <span class="k">if</span> <span class="ow">not</span> <span class="n">entry</span><span class="p">[</span><span class="s2">"vectors"</span><span class="p">]:</span>
-</span><span data-line="336">            <span class="k">continue</span>
-</span><span data-line="337">        <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"model"</span><span class="p">,</span> <span class="n">using</span><span class="p">)</span> <span class="o">!=</span> <span class="n">using</span><span class="p">:</span>
-</span><span data-line="338">            <span class="n">other_model</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">identity</span><span class="p">)</span>
-</span><span data-line="339">            <span class="k">continue</span>
-</span><span data-line="340">        <span class="n">sims</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="s2">"vectors"</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">"float32"</span><span class="p">)</span> <span class="o">@</span> <span class="n">query</span>
-</span><span data-line="341">        <span class="n">scored</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="nb">float</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">entry</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">sims</span><span class="p">,</span> <span class="n">entry</span><span class="p">[</span><span class="s2">"times"</span><span class="p">]))</span>
-</span><span data-line="342">    <span class="k">if</span> <span class="n">other_model</span><span class="p">:</span>
-</span><span data-line="343">        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-</span><span data-line="344">            <span class="sa">f</span><span class="s2">"search_frames: skipped </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">other_model</span><span class="p">)</span><span class="si">}</span><span class="s2"> video(s) indexed with another "</span>
-</span><span data-line="345">            <span class="sa">f</span><span class="s2">"model than </span><span class="si">{</span><span class="n">using</span><span class="si">!r}</span><span class="s2"> (their vectors are not comparable): "</span>
-</span><span data-line="346">            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">other_model</span><span class="p">)[:</span><span class="mi">5</span><span class="p">]</span><span class="si">}</span><span class="s2">; re-index them with refresh=True"</span><span class="p">,</span>
-</span><span data-line="347">            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-</span><span data-line="348">        <span class="p">)</span>
-</span><span data-line="349">    <span class="n">scored</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="o">-</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-</span><span data-line="350">    <span class="n">picked</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">FrameHit</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span data-line="351">    <span class="n">count</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-</span><span data-line="352">    <span class="n">seen</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span data-line="353">    <span class="k">for</span> <span class="n">score</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">scored</span><span class="p">:</span>
-</span><span data-line="354">        <span class="n">vid</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"id"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">entry</span><span class="p">[</span><span class="s2">"video_id"</span><span class="p">]</span> <span class="ow">or</span> <span class="n">entry</span><span class="p">[</span><span class="s2">"url"</span><span class="p">]</span>
-</span><span data-line="355">        <span class="k">if</span> <span class="n">count</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vid</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">per_video</span><span class="p">:</span>
-</span><span data-line="356">            <span class="k">continue</span>
-</span><span data-line="357">        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">v</span> <span class="o">==</span> <span class="n">vid</span> <span class="ow">and</span> <span class="nb">abs</span><span class="p">(</span><span class="n">pt</span> <span class="o">-</span> <span class="n">t</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">min_gap_s</span> <span class="k">for</span> <span class="n">v</span><span class="p">,</span> <span class="n">pt</span> <span class="ow">in</span> <span class="n">seen</span><span class="p">):</span>
-</span><span data-line="358">            <span class="k">continue</span>
-</span><span data-line="359">        <span class="n">code</span> <span class="o">=</span> <span class="n">frame_license</span><span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"license"</span><span class="p">))</span>
-</span><span data-line="360">        <span class="n">picked</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-</span><span data-line="361">            <span class="n">FrameHit</span><span class="p">(</span>
-</span><span data-line="362">                <span class="n">video_id</span><span class="o">=</span><span class="n">entry</span><span class="p">[</span><span class="s2">"video_id"</span><span class="p">]</span> <span class="ow">or</span> <span class="n">vid</span><span class="p">,</span>
-</span><span data-line="363">                <span class="n">video_url</span><span class="o">=</span><span class="n">entry</span><span class="p">[</span><span class="s2">"url"</span><span class="p">],</span>
-</span><span data-line="364">                <span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">,</span>
-</span><span data-line="365">                <span class="n">score</span><span class="o">=</span><span class="n">score</span> <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">score</span><span class="p">)</span> <span class="k">else</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span>
-</span><span data-line="366">                <span class="n">title</span><span class="o">=</span><span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"title"</span><span class="p">),</span>
-</span><span data-line="367">                <span class="n">license</span><span class="o">=</span><span class="n">code</span><span class="p">,</span>
-</span><span data-line="368">                <span class="n">license_raw</span><span class="o">=</span><span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"license"</span><span class="p">),</span>
-</span><span data-line="369">                <span class="n">license_url</span><span class="o">=</span><span class="n">_LICENSE_URLS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">code</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">),</span>
-</span><span data-line="370">                <span class="n">attribution</span><span class="o">=</span><span class="n">_attribution</span><span class="p">(</span>
-</span><span data-line="371">                    <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"title"</span><span class="p">),</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"author"</span><span class="p">),</span> <span class="n">code</span><span class="p">,</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"license"</span><span class="p">)</span>
-</span><span data-line="372">                <span class="p">),</span>
-</span><span data-line="373">                <span class="n">author</span><span class="o">=</span><span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"author"</span><span class="p">),</span>
-</span><span data-line="374">                <span class="n">author_url</span><span class="o">=</span><span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"author_url"</span><span class="p">),</span>
-</span><span data-line="375">            <span class="p">)</span>
-</span><span data-line="376">        <span class="p">)</span>
-</span><span data-line="377">        <span class="n">seen</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">vid</span><span class="p">,</span> <span class="n">t</span><span class="p">))</span>
-</span><span data-line="378">        <span class="n">count</span><span class="p">[</span><span class="n">vid</span><span class="p">]</span> <span class="o">=</span> <span class="n">count</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vid</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
-</span><span data-line="379">        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">picked</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">k</span><span class="p">:</span>
-</span><span data-line="380">            <span class="k">break</span>
-</span><span data-line="381">    <span class="k">return</span> <span class="n">picked</span></div>
+</span><span data-line="363"><span class="k">def</span><span class="w"> </span><span class="nf">search_frames</span><span class="p">(</span>
+</span><span data-line="364">    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="365">    <span class="o">*</span><span class="p">,</span>
+</span><span data-line="366">    <span class="n">store</span><span class="p">:</span> <span class="s2">"MutableMapping[str, Any] | None"</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="367">    <span class="n">scorer</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="368">    <span class="n">model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="369">    <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+</span><span data-line="370">    <span class="n">per_video</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DFLT_PER_VIDEO</span><span class="p">,</span>
+</span><span data-line="371">    <span class="n">min_gap_s</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">DFLT_MIN_GAP_S</span><span class="p">,</span>
+</span><span data-line="372">    <span class="n">videos</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="373">    <span class="n">index</span><span class="p">:</span> <span class="s2">"FrameIndex | None"</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="374"><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">FrameHit</span><span class="p">]:</span>
+</span><span data-line="375"><span class="w">    </span><span class="sd">"""The ``k`` frames that best match ``text``, best first.</span>
+</span><span data-line="376">
+</span><span data-line="377"><span class="sd">    Diversified, because the next frame of a match is usually a match too: at</span>
+</span><span data-line="378"><span class="sd">    most ``per_video`` hits per video, and two hits closer than ``min_gap_s``</span>
+</span><span data-line="379"><span class="sd">    in one video are one scene (the better one is kept). ``videos`` limits the</span>
+</span><span data-line="380"><span class="sd">    search to those video ids (or URLs, for a video that has no id). Videos</span>
+</span><span data-line="381"><span class="sd">    indexed with another embedding model are skipped, with a warning. Pass</span>
+</span><span data-line="382"><span class="sd">    ``index=FrameIndex.from_store(store)`` to search a prebuilt stacked matrix</span>
+</span><span data-line="383"><span class="sd">    instead of reading the store (``store`` is then not read).</span>
+</span><span data-line="384"><span class="sd">    """</span>
+</span><span data-line="385">    <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span data-line="386">
+</span><span data-line="387">    <span class="n">model</span> <span class="o">=</span> <span class="n">_model_name</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+</span><span data-line="388">    <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="389">        <span class="n">store</span> <span class="o">=</span> <span class="n">default_frame_store</span><span class="p">(</span><span class="n">model</span><span class="p">)</span> <span class="k">if</span> <span class="n">store</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">store</span>
+</span><span data-line="390">    <span class="n">scorer</span> <span class="o">=</span> <span class="n">_default_scorer</span><span class="p">(</span><span class="n">model</span><span class="p">)</span> <span class="k">if</span> <span class="n">scorer</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">scorer</span>
+</span><span data-line="391">    <span class="n">using</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">scorer</span><span class="p">,</span> <span class="s2">"model_id"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="n">model</span>
+</span><span data-line="392">    <span class="n">query</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">scorer</span><span class="o">.</span><span class="n">embed_text</span><span class="p">(</span><span class="n">text</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">"float32"</span><span class="p">)</span>
+</span><span data-line="393">    <span class="n">wanted</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">videos</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">set</span><span class="p">(</span><span class="n">videos</span><span class="p">)</span>
+</span><span data-line="394">    <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="395">        <span class="n">index</span> <span class="o">=</span> <span class="n">FrameIndex</span><span class="o">.</span><span class="n">from_store</span><span class="p">(</span><span class="n">store</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">using</span><span class="p">)</span>
+</span><span data-line="396">    <span class="k">elif</span> <span class="n">index</span><span class="o">.</span><span class="n">model</span> <span class="o">!=</span> <span class="n">using</span><span class="p">:</span>
+</span><span data-line="397">        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"the index was built for model </span><span class="si">{</span><span class="n">index</span><span class="o">.</span><span class="n">model</span><span class="si">!r}</span><span class="s2">, the scorer is </span><span class="si">{</span><span class="n">using</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
+</span><span data-line="398">    <span class="n">scored</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">candidates</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">wanted</span><span class="p">)</span>
+</span><span data-line="399">    <span class="n">other_model</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">other_model</span> <span class="k">if</span> <span class="n">wanted</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">index</span><span class="o">.</span><span class="n">other_model</span> <span class="k">if</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">wanted</span><span class="p">]</span>
+</span><span data-line="400">    <span class="k">if</span> <span class="n">other_model</span><span class="p">:</span>
+</span><span data-line="401">        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+</span><span data-line="402">            <span class="sa">f</span><span class="s2">"search_frames: skipped </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">other_model</span><span class="p">)</span><span class="si">}</span><span class="s2"> video(s) indexed with another "</span>
+</span><span data-line="403">            <span class="sa">f</span><span class="s2">"model than </span><span class="si">{</span><span class="n">using</span><span class="si">!r}</span><span class="s2"> (their vectors are not comparable): "</span>
+</span><span data-line="404">            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">other_model</span><span class="p">)[:</span><span class="mi">5</span><span class="p">]</span><span class="si">}</span><span class="s2">; re-index them with refresh=True"</span><span class="p">,</span>
+</span><span data-line="405">            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+</span><span data-line="406">        <span class="p">)</span>
+</span><span data-line="407">    <span class="n">scored</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="o">-</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</span><span data-line="408">    <span class="n">picked</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">FrameHit</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="409">    <span class="n">count</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span data-line="410">    <span class="n">seen</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="411">    <span class="k">for</span> <span class="n">score</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">scored</span><span class="p">:</span>
+</span><span data-line="412">        <span class="n">vid</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"id"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">entry</span><span class="p">[</span><span class="s2">"video_id"</span><span class="p">]</span> <span class="ow">or</span> <span class="n">entry</span><span class="p">[</span><span class="s2">"url"</span><span class="p">]</span>
+</span><span data-line="413">        <span class="k">if</span> <span class="n">count</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vid</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">per_video</span><span class="p">:</span>
+</span><span data-line="414">            <span class="k">continue</span>
+</span><span data-line="415">        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">v</span> <span class="o">==</span> <span class="n">vid</span> <span class="ow">and</span> <span class="nb">abs</span><span class="p">(</span><span class="n">pt</span> <span class="o">-</span> <span class="n">t</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">min_gap_s</span> <span class="k">for</span> <span class="n">v</span><span class="p">,</span> <span class="n">pt</span> <span class="ow">in</span> <span class="n">seen</span><span class="p">):</span>
+</span><span data-line="416">            <span class="k">continue</span>
+</span><span data-line="417">        <span class="n">code</span> <span class="o">=</span> <span class="n">frame_license</span><span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"license"</span><span class="p">))</span>
+</span><span data-line="418">        <span class="n">picked</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+</span><span data-line="419">            <span class="n">FrameHit</span><span class="p">(</span>
+</span><span data-line="420">                <span class="n">video_id</span><span class="o">=</span><span class="n">entry</span><span class="p">[</span><span class="s2">"video_id"</span><span class="p">]</span> <span class="ow">or</span> <span class="n">vid</span><span class="p">,</span>
+</span><span data-line="421">                <span class="n">video_url</span><span class="o">=</span><span class="n">entry</span><span class="p">[</span><span class="s2">"url"</span><span class="p">],</span>
+</span><span data-line="422">                <span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">,</span>
+</span><span data-line="423">                <span class="n">score</span><span class="o">=</span><span class="n">score</span> <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">score</span><span class="p">)</span> <span class="k">else</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span>
+</span><span data-line="424">                <span class="n">title</span><span class="o">=</span><span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"title"</span><span class="p">),</span>
+</span><span data-line="425">                <span class="n">license</span><span class="o">=</span><span class="n">code</span><span class="p">,</span>
+</span><span data-line="426">                <span class="n">license_raw</span><span class="o">=</span><span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"license"</span><span class="p">),</span>
+</span><span data-line="427">                <span class="n">license_url</span><span class="o">=</span><span class="n">_LICENSE_URLS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">code</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">),</span>
+</span><span data-line="428">                <span class="n">attribution</span><span class="o">=</span><span class="n">_attribution</span><span class="p">(</span>
+</span><span data-line="429">                    <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"title"</span><span class="p">),</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"author"</span><span class="p">),</span> <span class="n">code</span><span class="p">,</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"license"</span><span class="p">)</span>
+</span><span data-line="430">                <span class="p">),</span>
+</span><span data-line="431">                <span class="n">author</span><span class="o">=</span><span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"author"</span><span class="p">),</span>
+</span><span data-line="432">                <span class="n">author_url</span><span class="o">=</span><span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"author_url"</span><span class="p">),</span>
+</span><span data-line="433">            <span class="p">)</span>
+</span><span data-line="434">        <span class="p">)</span>
+</span><span data-line="435">        <span class="n">seen</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">vid</span><span class="p">,</span> <span class="n">t</span><span class="p">))</span>
+</span><span data-line="436">        <span class="n">count</span><span class="p">[</span><span class="n">vid</span><span class="p">]</span> <span class="o">=</span> <span class="n">count</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">vid</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+</span><span data-line="437">        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">picked</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">k</span><span class="p">:</span>
+</span><span data-line="438">            <span class="k">break</span>
+</span><span data-line="439">    <span class="k">return</span> <span class="n">picked</span></div>
 
 </span></pre></div>
         </article><button class="back-to-top" type="button">
@@ -570,7 +635,7 @@ data-aria-dark="Switch to auto color mode">
     </div>
   </div>
 </footer>
-      <script src="../../_static/documentation_options.js?v=6a9d8632"></script>
+      <script src="../../_static/documentation_options.js?v=cee5022b"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
